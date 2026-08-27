@@ -22,7 +22,7 @@ import {
 
 export type ExecutedClaimCall = {
   call: ClaimReview["calls"][number];
-  hash: string;
+  hash: Hex;
   receipt: ReceiptRecord;
 };
 
@@ -57,7 +57,7 @@ export async function runReviewedClaim(
   provider: TransactionProvider,
   input: ClaimReview,
   account: string,
-  onHash?: (call: ClaimReview["calls"][number], hash: string) => void,
+  onHash?: (call: ClaimReview["calls"][number], hash: Hex) => void,
 ): Promise<ExecutedClaimCall[]> {
   const review = assertReviewedClaim(input, account);
   await assertCurrentWalletContext(provider, account);
@@ -112,9 +112,10 @@ export async function runReviewedClaim(
     if (typeof hash !== "string" || !isHash(hash)) {
       throw new Error("wallet did not return a valid claim transaction hash");
     }
-    onHash?.(call, hash);
-    const receipt = await waitForSuccessfulReceipt(provider, hash);
-    completed.push({ call, hash, receipt });
+    const transactionHash = hash as Hex;
+    onHash?.(call, transactionHash);
+    const receipt = await waitForSuccessfulReceipt(provider, transactionHash);
+    completed.push({ call, hash: transactionHash, receipt });
   }
   return completed;
 }

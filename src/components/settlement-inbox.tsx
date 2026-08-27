@@ -13,6 +13,16 @@ import {
   type SettlementInbox as SettlementInboxData,
   type SettlementPosition,
 } from "@/features/settlement/schema";
+import {
+  claimJournalId,
+  readClaimJournal,
+  saveClaimReview,
+  updateClaimJournal,
+  type ClaimJournalRecord,
+} from "@/features/settlement/claim-journal";
+import { runReviewedClaim } from "@/features/settlement/run-reviewed-claim";
+
+const EXECUTION_ENABLED = process.env.NEXT_PUBLIC_EXECUTION_ENABLED === "true";
 
 function formatRaw(raw: string, decimals: number) {
   const scale = 10n ** BigInt(decimals);
@@ -30,13 +40,24 @@ function statusLabel(status: SettlementPosition["status"]) {
 }
 
 export function SettlementInbox() {
-  const { account, chainId } = useWalletSession();
+  const { account, chainId, provider } = useWalletSession();
   const [inbox, setInbox] = useState<SettlementInboxData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [review, setReview] = useState<ClaimReview | null>(null);
   const [reviewSummaries, setReviewSummaries] = useState<string[]>([]);
   const [reviewingMarket, setReviewingMarket] = useState<string | null>(null);
+  const [claimJournal, setClaimJournal] = useState<ClaimJournalRecord[]>([]);
+  const [claimAcknowledged, setClaimAcknowledged] = useState(false);
+  const [claimPending, setClaimPending] = useState(false);
+  const [claimMessage, setClaimMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setClaimJournal(readClaimJournal(window.localStorage));
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     if (!account || chainId !== "0xc488") return;
@@ -77,6 +98,8 @@ export function SettlementInbox() {
     if (!account) return;
     setReviewingMarket(position.marketId);
     setError(null);
+    setClaimAcknowledged(false);
+    setClaimMessage(null);
     try {
       const response = await fetch("/api/claim-review", {
         method: "POST",
@@ -99,12 +122,61 @@ export function SettlementInbox() {
       const summaries = validateClaimReview(parsed);
       setReview(parsed);
       setReviewSummaries(summaries);
+      setClaimJournal(saveClaimReview(window.localStorage, parsed));
     } catch (requestError) {
       setReview(null);
       setReviewSummaries([]);
       setError(requestError instanceof Error ? requestError.message : "Claim review failed");
     } finally {
       setReviewingMarket(null);
+    }
+  }
+
+  async function submitClaim() {
+    if (!provider || !account || !review || !claimAcknowledged || !EXECUTION_ENABLED) return;
+    const id = claimJournalId(review);
+    setClaimPending(true);
+    setClaimMessage("Checking the live claim balance before wallet confirmation…");
+    try {
+      const completed = await runReviewedClaim(provider, review, account, (call, hash) => {
+        setClaimJournal(updateClaimJournal(
+          window.localStorage,
+          id,
+          { status: "CLAIM_SUBMITTED", hash },
+        ));
+        setClaimMessage(`${call.kind}: ${hash.slice(0, 10)}… submitted; waiting for receipt.`);
+      });
+      setClaimJournal(updateClaimJournal(
+        window.localStorage,
+        id,
+        {
+          status: "CLAIM_CONFIRMED",
+          hash: completed.at(-1)?.hash,
+        },
+      ));
+      const response = await fetch(`/api/settlement-inbox?account=${account}`, { cache: "no-store" });
+      const body: unknown = await response.json();
+      if (!response.ok) throw new Error("post-claim balance verification failed");
+      const refreshed = settlementInboxSchema.parse(body);
+      setInbox(refreshed);
+      const stillClaimable = refreshed.positions.some((position) =>
+        position.marketId.toLowerCase() === review.marketId.toLowerCase()
+        && position.outcomeIndex === review.outcomeIndex
+        && (position.status === "CLAIMABLE" || position.status === "VOIDED_CLAIMABLE"),
+      );
+      if (stillClaimable) throw new Error("claim receipt confirmed, but the live claim balance remains");
+      setClaimJournal(updateClaimJournal(window.localStorage, id, { status: "CLAIMED" }));
+      setClaimMessage("Claim receipt confirmed and the live claim balance is no longer outstanding.");
+    } catch (claimError) {
+      const message = claimError instanceof Error ? claimError.message : "Claim did not complete";
+      setClaimJournal(updateClaimJournal(
+        window.localStorage,
+        id,
+        { status: "FAILED", lastError: message },
+      ));
+      setClaimMessage(message);
+    } finally {
+      setClaimPending(false);
     }
   }
 
@@ -180,9 +252,33 @@ export function SettlementInbox() {
               <span>{review.calls[index].kind}</span><strong>{summary}</strong><code>{shortId(review.calls[index].to)}</code>
             </div>
           ))}
-          <p>Review expires {new Date(review.validUntil).toLocaleTimeString()}. No claim was sent; signing is locked.</p>
+          <div className="claim-gate">
+            <label>
+              <input
+                checked={claimAcknowledged}
+                disabled={claimPending}
+                onChange={(event) => setClaimAcknowledged(event.target.checked)}
+                type="checkbox"
+              />
+              <span>I reviewed the exact market, outcome, amount, and redemption calls.</span>
+            </label>
+            <button
+              disabled={!EXECUTION_ENABLED || !claimAcknowledged || claimPending || !provider}
+              onClick={() => void submitClaim()}
+              type="button"
+            >
+              {!EXECUTION_ENABLED ? "Claim signing locked" : claimPending ? "Claim flow active…" : "Submit reviewed claim"}
+            </button>
+            <p>{claimMessage ?? `Review expires ${new Date(review.validUntil).toLocaleTimeString()}. No claim was sent.`}</p>
+          </div>
         </div>
       )}
+      {claimJournal.filter((record) => !account || record.account.toLowerCase() === account.toLowerCase()).slice(0, 3).map((record) => (
+        <p className="claim-journal-note" key={record.id}>
+          Claim activity: {record.status.toLowerCase().replaceAll("_", " ")} · {shortId(record.marketId)}
+          {record.hash ? ` · ${shortId(record.hash)}` : ""}
+        </p>
+      ))}
     </section>
   );
 }
