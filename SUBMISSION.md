@@ -106,7 +106,7 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 ## Links
 
 - Live application: https://downrail.vercel.app
-- GitHub repository: `TBD — public repository`
+- GitHub repository: https://github.com/Nifemi0/downrail
 - Demo video: `TBD — 2–3 minute video`
 - Transaction evidence: `TBD — Shannon explorer link`
 - SDK and documentation feedback: [`FEEDBACK.md`](./FEEDBACK.md)
