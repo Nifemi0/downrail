@@ -17,7 +17,9 @@ jobs:
         with:
           node-version: 22.20.0
           cache: npm
-      - run: npm ci
+      # Resolve the runner's native optional binding (Vitest/Rolldown requires it).
+      # npm still uses package-lock.json for deterministic package versions.
+      - run: npm install --no-audit --no-fund
       - run: npm run typecheck
       - run: npm run lint
       - run: npm test
