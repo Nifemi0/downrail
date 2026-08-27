@@ -2,9 +2,12 @@
 
 Downrail turns DreamDEX BTC and ETH Event Contracts into transparent, short-duration downside protection plans. It is a hedging interface—not a prediction-market creator, insurer, or guaranteed-protection product.
 
-The current build reads live DreamDEX inventory on Somnia Shannon, constructs deterministic depth-aware multi-window plans, connects injected wallets, builds exact unsigned order calls, and includes an explicitly gated tiny-pilot sender with receipt and indexer reconciliation. No private key is accepted or stored.
+The current build reads live DreamDEX inventory on Somnia Shannon, constructs one depth-aware current DOWN leg plus explicit future rollover checkpoints, connects injected wallets, and builds canonical decoded unsigned order reviews. A strict tiny-pilot sender and recovery journal are present, but signing is feature-flagged off by default. No private key is accepted or stored.
 
 Production deployment: https://downrail.vercel.app
+
+The repository pins Vercel's framework preset in `vercel.json`, so a fresh
+project deploys as Next.js instead of depending on a dashboard-only setting.
 
 ## Requirements
 
@@ -38,9 +41,14 @@ scripts/doctor.ts                              Read-only DreamDEX diagnostic
 src/app/api/hedge-plan/                        Live chain-verified planner
 src/app/api/order-preflight/                   Unsigned bounded-call builder
 src/app/api/execution-reconciliation/          Fill and position reconciliation
+src/app/api/settlement-inbox/                  Historical position and claimability discovery
+src/app/api/claim-review/                      Canonical decoded unsigned redemption review
+src/app/api/health/                            Shannon/indexer readiness check
 src/components/                               Planner, wallet, and execution UI
 src/features/hedge-planner/                    Pure bigint planning and preflight
 src/features/execution/                        Tiny-pilot validation and receipts
+src/features/settlement/                       Claimability, review, and guarded claim sender
+src/features/rollover/                         Lifecycle-triggered manual rollover queue
 src/lib/dreamdex/                              Network config and SDK adapters
 ```
 
@@ -62,7 +70,9 @@ Hackathon materials:
 - Reviews expire after two minutes and are bound to the connected account, Shannon chain ID, and a tamper-evident fingerprint.
 - Submission remains disabled until the user checks the exact-review acknowledgement. Each call still requires confirmation inside the wallet.
 - Calls are sent sequentially. A reverted or unconfirmed receipt stops the sequence.
-- Confirmed execution is reconciled by stable market ID against indexed fills, positions, and resting orders.
+- Confirmed execution is persisted as public device-local pointers and reconciled by stable market ID plus exact order transaction against indexed fills, order history, positions, and resting orders.
+- Historical positions are rechecked against live outcome-token balances and finalized settlement payout vectors before an unsigned claim review can be built.
+- Responses include restrictive wallet-app security headers; public APIs bound JSON bodies and expose stable request IDs rather than raw upstream errors.
 - Downrail provides partial, scenario-dependent hedging—not insurance or guaranteed protection.
 
 ## Tiny testnet pilot
@@ -72,7 +82,8 @@ Hackathon materials:
 3. Build the unsigned one-leg review.
 4. Inspect the fingerprint, approval target, exact allowance, order target, calldata, and expiry.
 5. Check the authorization acknowledgement only if the calls are acceptable.
-6. Submit and confirm each testnet call in the wallet.
-7. Keep the page open while Downrail verifies receipts and reconciles the resulting fill or IOC cancellation.
+6. A maintainer must deliberately enable `NEXT_PUBLIC_EXECUTION_ENABLED=true`; it is false by default.
+7. Submit and confirm each testnet call in the wallet only after a separate explicit live-test approval.
+8. Downrail verifies receipts, persists hashes, and reconciles the resulting fill or proven IOC cancellation; the activity can be rechecked after reload.
 
 Do not use a mainnet wallet, seed phrase, or private key with this project.

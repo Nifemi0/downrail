@@ -1,6 +1,7 @@
 import { getAddress, isAddress, isHash } from "viem";
 
 import { createReadOnlyExchange } from "@/lib/dreamdex/exchange";
+import { apiError } from "@/lib/http/api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,24 +22,30 @@ export async function GET(request: Request) {
     const params = new URL(request.url).searchParams;
     const accountValue = params.get("account");
     const marketId = params.get("marketId");
+    const orderTxHash = params.get("orderTxHash");
     if (!accountValue || !isAddress(accountValue)) {
       throw new RangeError("account must be a valid EVM address");
     }
     if (!marketId || !isHash(marketId)) {
       throw new RangeError("marketId must be a bytes32 hash");
     }
+    if (orderTxHash !== null && !isHash(orderTxHash)) {
+      throw new RangeError("orderTxHash must be a transaction hash");
+    }
     const account = getAddress(accountValue);
     const since = parseSince(params.get("since"));
-    const [portfolio, fills, onchain] = await Promise.all([
+    const [portfolio, fills, orders, onchain] = await Promise.all([
       exchange.client.getPortfolio(account, {
         ordersLimit: 50,
         tradesLimit: 50,
         since,
       }),
-      exchange.client.getUserFills(account, { limit: 50, since }),
+      exchange.client.getUserFills(account, { limit: 200, since }),
+      exchange.client.getOrders(account, { limit: 200 }),
       exchange.client.getMarketOnchain(marketId),
     ]);
     const marketKey = marketId.toLowerCase();
+    const transactionKey = orderTxHash?.toLowerCase();
 
     return Response.json(
       {
@@ -54,7 +61,10 @@ export async function GET(request: Request) {
           expiryUnixSeconds: Number(onchain.expiry),
         },
         fills: fills
-          .filter((fill) => fill.market.toLowerCase() === marketKey)
+          .filter((fill) =>
+            fill.market.toLowerCase() === marketKey
+            && (!transactionKey || fill.txHash.toLowerCase() === transactionKey),
+          )
           .map((fill) => ({
             id: fill.id,
             txHash: fill.txHash,
@@ -64,6 +74,22 @@ export async function GET(request: Request) {
             makerSide: fill.makerSide,
             takerSide: fill.takerSide ?? fill.takerOrder?.side ?? null,
             timestamp: fill.timestamp,
+          })),
+        orders: orders
+          .filter((order) =>
+            order.market.toLowerCase() === marketKey
+            && Number(order.placedAtTimestamp) >= since
+            && (!transactionKey || order.placedTxHash.toLowerCase() === transactionKey),
+          )
+          .map((order) => ({
+            orderId: order.orderId,
+            status: order.status,
+            rested: order.rested,
+            fullQuantityRaw: order.fullQuantity,
+            filledQuantityRaw: order.filledQuantity,
+            quantityRemainingRaw: order.quantityRemaining,
+            placedTxHash: order.placedTxHash,
+            placedAtTimestamp: order.placedAtTimestamp,
           })),
         positions: portfolio.positions
           .filter((position) => position.market.id.toLowerCase() === marketKey)
@@ -88,15 +114,7 @@ export async function GET(request: Request) {
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unable to reconcile execution";
-    return Response.json(
-      { error: message, mode: "RECONCILIATION" },
-      {
-        status: error instanceof RangeError ? 400 : 502,
-        headers: { "Cache-Control": "no-store" },
-      },
-    );
+    return apiError("execution-reconciliation", error, "RECONCILIATION");
   } finally {
     await exchange.close();
   }

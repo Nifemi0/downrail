@@ -13,10 +13,11 @@ export type SingleLegHedgeInput = {
 export type SingleLegHedgePlan = {
   quantityRaw: bigint;
   estimatedCostRaw: bigint;
-  grossWinningPayoutRaw: bigint;
-  netWinningProtectionRaw: bigint;
-  scenarioPortfolioLossRaw: bigint;
-  coverageBps: bigint;
+  conditionalGrossPayoutRaw: bigint;
+  conditionalNetPayoutRaw: bigint;
+  modeledPortfolioLossRaw: bigint;
+  downWinCombinedChangeRaw: bigint;
+  downLossCombinedChangeRaw: bigint;
   budgetRemainingRaw: bigint;
 };
 
@@ -68,21 +69,20 @@ export function calculateSingleLegHedge(
     input.downAskRaw * quantityRaw,
     oneOutcome,
   );
-  const grossWinningPayoutRaw = (quantityRaw * oneQuote) / oneOutcome;
-  const netWinningProtectionRaw = grossWinningPayoutRaw - estimatedCostRaw;
-  const scenarioPortfolioLossRaw =
+  const conditionalGrossPayoutRaw = (quantityRaw * oneQuote) / oneOutcome;
+  const conditionalNetPayoutRaw = conditionalGrossPayoutRaw - estimatedCostRaw;
+  const modeledPortfolioLossRaw =
     (input.exposureRaw * input.downsideMoveBps) / 10_000n;
-  const rawCoverage = scenarioPortfolioLossRaw === 0n
-    ? 0n
-    : (netWinningProtectionRaw * 10_000n) / scenarioPortfolioLossRaw;
 
   return {
     quantityRaw,
     estimatedCostRaw,
-    grossWinningPayoutRaw,
-    netWinningProtectionRaw,
-    scenarioPortfolioLossRaw,
-    coverageBps: rawCoverage > 10_000n ? 10_000n : rawCoverage,
+    conditionalGrossPayoutRaw,
+    conditionalNetPayoutRaw,
+    modeledPortfolioLossRaw,
+    downWinCombinedChangeRaw:
+      conditionalNetPayoutRaw - modeledPortfolioLossRaw,
+    downLossCombinedChangeRaw: -estimatedCostRaw - modeledPortfolioLossRaw,
     budgetRemainingRaw: input.budgetRaw - estimatedCostRaw,
   };
 }

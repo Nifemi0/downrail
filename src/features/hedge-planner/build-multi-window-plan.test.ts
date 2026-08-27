@@ -12,12 +12,12 @@ function market(
   overrides: Partial<HedgeMarketCandidate> & Pick<HedgeMarketCandidate, "marketId">,
 ): HedgeMarketCandidate {
   const { marketId, ...rest } = overrides;
-
   return {
     marketId,
     asset: "ETH",
-    expiryUnixSeconds: NOW + 8 * 60 * 60,
-    intervalSeconds: 24 * 60 * 60,
+    question: "Will ETH finish this interval DOWN?",
+    expiryUnixSeconds: NOW + 5 * 60 * 60,
+    intervalSeconds: 4 * 60 * 60,
     quoteDecimals: 6,
     outcomeDecimals: 6,
     tickSizeRaw: 1_000n,
@@ -37,49 +37,57 @@ function plan(candidates: HedgeMarketCandidate[], budgetRaw = 20n * USDC) {
     requestedHorizonSeconds: 4 * 60 * 60,
     minExecutionHeadroomSeconds: 5 * 60,
     nowUnixSeconds: NOW,
-    maxMarkets: 2,
+    maxMarkets: 3,
     candidates,
   });
 }
 
 describe("buildMultiWindowHedgePlan", () => {
-  it("rejects a liquid market that expires before the requested horizon", () => {
+  it("rejects a market without enough execution headroom", () => {
     const result = plan([
-      market({
-        marketId: "too-soon",
-        expiryUnixSeconds: NOW + 30 * 60,
-      }),
-      market({ marketId: "covers-horizon" }),
+      market({ marketId: "too-soon", expiryUnixSeconds: NOW + 5 * 60 }),
+      market({ marketId: "usable" }),
     ]);
 
-    expect(result.legs.map((leg) => leg.marketId)).toEqual([
-      "covers-horizon",
-    ]);
+    expect(result.legs.map((leg) => leg.marketId)).toEqual(["usable"]);
     expect(result.excludedMarkets).toContainEqual({
       marketId: "too-soon",
-      reason: "expires_before_horizon",
+      reason: "expires_too_soon",
     });
   });
 
-  it("splits the initial budget across aligned markets", () => {
+  it("selects one interval-aligned current market instead of summing simultaneous legs", () => {
+    const result = plan([
+      market({ marketId: "one-hour", intervalSeconds: 60 * 60 }),
+      market({ marketId: "four-hour", intervalSeconds: 4 * 60 * 60 }),
+      market({ marketId: "day", intervalSeconds: 24 * 60 * 60 }),
+    ]);
+
+    expect(result.legs).toHaveLength(1);
+    expect(result.legs[0]?.marketId).toBe("four-hour");
+    expect(result.currentMaximumCostRaw).toBe(20n * USDC);
+  });
+
+  it("reserves budget and creates explicit future rollover checkpoints", () => {
     const result = plan([
       market({
-        marketId: "near",
-        expiryUnixSeconds: NOW + 5 * 60 * 60,
-        downAsks: [{ priceRaw: 250_000n, quantityRaw: 40n * USDC }],
-      }),
-      market({
-        marketId: "far",
-        expiryUnixSeconds: NOW + 6 * 60 * 60,
-        downAsks: [{ priceRaw: 500_000n, quantityRaw: 20n * USDC }],
+        marketId: "current",
+        expiryUnixSeconds: NOW + 2 * 60 * 60,
       }),
     ]);
 
-    expect(result.legs).toHaveLength(2);
-    expect(result.totalMaximumCostRaw).toBe(20n * USDC);
-    expect(result.netWinningProtectionRaw).toBe(40n * USDC);
-    expect(result.coverageBps).toBe(4_000n);
-    expect(result.budgetRemainingRaw).toBe(0n);
+    expect(result.currentMaximumCostRaw).toBe(10n * USDC);
+    expect(result.futureBudgetReserveRaw).toBe(10n * USDC);
+    expect(result.rolloverCheckpoints).toEqual([
+      {
+        sequence: 1,
+        startsAt: NOW + 2 * 60 * 60,
+        targetEndsAt: NOW + 4 * 60 * 60,
+        intervalSeconds: 2 * 60 * 60,
+        estimatedBudgetRaw: 10n * USDC,
+        status: "FUTURE_MARKET_REQUIRED",
+      },
+    ]);
   });
 
   it("budgets deeper fills at the worst executable limit price", () => {
@@ -98,32 +106,11 @@ describe("buildMultiWindowHedgePlan", () => {
 
     expect(result.legs[0]?.quantityRaw).toBe(25n * USDC);
     expect(result.legs[0]?.limitPriceRaw).toBe(400_000n);
-    expect(result.legs[0]?.estimatedBookCostRaw).toBe(8n * USDC);
-    expect(result.legs[0]?.maximumCostRaw).toBe(10n * USDC);
+    expect(result.currentEstimatedBookCostRaw).toBe(8n * USDC);
+    expect(result.currentMaximumCostRaw).toBe(10n * USDC);
   });
 
-  it("redistributes budget a shallow market cannot use", () => {
-    const result = plan([
-      market({
-        marketId: "shallow",
-        expiryUnixSeconds: NOW + 5 * 60 * 60,
-        downAsks: [{ priceRaw: 500_000n, quantityRaw: 2n * USDC }],
-      }),
-      market({
-        marketId: "deep",
-        expiryUnixSeconds: NOW + 6 * 60 * 60,
-        downAsks: [{ priceRaw: 500_000n, quantityRaw: 100n * USDC }],
-      }),
-    ]);
-
-    expect(result.legs.find((leg) => leg.marketId === "shallow")?.maximumCostRaw)
-      .toBe(1n * USDC);
-    expect(result.legs.find((leg) => leg.marketId === "deep")?.maximumCostRaw)
-      .toBe(19n * USDC);
-    expect(result.budgetRemainingRaw).toBe(0n);
-  });
-
-  it("excludes malformed tick-grid levels instead of planning an invalid order", () => {
+  it("excludes malformed tick-grid levels", () => {
     const result = plan([
       market({
         marketId: "bad-tick",
@@ -137,23 +124,16 @@ describe("buildMultiWindowHedgePlan", () => {
     ]);
   });
 
-  it("uses market id as the final deterministic tie-breaker", () => {
-    const result = buildMultiWindowHedgePlan({
-      asset: "ETH",
-      exposureRaw: 2_000n * USDC,
-      budgetRaw: 20n * USDC,
-      downsideMoveBps: 500n,
-      requestedHorizonSeconds: 4 * 60 * 60,
-      minExecutionHeadroomSeconds: 5 * 60,
-      nowUnixSeconds: NOW,
-      maxMarkets: 1,
-      candidates: [market({ marketId: "b" }), market({ marketId: "a" })],
-    });
+  it("uses expiry, price, then market id as deterministic tie-breakers", () => {
+    const result = plan([
+      market({ marketId: "b" }),
+      market({ marketId: "a" }),
+    ]);
 
     expect(result.legs[0]?.marketId).toBe("a");
   });
 
-  it("reports residual scenario loss and partial coverage", () => {
+  it("reports both binary outcomes without claiming guaranteed coverage", () => {
     const result = plan(
       [
         market({
@@ -164,11 +144,21 @@ describe("buildMultiWindowHedgePlan", () => {
       20n * USDC,
     );
 
-    expect(result.netWinningProtectionRaw).toBe(5n * USDC);
-    expect(result.residualScenarioLossRaw).toBe(95n * USDC);
-    expect(result.coverageBps).toBe(500n);
-    expect(result.warnings).toContain(
-      "The plan provides partial scenario coverage.",
-    );
+    expect(result.conditionalNetPayoutRaw).toBe(5n * USDC);
+    expect(result.modeledPortfolioLossRaw).toBe(100n * USDC);
+    expect(result.outcomes).toEqual([
+      {
+        outcome: "DOWN_WINS",
+        hedgeNetRaw: 5n * USDC,
+        combinedScenarioChangeRaw: -95n * USDC,
+      },
+      {
+        outcome: "DOWN_LOSES",
+        hedgeNetRaw: -20n * USDC,
+        combinedScenarioChangeRaw: -120n * USDC,
+      },
+    ]);
+    expect(result).not.toHaveProperty("coverageBps");
+    expect(result.warnings.join(" ")).toContain("conditional");
   });
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import {
   useWalletSession,
@@ -39,6 +39,25 @@ export function WalletControl() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const controlRef = useRef<HTMLDivElement>(null);
+  const firstMenuItemRef = useRef<HTMLButtonElement>(null);
+  const menuId = useId();
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    firstMenuItemRef.current?.focus();
+    const closeMenu = (event: KeyboardEvent | PointerEvent) => {
+      if (event instanceof KeyboardEvent && event.key !== "Escape") return;
+      if (event instanceof PointerEvent && controlRef.current?.contains(event.target as Node)) return;
+      setMenuOpen(false);
+    };
+    window.addEventListener("keydown", closeMenu);
+    window.addEventListener("pointerdown", closeMenu);
+    return () => {
+      window.removeEventListener("keydown", closeMenu);
+      window.removeEventListener("pointerdown", closeMenu);
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     const announced = new Set<string>();
@@ -128,6 +147,8 @@ export function WalletControl() {
         method: "wallet_switchEthereumChain",
         params: [{ chainId: SHANNON_CHAIN_ID_HEX }],
       });
+      const currentChain = await selected.provider.request({ method: "eth_chainId" });
+      setChainId(typeof currentChain === "string" ? currentChain.toLowerCase() : null);
     } catch (error) {
       if (getErrorCode(error) !== 4902) {
         setMessage(getErrorCode(error) === 4001 ? "Network switch cancelled." : "Could not switch networks.");
@@ -164,30 +185,44 @@ export function WalletControl() {
         ) : (
           <button className="wallet-switch" disabled={pending} onClick={switchToShannon} type="button">{pending ? "Switching…" : "Switch to Shannon"}</button>
         )}
+        <button
+          className="wallet-reset"
+          onClick={() => {
+            setAccount(null);
+            setChainId(null);
+            setProvider(null);
+            setSelected(null);
+            setMessage("Local wallet session reset.");
+          }}
+          type="button"
+        >Reset</button>
         {message && <span className="wallet-message" role="status">{message}</span>}
       </div>
     );
   }
 
   return (
-    <div className="wallet-control">
+    <div className="wallet-control" ref={controlRef}>
       <button
+        aria-controls={providers.length > 1 ? menuId : undefined}
         aria-expanded={menuOpen}
+        aria-haspopup={providers.length > 1 ? "menu" : undefined}
         className="wallet-connect"
-        disabled={providers.length === 0 || pending}
+        disabled={pending}
         onClick={() => {
-          if (providers.length === 1) void connect(providers[0]);
+          if (providers.length === 0) setMessage("Install an EIP-6963 compatible wallet, then reload Downrail.");
+          else if (providers.length === 1) void connect(providers[0]);
           else setMenuOpen((open) => !open);
         }}
         type="button"
       >
-        {pending ? "Connecting…" : providers.length === 0 ? "No wallet" : "Connect wallet"}
+        {pending ? "Connecting…" : providers.length === 0 ? "Wallet help" : "Connect wallet"}
       </button>
       {menuOpen && providers.length > 1 && (
-        <div className="wallet-menu" role="menu">
+        <div className="wallet-menu" id={menuId} role="menu">
           <span>Choose wallet</span>
           {providers.map((detail) => (
-            <button key={detail.info.uuid} onClick={() => void connect(detail)} role="menuitem" type="button">{detail.info.name}</button>
+            <button ref={detail === providers[0] ? firstMenuItemRef : undefined} key={detail.info.uuid} onClick={() => void connect(detail)} role="menuitem" type="button">{detail.info.name}</button>
           ))}
         </div>
       )}

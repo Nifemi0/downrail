@@ -8,8 +8,23 @@ import {
   runReviewedPilot,
   type ExecutedReviewedCall,
 } from "@/features/execution/run-reviewed-calls";
-import type { HedgeAsset } from "@/lib/dreamdex/market-board";
+import {
+  orderReviewSchema,
+  type OrderReview,
+} from "@/features/execution/review-schema";
+import {
+  validateReviewedOrder,
+  type DecodedReviewedCall,
+} from "@/features/execution/validate-reviewed-order";
+import {
+  executionJournalId,
+  readExecutionJournal,
+  saveReviewedExecution,
+  updateExecutionJournal,
+  type ExecutionJournalRecord,
+} from "@/features/execution/journal";
 import type { LiveHedgePlanSnapshot } from "@/lib/dreamdex/hedge-plan-snapshot";
+import { buildManualRolloverRecommendation } from "@/features/rollover/build-recommendation";
 
 const HORIZONS = [
   { label: "15m", seconds: 15 * 60 },
@@ -18,37 +33,15 @@ const HORIZONS = [
   { label: "24h", seconds: 24 * 60 * 60 },
 ] as const;
 
+const EXECUTION_ENABLED =
+  process.env.NEXT_PUBLIC_EXECUTION_ENABLED === "true";
+
 type LoadState = "loading" | "ready" | "error";
 
-type OrderPreflight = {
-  mode: "UNSIGNED_REVIEW";
-  account: string;
-  chainId: number;
-  quoteDecimals: number;
-  fingerprint: string;
-  generatedAt: string;
-  plan: {
-    asset: HedgeAsset;
-    totalMaximumCostRaw: string;
-    netWinningProtectionRaw: string;
-    residualScenarioLossRaw: string;
-    coverageBps: string;
-  };
-  legs: Array<{
-    marketId: string;
-    validUntil: string;
-    calls: Array<{
-      kind: "APPROVAL" | "ORDER";
-      to: string;
-      data: string;
-      value: string;
-      description: string;
-    }>;
-  }>;
-  warnings: string[];
+type StoredOrderPreflight = OrderReview & {
+  intentKey: string;
+  decodedCalls: DecodedReviewedCall[];
 };
-
-type StoredOrderPreflight = OrderPreflight & { intentKey: string };
 type StoredPreflightError = { intentKey: string; message: string };
 type ExecutionProgress = {
   fingerprint: string;
@@ -59,6 +52,13 @@ type ExecutionProgress = {
 };
 
 type ExecutionReconciliation = {
+  onchain: {
+    status: string;
+    finalized: boolean;
+    isResolved: boolean;
+    isVoided: boolean;
+    expiryUnixSeconds: number;
+  };
   fills: Array<{
     txHash: string;
     fillPriceRaw: string;
@@ -71,8 +71,75 @@ type ExecutionReconciliation = {
     quoteDecimals: number;
     status: string;
   }>;
+  orders: Array<{
+    status: string;
+    fullQuantityRaw: string;
+    filledQuantityRaw: string;
+    quantityRemainingRaw: string;
+    placedTxHash: string;
+  }>;
   openOrders: Array<unknown>;
 };
+
+function statusFromReconciliation(
+  result: ExecutionReconciliation,
+): ExecutionJournalRecord["status"] {
+  if (result.onchain.finalized) return "FINALIZED";
+  if (result.onchain.isResolved) return "RESOLVED";
+  if (result.fills.length > 0) {
+    const order = result.orders[0];
+    if (order && BigInt(order.filledQuantityRaw) < BigInt(order.fullQuantityRaw)) {
+      return "PARTIALLY_FILLED";
+    }
+    return "FILLED";
+  }
+  const order = result.orders[0];
+  if (order?.status === "Cancelled") return "CANCELLED_IOC";
+  if (order?.status === "Expired") return "EXPIRED";
+  if (order?.status === "Open" || result.openOrders.length > 0) return "RESTING";
+  return "INDEXING_PENDING";
+}
+
+async function fetchExecutionReconciliation(input: {
+  account: string;
+  marketId: string;
+  reviewedAt: string;
+  orderTxHash?: string;
+}) {
+  const query = new URLSearchParams({
+    account: input.account,
+    marketId: input.marketId,
+    since: String(Math.floor(new Date(input.reviewedAt).getTime() / 1_000) - 15),
+  });
+  if (input.orderTxHash) query.set("orderTxHash", input.orderTxHash);
+  const response = await fetch(`/api/execution-reconciliation?${query}`, {
+    cache: "no-store",
+  });
+  const body = (await response.json()) as
+    | ExecutionReconciliation
+    | { error?: string };
+  if (!response.ok || !("fills" in body)) {
+    throw new Error(
+      "error" in body && body.error ? body.error : "reconciliation failed",
+    );
+  }
+  return body;
+}
+
+function toOrderReview(stored: StoredOrderPreflight): OrderReview {
+  return orderReviewSchema.parse({
+    schemaVersion: stored.schemaVersion,
+    mode: stored.mode,
+    account: stored.account,
+    chainId: stored.chainId,
+    quoteDecimals: stored.quoteDecimals,
+    generatedAt: stored.generatedAt,
+    fingerprint: stored.fingerprint,
+    plan: stored.plan,
+    legs: stored.legs,
+    warnings: stored.warnings,
+  });
+}
 
 function formatRaw(raw: string, decimals: number, fractionDigits = 2) {
   const value = BigInt(raw);
@@ -86,6 +153,13 @@ function formatRaw(raw: string, decimals: number, fractionDigits = 2) {
 
 function formatUsd(raw: string, decimals: number) {
   return `$${formatRaw(raw, decimals, 2)}`;
+}
+
+function formatSignedUsd(raw: string, decimals: number) {
+  const value = BigInt(raw);
+  if (value === 0n) return "$0.00";
+  const sign = value > 0n ? "+" : "−";
+  return `${sign}$${formatRaw((value < 0n ? -value : value).toString(), decimals, 2)}`;
 }
 
 function formatProbability(raw: string, decimals: number) {
@@ -112,12 +186,16 @@ function shortId(value: string) {
   return `${value.slice(0, 8)}…${value.slice(-6)}`;
 }
 
+function formatJournalStatus(status: ExecutionJournalRecord["status"]) {
+  return status.toLowerCase().replaceAll("_", " ");
+}
+
 export function HedgePreview() {
   const { account, chainId, provider } = useWalletSession();
   const exposureId = useId();
   const budgetId = useId();
   const downsideId = useId();
-  const [asset, setAsset] = useState<HedgeAsset>("ETH");
+  const [asset, setAsset] = useState<"BTC" | "ETH">("ETH");
   const [exposure, setExposure] = useState("2000");
   const [budget, setBudget] = useState("20");
   const [dropPercent, setDropPercent] = useState(5);
@@ -131,7 +209,17 @@ export function HedgePreview() {
   const [acknowledgedFingerprint, setAcknowledgedFingerprint] = useState<string | null>(null);
   const [execution, setExecution] = useState<ExecutionProgress | null>(null);
   const [executionPending, setExecutionPending] = useState(false);
+  const [journalRecords, setJournalRecords] = useState<ExecutionJournalRecord[]>([]);
+  const [recheckingJournalId, setRecheckingJournalId] = useState<string | null>(null);
+  const [refreshNonce, setRefreshNonce] = useState(0);
   const intentKey = [account, chainId, asset, exposure, budget, dropPercent, horizonSeconds].join(":");
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setJournalRecords(readExecutionJournal(window.localStorage));
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -182,7 +270,7 @@ export function HedgePreview() {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [asset, budget, dropPercent, exposure, horizonSeconds]);
+  }, [asset, budget, dropPercent, exposure, horizonSeconds, refreshNonce]);
 
   async function buildOrderReview() {
     if (!account || chainId !== "0xc488") return;
@@ -202,15 +290,18 @@ export function HedgePreview() {
           maxMarkets: "1",
         }),
       });
-      const body = (await response.json()) as OrderPreflight | { error?: string };
-      if (!response.ok || !("legs" in body)) {
+      const body: unknown = await response.json();
+      if (!response.ok) {
         throw new Error(
-          "error" in body && body.error
-            ? body.error
+          typeof body === "object" && body !== null && "error" in body
+            ? String(body.error)
             : "The unsigned order review could not be built.",
         );
       }
-      setPreflight({ ...body, intentKey });
+      const review = orderReviewSchema.parse(body);
+      const decodedCalls = validateReviewedOrder(review);
+      setPreflight({ ...review, intentKey, decodedCalls });
+      setJournalRecords(saveReviewedExecution(window.localStorage, review));
     } catch (requestError) {
       setPreflight(null);
       setPreflightError({
@@ -226,67 +317,93 @@ export function HedgePreview() {
   }
 
   async function submitReviewedPilot() {
-    if (!activePreflight || !provider || !account) return;
+    if (!EXECUTION_ENABLED || !activePreflight || !provider || !account) return;
+    const journalId = executionJournalId(activePreflight);
     setExecutionPending(true);
     setExecution({
       fingerprint: activePreflight.fingerprint,
       message: "Preparing the first wallet confirmation…",
     });
     try {
+      const review = toOrderReview(activePreflight);
       const completed = await runReviewedPilot(
         provider,
-        activePreflight,
+        review,
         account,
-        ({ index, total, phase, call, hash }) => {
+        ({ index, total, phase, call, hash, estimatedGas }) => {
           const step = `${index + 1}/${total} ${call.kind.toLowerCase()}`;
           const message =
-            phase === "AWAITING_SIGNATURE"
+            phase === "CHECKING_FUNDS"
+              ? "Checking collateral and native gas balances…"
+              : phase === "SIMULATING"
+                ? `${step}: simulating against current chain state.`
+                : phase === "AWAITING_SIGNATURE"
               ? `${step}: waiting for your wallet confirmation.`
               : phase === "MINING"
                 ? `${step}: submitted ${shortId(hash ?? "")}; waiting for the receipt.`
-                : `${step}: receipt verified.`;
+                : `${step}: receipt verified${estimatedGas ? ` after a ${estimatedGas} gas estimate` : ""}.`;
           setExecution({
             fingerprint: activePreflight.fingerprint,
             message,
           });
+          if (phase === "MINING" && hash) {
+            setJournalRecords(updateExecutionJournal(
+              window.localStorage,
+              journalId,
+              {
+                status: call.kind === "APPROVAL"
+                  ? "APPROVAL_SUBMITTED"
+                  : "ORDER_SUBMITTED",
+                callKind: call.kind,
+                hash,
+              },
+            ));
+          }
         },
       );
+      for (const completedCall of completed) {
+        setJournalRecords(updateExecutionJournal(
+          window.localStorage,
+          journalId,
+          {
+            status: completedCall.call.kind === "APPROVAL"
+              ? "APPROVAL_CONFIRMED"
+              : "ORDER_CONFIRMED",
+            callKind: completedCall.call.kind,
+            hash: completedCall.hash,
+            ...(typeof completedCall.receipt.blockNumber === "string"
+              ? { receiptBlock: completedCall.receipt.blockNumber }
+              : {}),
+          },
+        ));
+      }
       setExecution({
         fingerprint: activePreflight.fingerprint,
         message: "Receipts verified. Reconciling the fill and position index…",
         completed,
       });
-      const since = Math.floor(
-        new Date(activePreflight.generatedAt).getTime() / 1_000,
-      ) - 15;
       let reconciliation: ExecutionReconciliation | undefined;
       try {
-        for (let attempt = 0; attempt < 5; attempt += 1) {
-          const query = new URLSearchParams({
+        const orderTxHash = completed.find((item) => item.call.kind === "ORDER")?.hash;
+        for (let attempt = 0; attempt < 8; attempt += 1) {
+          reconciliation = await fetchExecutionReconciliation({
             account,
             marketId: activePreflight.legs[0].marketId,
-            since: String(since),
+            reviewedAt: activePreflight.generatedAt,
+            orderTxHash,
           });
-          const response = await fetch(`/api/execution-reconciliation?${query}`, {
-            cache: "no-store",
-          });
-          const body = (await response.json()) as
-            | ExecutionReconciliation
-            | { error?: string };
-          if (!response.ok || !("fills" in body)) {
-            throw new Error(
-              "error" in body && body.error
-                ? body.error
-                : "reconciliation failed",
-            );
-          }
-          reconciliation = body;
-          if (body.fills.length > 0 || body.positions.length > 0) break;
-          if (attempt < 4) {
-            await new Promise((resolve) => window.setTimeout(resolve, 1_500));
+          if (statusFromReconciliation(reconciliation) !== "INDEXING_PENDING") break;
+          if (attempt < 7) {
+            const delay = Math.min(1_500 * 1.5 ** attempt, 8_000);
+            await new Promise((resolve) => window.setTimeout(resolve, delay));
           }
         }
       } catch (reconciliationError) {
+        setJournalRecords(updateExecutionJournal(
+          window.localStorage,
+          journalId,
+          { status: "INDEXING_PENDING" },
+        ));
         setExecution({
           fingerprint: activePreflight.fingerprint,
           message: `Every call was confirmed, but indexer reconciliation is still pending: ${reconciliationError instanceof Error ? reconciliationError.message : "unknown error"}`,
@@ -298,10 +415,19 @@ export function HedgePreview() {
         fingerprint: activePreflight.fingerprint,
         message: reconciliation?.fills.length
           ? "Every call was confirmed and the resulting fill was reconciled."
-          : "Every call was confirmed. No fill is indexed yet; the IOC may have cancelled unfilled.",
+          : "Every call was confirmed. The journal reflects only what the indexer has proven so far.",
         completed,
         reconciliation,
       });
+      setJournalRecords(updateExecutionJournal(
+        window.localStorage,
+        journalId,
+        {
+          status: reconciliation
+            ? statusFromReconciliation(reconciliation)
+            : "INDEXING_PENDING",
+        },
+      ));
     } catch (executionError) {
       const message =
         executionError instanceof Error
@@ -314,14 +440,55 @@ export function HedgePreview() {
         message,
         error: true,
       });
+      const current = readExecutionJournal(window.localStorage)
+        .find((record) => record.id === journalId);
+      setJournalRecords(updateExecutionJournal(
+        window.localStorage,
+        journalId,
+        {
+          status: current?.calls.some((call) => call.hash)
+            ? current.status
+            : "FAILED",
+          lastError: message,
+        },
+      ));
     } finally {
       setExecutionPending(false);
     }
   }
 
+  async function recheckJournalRecord(record: ExecutionJournalRecord) {
+    setRecheckingJournalId(record.id);
+    try {
+      const result = await fetchExecutionReconciliation({
+        account: record.account,
+        marketId: record.marketId,
+        reviewedAt: record.reviewedAt,
+        orderTxHash: record.calls.find((call) => call.kind === "ORDER")?.hash,
+      });
+      setJournalRecords(updateExecutionJournal(
+        window.localStorage,
+        record.id,
+        { status: statusFromReconciliation(result) },
+      ));
+    } catch (recheckError) {
+      setJournalRecords(updateExecutionJournal(
+        window.localStorage,
+        record.id,
+        {
+          status: record.status,
+          lastError: recheckError instanceof Error
+            ? recheckError.message
+            : "Chain recheck failed",
+        },
+      ));
+    } finally {
+      setRecheckingJournalId(null);
+    }
+  }
+
   const plan = snapshot?.plan;
   const quoteDecimals = snapshot?.quoteDecimals ?? 6;
-  const coveragePercent = plan ? Number(BigInt(plan.coverageBps)) / 100 : 0;
   const activePreflight = preflight?.intentKey === intentKey ? preflight : null;
   const activePreflightError =
     preflightError?.intentKey === intentKey ? preflightError.message : null;
@@ -332,6 +499,25 @@ export function HedgePreview() {
     : false;
   const reviewAcknowledged =
     acknowledgedFingerprint === activePreflight?.fingerprint;
+  const visibleJournalRecords = account
+    ? journalRecords
+        .filter((record) => record.account.toLowerCase() === account.toLowerCase())
+        .slice(0, 5)
+    : [];
+  const rolloverRecommendations = visibleJournalRecords.flatMap((record) => {
+    if (!record.rolloverContext) return [];
+    const recommendation = buildManualRolloverRecommendation({
+      marketId: record.marketId,
+      status: record.status,
+      nowUnixSeconds: Math.floor(
+        Date.parse(snapshot?.generatedAt ?? record.updatedAt) / 1_000,
+      ),
+      marketExpiryUnixSeconds: record.rolloverContext.marketExpiryUnixSeconds,
+      requestedHorizonEndsAt: record.rolloverContext.requestedHorizonEndsAt,
+      futureBudgetReserveRaw: record.rolloverContext.futureBudgetReserveRaw,
+    });
+    return recommendation ? [{ record, recommendation }] : [];
+  });
 
   return (
     <section className="planner-section" aria-labelledby="planner-title">
@@ -407,36 +593,55 @@ export function HedgePreview() {
               <div className="plan-headline">
                 <div>
                   <p>{asset} · {HORIZONS.find((item) => item.seconds === horizonSeconds)?.label} requested</p>
-                  <h3><span>{coveragePercent}%</span> of the modeled loss is offset.</h3>
+                  <h3><span>Conditional payout.</span> Not guaranteed coverage.</h3>
                 </div>
                 <span className="verified-label"><i /> Chain verified</span>
               </div>
 
               <div className="plan-metrics">
-                <div><span>Maximum cost</span><strong>{formatUsd(plan.totalMaximumCostRaw, quoteDecimals)}</strong></div>
-                <div className="protected-metric"><span>Net protection</span><strong>{formatUsd(plan.netWinningProtectionRaw, quoteDecimals)}</strong></div>
-                <div className="loss-metric"><span>Residual loss</span><strong>{formatUsd(plan.residualScenarioLossRaw, quoteDecimals)}</strong></div>
+                <div><span>Current max cost</span><strong>{formatUsd(plan.currentMaximumCostRaw, quoteDecimals)}</strong></div>
+                <div className="protected-metric"><span>Net payout if DOWN wins</span><strong>{formatUsd(plan.conditionalNetPayoutRaw, quoteDecimals)}</strong></div>
+                <div><span>Reserved for later</span><strong>{formatUsd(plan.futureBudgetReserveRaw, quoteDecimals)}</strong></div>
               </div>
 
-              <div className="scenario-bar" aria-label={`${coveragePercent}% of modeled loss offset`}>
-                <span style={{ width: `${Math.min(100, coveragePercent)}%` }} />
+              <div className="outcome-grid" aria-label="Conditional outcome comparison">
+                {plan.outcomes.map((outcome) => (
+                  <article className={`outcome-card ${outcome.outcome === "DOWN_WINS" ? "win" : "loss"}`} key={outcome.outcome}>
+                    <span>{outcome.outcome === "DOWN_WINS" ? "If DOWN resolves YES" : "If DOWN resolves NO"}</span>
+                    <strong>{formatSignedUsd(outcome.hedgeNetRaw, quoteDecimals)} hedge result</strong>
+                    <p>{formatSignedUsd(outcome.combinedScenarioChangeRaw, quoteDecimals)} combined with the selected loss scenario</p>
+                  </article>
+                ))}
               </div>
-              <div className="scenario-legend"><span>Modeled loss {formatUsd(plan.scenarioPortfolioLossRaw, quoteDecimals)}</span><span>Budget left {formatUsd(plan.budgetRemainingRaw, quoteDecimals)}</span></div>
+              <div className="scenario-legend"><span>User-modeled portfolio loss {formatUsd(plan.modeledPortfolioLossRaw, quoteDecimals)}</span><span>Current allocation left {formatUsd(plan.budgetRemainingRaw, quoteDecimals)}</span></div>
 
               <div className="plan-legs">
-                <div className="legs-heading"><h4>Protection legs</h4><span>{plan.legs.length} executable {plan.legs.length === 1 ? "window" : "windows"}</span></div>
+                <div className="legs-heading"><h4>Current executable leg</h4><span>{plan.legs.length ? "one reviewed window" : "no executable window"}</span></div>
                 {plan.legs.length ? plan.legs.map((leg, index) => (
                   <article className="plan-leg" key={leg.marketId}>
                     <span className="leg-number">{String(index + 1).padStart(2, "0")}</span>
-                    <div><strong>{formatWindow(leg.intervalSeconds)} DOWN</strong><span>Expires {formatExpiry(leg.expiryUnixSeconds)}</span></div>
+                    <div><strong>{formatWindow(leg.intervalSeconds)} DOWN</strong><span>{leg.question}</span><span>Expires {formatExpiry(leg.expiryUnixSeconds)}</span></div>
                     <div><strong>{formatProbability(leg.limitPriceRaw, quoteDecimals)}</strong><span>Limit price</span></div>
                     <div><strong>{formatUsd(leg.maximumCostRaw, quoteDecimals)}</strong><span>Max cost</span></div>
                     <code title={leg.marketId}>{shortId(leg.marketId)}</code>
                   </article>
                 )) : (
-                  <p className="no-legs">No eligible on-book liquidity covers this horizon within the selected budget.</p>
+                  <p className="no-legs">No current market can produce an executable order within this allocation.</p>
                 )}
               </div>
+
+              {plan.rolloverCheckpoints.length > 0 && (
+                <div className="rollover-timeline">
+                  <div className="legs-heading"><h4>Future rollover checkpoints</h4><span>fresh review required each time</span></div>
+                  {plan.rolloverCheckpoints.map((checkpoint) => (
+                    <div key={checkpoint.sequence}>
+                      <span>{String(checkpoint.sequence).padStart(2, "0")}</span>
+                      <p><strong>{formatExpiry(checkpoint.startsAt)} → {formatExpiry(checkpoint.targetEndsAt)}</strong><small>Future market not selected yet</small></p>
+                      <b>{formatUsd(checkpoint.estimatedBudgetRaw, quoteDecimals)} reserved</b>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {plan.warnings.length > 0 && <p className="plan-warning">{plan.warnings.join(" ")}</p>}
               <p className="verification-note">{snapshot.chainVerifiedCandidateCount} candidate windows verified on Shannon · refreshed {new Date(snapshot.generatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
@@ -464,6 +669,7 @@ export function HedgePreview() {
                       <details key={`${leg.marketId}-${call.kind}-${callIndex}`}>
                         <summary><span>{String(legIndex + 1).padStart(2, "0")}.{callIndex + 1} {call.kind}</span><code>{shortId(call.to)}</code></summary>
                         <p>{call.description}</p>
+                        <p>{activePreflight.decodedCalls[callIndex]?.summary}</p>
                         <dl><dt>Target</dt><dd><code>{call.to}</code></dd><dt>Value</dt><dd><code>{call.value} wei</code></dd><dt>Calldata</dt><dd><code>{call.data}</code></dd></dl>
                       </details>
                     )),
@@ -487,13 +693,21 @@ export function HedgePreview() {
                     </label>
                     <button
                       className="execute-pilot"
-                      disabled={!pilotCostIsSafe || !reviewAcknowledged || executionPending || !provider}
+                      disabled={!EXECUTION_ENABLED || !pilotCostIsSafe || !reviewAcknowledged || executionPending || !provider}
                       onClick={() => void submitReviewedPilot()}
                       type="button"
                     >
-                      {executionPending ? "Wallet flow active…" : "Submit reviewed pilot"}
+                      {!EXECUTION_ENABLED
+                        ? "Signing locked during safety rebuild"
+                        : executionPending
+                          ? "Wallet flow active…"
+                          : "Submit reviewed pilot"}
                     </button>
-                    <p className="pilot-warning">This button opens your wallet. Each call still requires your confirmation; Downrail cannot sign for you.</p>
+                    <p className="pilot-warning">
+                      {EXECUTION_ENABLED
+                        ? "This button opens your wallet. Each call still requires your confirmation; Downrail cannot sign for you."
+                        : "Unsigned review remains available, but wallet submission is disabled until decoded-call validation is complete."}
+                    </p>
                   </div>
 
                   {activeExecution && (
@@ -522,6 +736,55 @@ export function HedgePreview() {
           ) : null}
         </div>
       </div>
+      {visibleJournalRecords.length > 0 && (
+        <section className="execution-journal" aria-labelledby="execution-journal-title">
+          <div className="legs-heading">
+            <h3 id="execution-journal-title">Recovered execution activity</h3>
+            <span>device-local pointers · chain remains authoritative</span>
+          </div>
+          {visibleJournalRecords.map((record) => (
+            <article key={record.id}>
+              <div>
+                <strong>{formatJournalStatus(record.status)}</strong>
+                <span>{shortId(record.marketId)} · updated {new Date(record.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+              </div>
+              <div>
+                {record.calls.flatMap((call) => call.hash ? [(
+                  <a href={`https://shannon-explorer.somnia.network/tx/${call.hash}`} key={call.hash} rel="noreferrer" target="_blank">
+                    {call.kind} {shortId(call.hash)} ↗
+                  </a>
+                )] : [])}
+                <button
+                  disabled={recheckingJournalId === record.id}
+                  onClick={() => void recheckJournalRecord(record)}
+                  type="button"
+                >
+                  {recheckingJournalId === record.id ? "Rechecking…" : "Recheck on chain"}
+                </button>
+              </div>
+            </article>
+          ))}
+        </section>
+      )}
+      {rolloverRecommendations.length > 0 && (
+        <section className="rollover-queue" aria-labelledby="rollover-queue-title">
+          <div>
+            <p className="eyebrow">Manual rollover queue / 05</p>
+            <h3 id="rollover-queue-title">A fresh market review is ready.</h3>
+            <p>No automatic order is created. Refreshing reruns discovery, depth, and all planner checks.</p>
+          </div>
+          {rolloverRecommendations.map(({ record, recommendation }) => (
+            <article key={recommendation.dedupeKey}>
+              <span>{recommendation.trigger.toLowerCase().replaceAll("_", " ")}</span>
+              <strong>{Math.ceil(recommendation.remainingHorizonSeconds / 60)} minutes remain</strong>
+              <p>{formatUsd(recommendation.budgetRaw, record.rolloverContext?.quoteDecimals ?? 6)} reserved · prior market {shortId(record.marketId)}</p>
+            </article>
+          ))}
+          <button onClick={() => setRefreshNonce((value) => value + 1)} type="button">
+            Refresh recommendation
+          </button>
+        </section>
+      )}
     </section>
   );
 }

@@ -1,18 +1,20 @@
 import type { UnsignedCall } from "@somnia-chain/markets-sdk";
-import {
-  getAddress,
-  isAddress,
-  keccak256,
-  toHex,
-} from "viem";
+import { getAddress, isAddress } from "viem";
 
 import {
   buildBoundedCollateralApproval,
   buildBuyNoOrderPreflight,
 } from "@/features/hedge-planner/build-execution-preflight";
+import {
+  createReviewFingerprint,
+  orderReviewSchema,
+  REVIEW_SCHEMA_VERSION,
+  reviewCommitmentSchema,
+} from "@/features/execution/review-schema";
 import { parseHedgePlanRequest } from "@/features/hedge-planner/parse-hedge-intent";
 import { createUnsignedExchange } from "@/lib/dreamdex/exchange";
 import { getLiveHedgePlanSnapshot } from "@/lib/dreamdex/hedge-plan-snapshot";
+import { apiError, readJsonObject } from "@/lib/http/api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -48,7 +50,7 @@ export async function POST(request: Request) {
   let exchange: ReturnType<typeof createUnsignedExchange> | undefined;
 
   try {
-    const body = (await request.json()) as PreflightBody;
+    const body = await readJsonObject(request) as PreflightBody;
     const accountValue = stringField(body, "account");
     if (!isAddress(accountValue)) {
       throw new RangeError("account must be a valid EVM address");
@@ -79,78 +81,72 @@ export async function POST(request: Request) {
           nowUnixSeconds,
         );
         const unsigned = await trader.buildPlaceOrder(preflight.params);
-        const boundedApproval = unsigned.approval
-          ? buildBoundedCollateralApproval(
-              unsigned.approval,
-              preflight.params.pool,
-              BigInt(leg.maximumCostRaw),
-            )
-          : undefined;
+        if (!unsigned.approval) {
+          throw new Error("BUY_NO review did not include a collateral approval");
+        }
+        const boundedApproval = buildBoundedCollateralApproval(
+          unsigned.approval,
+          preflight.params.pool,
+          BigInt(leg.maximumCostRaw),
+        );
 
         return {
           marketId: leg.marketId,
           poolAddress: preflight.params.pool,
+          collateralToken: boundedApproval.to,
           side: preflight.params.side,
           orderType: "IMMEDIATE_OR_CANCEL",
           downLimitPriceRaw: preflight.downLimitPriceRaw.toString(),
           sdkYesLimitPriceRaw: preflight.yesLimitPriceRaw.toString(),
           quantityRaw: preflight.params.quantity.toString(),
           maximumCostRaw: leg.maximumCostRaw,
+          marketExpiryUnixSeconds: leg.expiryUnixSeconds,
           validUntil: new Date(
             preflight.validUntilUnixSeconds * 1_000,
           ).toISOString(),
           calls: [
-            ...(boundedApproval
-              ? [{ kind: "APPROVAL", ...serializeCall(boundedApproval) }]
-              : []),
-            { kind: "ORDER", ...serializeCall(unsigned.order) },
+            { kind: "APPROVAL" as const, ...serializeCall(boundedApproval) },
+            { kind: "ORDER" as const, ...serializeCall(unsigned.order) },
           ],
         };
       }),
     );
 
-    const fingerprintPayload = {
+    const reviewedPlan = {
+      asset: snapshot.plan.asset,
+      requestedHorizonEndsAt: snapshot.plan.requestedHorizonEndsAt,
+      totalMaximumCostRaw: snapshot.plan.currentMaximumCostRaw,
+      futureBudgetReserveRaw: snapshot.plan.futureBudgetReserveRaw,
+      conditionalNetPayoutRaw: snapshot.plan.conditionalNetPayoutRaw,
+      modeledPortfolioLossRaw: snapshot.plan.modeledPortfolioLossRaw,
+    };
+    const commitment = reviewCommitmentSchema.parse({
+      schemaVersion: REVIEW_SCHEMA_VERSION,
       account,
       chainId: snapshot.chainId,
       generatedAt: snapshot.generatedAt,
       quoteDecimals: snapshot.quoteDecimals,
+      plan: reviewedPlan,
       legs,
-    };
+    });
+    const responseBody = orderReviewSchema.parse({
+      ...commitment,
+      mode: "UNSIGNED_REVIEW",
+      fingerprint: createReviewFingerprint(commitment),
+      warnings: [
+        "No transaction was sent. These are unsigned review calls only.",
+        "Approval is capped to the exact reviewed maximum collateral cost.",
+        "Gas is separate and is resolved by the wallet at send time.",
+        "Wallet submission remains locked until decoded-call validation is fully deployed.",
+      ],
+    });
 
     return Response.json(
-      {
-        mode: "UNSIGNED_REVIEW",
-        account,
-        chainId: snapshot.chainId,
-        quoteDecimals: snapshot.quoteDecimals,
-        generatedAt: snapshot.generatedAt,
-        fingerprint: keccak256(toHex(JSON.stringify(fingerprintPayload))),
-        plan: {
-          asset: snapshot.plan.asset,
-          totalMaximumCostRaw: snapshot.plan.totalMaximumCostRaw,
-          netWinningProtectionRaw: snapshot.plan.netWinningProtectionRaw,
-          residualScenarioLossRaw: snapshot.plan.residualScenarioLossRaw,
-          coverageBps: snapshot.plan.coverageBps,
-        },
-        legs,
-        warnings: [
-          "No transaction was sent. These are unsigned review calls only.",
-          "Approval calls are capped to each leg's reviewed maximum collateral cost.",
-          "Gas, nonce, and network fees are resolved by the wallet at send time.",
-          "Regenerate and revalidate this preview immediately before signing.",
-        ],
-      },
+      responseBody,
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unable to build order preflight";
-    const status =
-      error instanceof RangeError || error instanceof SyntaxError ? 400 : 502;
-    return Response.json(
-      { error: message, mode: "UNSIGNED_REVIEW" },
-      { status, headers: { "Cache-Control": "no-store" } },
-    );
+    return apiError("order-preflight", error, "UNSIGNED_REVIEW");
   } finally {
     await exchange?.close();
   }

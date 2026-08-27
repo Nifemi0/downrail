@@ -24,36 +24,50 @@ export type SerializedFill = {
 
 export type SerializedPlan = Omit<
   MultiWindowHedgePlan,
-  | "totalEstimatedBookCostRaw"
-  | "totalMaximumCostRaw"
+  | "currentEstimatedBookCostRaw"
+  | "currentMaximumCostRaw"
+  | "futureBudgetReserveRaw"
   | "budgetRemainingRaw"
-  | "grossWinningPayoutRaw"
-  | "netWinningProtectionRaw"
-  | "scenarioPortfolioLossRaw"
-  | "residualScenarioLossRaw"
-  | "coverageBps"
+  | "conditionalGrossPayoutRaw"
+  | "conditionalNetPayoutRaw"
+  | "modeledPortfolioLossRaw"
+  | "outcomes"
   | "legs"
+  | "rolloverCheckpoints"
 > & {
-  totalEstimatedBookCostRaw: string;
-  totalMaximumCostRaw: string;
+  currentEstimatedBookCostRaw: string;
+  currentMaximumCostRaw: string;
+  futureBudgetReserveRaw: string;
   budgetRemainingRaw: string;
-  grossWinningPayoutRaw: string;
-  netWinningProtectionRaw: string;
-  scenarioPortfolioLossRaw: string;
-  residualScenarioLossRaw: string;
-  coverageBps: string;
+  conditionalGrossPayoutRaw: string;
+  conditionalNetPayoutRaw: string;
+  modeledPortfolioLossRaw: string;
+  outcomes: Array<{
+    outcome: "DOWN_WINS" | "DOWN_LOSES";
+    hedgeNetRaw: string;
+    combinedScenarioChangeRaw: string;
+  }>;
   legs: Array<{
     marketId: string;
     poolAddress?: string;
+    question: string;
     expiryUnixSeconds: number;
     intervalSeconds: number;
     limitPriceRaw: string;
     quantityRaw: string;
     estimatedBookCostRaw: string;
     maximumCostRaw: string;
-    grossWinningPayoutRaw: string;
-    netWinningProtectionRaw: string;
+    conditionalGrossPayoutRaw: string;
+    conditionalNetPayoutRaw: string;
     fills: SerializedFill[];
+  }>;
+  rolloverCheckpoints: Array<{
+    sequence: number;
+    startsAt: number;
+    targetEndsAt: number;
+    intervalSeconds: number;
+    estimatedBudgetRaw: string;
+    status: "FUTURE_MARKET_REQUIRED";
   }>;
 };
 
@@ -72,27 +86,35 @@ export type LiveHedgePlanSnapshot = {
 function serializePlan(plan: MultiWindowHedgePlan): SerializedPlan {
   return {
     ...plan,
-    totalEstimatedBookCostRaw: plan.totalEstimatedBookCostRaw.toString(),
-    totalMaximumCostRaw: plan.totalMaximumCostRaw.toString(),
+    currentEstimatedBookCostRaw: plan.currentEstimatedBookCostRaw.toString(),
+    currentMaximumCostRaw: plan.currentMaximumCostRaw.toString(),
+    futureBudgetReserveRaw: plan.futureBudgetReserveRaw.toString(),
     budgetRemainingRaw: plan.budgetRemainingRaw.toString(),
-    grossWinningPayoutRaw: plan.grossWinningPayoutRaw.toString(),
-    netWinningProtectionRaw: plan.netWinningProtectionRaw.toString(),
-    scenarioPortfolioLossRaw: plan.scenarioPortfolioLossRaw.toString(),
-    residualScenarioLossRaw: plan.residualScenarioLossRaw.toString(),
-    coverageBps: plan.coverageBps.toString(),
+    conditionalGrossPayoutRaw: plan.conditionalGrossPayoutRaw.toString(),
+    conditionalNetPayoutRaw: plan.conditionalNetPayoutRaw.toString(),
+    modeledPortfolioLossRaw: plan.modeledPortfolioLossRaw.toString(),
+    outcomes: plan.outcomes.map((outcome) => ({
+      ...outcome,
+      hedgeNetRaw: outcome.hedgeNetRaw.toString(),
+      combinedScenarioChangeRaw: outcome.combinedScenarioChangeRaw.toString(),
+    })),
     legs: plan.legs.map((leg) => ({
       ...leg,
       limitPriceRaw: leg.limitPriceRaw.toString(),
       quantityRaw: leg.quantityRaw.toString(),
       estimatedBookCostRaw: leg.estimatedBookCostRaw.toString(),
       maximumCostRaw: leg.maximumCostRaw.toString(),
-      grossWinningPayoutRaw: leg.grossWinningPayoutRaw.toString(),
-      netWinningProtectionRaw: leg.netWinningProtectionRaw.toString(),
+      conditionalGrossPayoutRaw: leg.conditionalGrossPayoutRaw.toString(),
+      conditionalNetPayoutRaw: leg.conditionalNetPayoutRaw.toString(),
       fills: leg.fills.map((fill) => ({
         priceRaw: fill.priceRaw.toString(),
         quantityRaw: fill.quantityRaw.toString(),
         estimatedCostRaw: fill.estimatedCostRaw.toString(),
       })),
+    })),
+    rolloverCheckpoints: plan.rolloverCheckpoints.map((checkpoint) => ({
+      ...checkpoint,
+      estimatedBudgetRaw: checkpoint.estimatedBudgetRaw.toString(),
     })),
   };
 }
@@ -103,10 +125,7 @@ export async function getLiveHedgePlanSnapshot(
   const exchange = createReadOnlyExchange();
   const generatedAt = new Date().toISOString();
   const nowUnixSeconds = Math.floor(Date.now() / 1_000);
-  const minimumExpiry =
-    nowUnixSeconds +
-    request.requestedHorizonSeconds +
-    MIN_EXECUTION_HEADROOM_SECONDS;
+  const minimumExpiry = nowUnixSeconds + MIN_EXECUTION_HEADROOM_SECONDS;
 
   try {
     const indexedMarkets = await exchange.client.listLiveBinaryMarkets({
@@ -149,7 +168,7 @@ export async function getLiveHedgePlanSnapshot(
             return {
               rejected: {
                 marketId: market.marketId,
-                reason: "on-chain expiry does not cover requested horizon",
+                reason: "on-chain expiry has insufficient execution headroom",
               },
             };
           }
@@ -176,6 +195,7 @@ export async function getLiveHedgePlanSnapshot(
             marketId: market.marketId,
             poolAddress: onchain.pool,
             asset: request.asset,
+            question: market.question,
             expiryUnixSeconds: Number(onchain.expiry),
             intervalSeconds: Number(market.intervalSec ?? 0),
             quoteDecimals: onchain.decimals,

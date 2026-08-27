@@ -19,9 +19,10 @@ describe("calculateSingleLegHedge", () => {
 
     expect(plan.quantityRaw).toBe(50n * USDC);
     expect(plan.estimatedCostRaw).toBe(20n * USDC);
-    expect(plan.netWinningProtectionRaw).toBe(30n * USDC);
-    expect(plan.scenarioPortfolioLossRaw).toBe(100n * USDC);
-    expect(plan.coverageBps).toBe(3_000n);
+    expect(plan.conditionalNetPayoutRaw).toBe(30n * USDC);
+    expect(plan.modeledPortfolioLossRaw).toBe(100n * USDC);
+    expect(plan.downWinCombinedChangeRaw).toBe(-70n * USDC);
+    expect(plan.downLossCombinedChangeRaw).toBe(-120n * USDC);
     expect(plan.budgetRemainingRaw).toBe(0n);
   });
 
