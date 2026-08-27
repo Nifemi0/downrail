@@ -46,6 +46,12 @@ src/lib/dreamdex/                              Network config and SDK adapters
 
 The complete product specification and execution guide are in `../project.md` and `../agent.md`.
 
+Hackathon materials:
+
+- [`SUBMISSION.md`](./SUBMISSION.md) — DoraHacks copy, judging alignment, and readiness gate.
+- [`DEMO.md`](./DEMO.md) — timed two-to-three-minute recording runbook.
+- [`FEEDBACK.md`](./FEEDBACK.md) — DreamDEX SDK and documentation feedback from the implementation.
+
 ## Execution safety boundary
 
 - Planning and unsigned review never open the wallet or send a transaction.
