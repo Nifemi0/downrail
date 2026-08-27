@@ -1,26 +1,47 @@
 {
-  "name": "hedgeflow",
+  "name": "downrail",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit --incremental false",
+    "test": "vitest run",
+    "doctor": "tsx scripts/doctor.ts",
+    "dev:vinext": "vinext dev --port 3001",
+    "build:vinext": "vinext build",
+    "start:vinext": "wrangler dev --config dist/server/wrangler.json",
+    "deploy:vinext": "vinext-cloudflare deploy --config dist/server/wrangler.json"
   },
   "dependencies": {
+    "@somnia-chain/markets-sdk": "0.28.1",
+    "@vinext/cloudflare": "^1.0.0-beta.6",
     "next": "16.3.3",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "react-server-dom-webpack": "^19.2.8",
+    "viem": "2.56.0",
+    "vinext": "^1.0.0-beta.8"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.54.1",
+    "@openai/sites-vite-plugin": "^0.2.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.1.0",
+    "@vitejs/plugin-rsc": "^0.5.34",
     "eslint": "^9",
     "eslint-config-next": "16.3.3",
     "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+    "tsx": "4.23.12",
+    "typescript": "^5",
+    "vite": "^8.2.2",
+    "vitest": "4.1.11",
+    "wrangler": "^4.127.0"
+  },
+  "type": "module"
 }

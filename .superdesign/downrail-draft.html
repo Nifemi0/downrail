@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="view-transition" content="same-origin">
+  <title>Downrail — Downside Protection</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap');
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root), ::view-transition-new(root) { animation-duration:.4s; animation-timing-function:cubic-bezier(.4,0,.2,1); }
+    ::view-transition-old(root) { animation-name:fade-out; }
+    ::view-transition-new(root) { animation-name:fade-in; }
+    @keyframes fade-out { from{opacity:1;transform:scale(1)} to{opacity:0;transform:scale(.98)} }
+    @keyframes fade-in { from{opacity:0;transform:scale(1.02)} to{opacity:1;transform:scale(1)} }
+    * { box-sizing:border-box; }
+    html { background:#F5F1E8; }
+    body { margin:0; color:#121317; font-family:'Geist',sans-serif; background:#F5F1E8; }
+    .font-mono { font-family:'Geist Mono',monospace; }
+    input[type=range] { appearance:none; height:2px; background:#12131733; }
+    input[type=range]::-webkit-slider-thumb { appearance:none; width:14px; height:14px; border-radius:50%; background:#315CFF; cursor:pointer; }
+    input[type=range]::-moz-range-thumb { width:14px; height:14px; border:0; border-radius:50%; background:#315CFF; cursor:pointer; }
+    .hero-paper { transform:rotate(-3deg); transform-origin:center; }
+    .hero-shield { transform:rotate(7deg); transform-origin:center; }
+  </style>
+</head>
+<body>
+  <div class="min-h-screen bg-[#F5F1E8]" data-sd-id="1">
+    <nav class="sticky top-0 z-20 flex min-h-[60px] items-center justify-between border-b border-[#1213172e] bg-[#F5F1E8] px-6 md:px-[5vw]" data-sd-id="2">
+      <a id="nav-home-link" href="#top" class="inline-flex items-center gap-3 text-[15px] font-semibold tracking-[-0.03em]" aria-label="Downrail home" data-sd-id="3">
+        <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/db007e0d-d92f-403e-8868-87033d44ae6b/brand-assets/public-brand-downrail-logo.svg/downrail-logo.svg" alt="Downrail" class="h-6 w-auto" data-sd-id="4">
+      </a>
+      <div class="flex items-center gap-3" data-sd-id="6">
+        <span class="hidden border border-[#1213172e] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[.12em] text-[#596274] sm:inline-flex" data-sd-id="7">Read only · Phase 0</span>
+        <span class="inline-flex items-center gap-2 border border-[#1213172e] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[.12em] text-[#596274]" data-sd-id="8"><span class="h-1.5 w-1.5 rounded-full bg-[#315CFF]"></span>Shannon · live</span>
+      </div>
+    </nav>
+
+    <main id="top" class="mx-auto w-[min(1180px,90vw)]" data-sd-id="9">
+      <header class="grid grid-cols-1 items-center gap-12 border-b border-[#1213172e] py-14 md:grid-cols-12 md:gap-8 md:py-16" data-sd-id="10">
+        <div class="md:col-span-5" data-sd-id="11">
+          <p class="mb-5 font-mono text-[10px] font-semibold uppercase tracking-[.18em] text-[#315CFF]" data-sd-id="12">Downside protection / 01</p>
+          <h1 class="m-0 max-w-[480px] text-[clamp(2.65rem,4vw,4rem)] font-medium leading-[.98] tracking-[-.065em]" data-sd-id="13">Keep the upside.<br><span class="text-[#315CFF]">Guard the downside.</span></h1>
+          <p class="mt-6 max-w-[410px] text-[15px] leading-[1.55] text-[#596274]" data-sd-id="14">Use a short-duration DOWN contract to soften a defined BTC or ETH loss while keeping your position intact.</p>
+          <div class="mt-8 flex items-center gap-5" data-sd-id="15">
+            <a id="hero-builder-link" href="#planner" class="inline-flex items-center gap-2 bg-[#315CFF] px-4 py-3 text-[13px] font-semibold text-white transition-colors duration-150 hover:bg-[#244BD6]" data-sd-id="16">Plan protection <iconify-icon icon="lucide:arrow-down-right" class="text-base"></iconify-icon></a>
+            <a id="hero-markets-link" href="#markets" class="inline-flex items-center gap-2 text-[13px] font-medium text-[#121317]" data-sd-id="17">View protection windows <iconify-icon icon="lucide:arrow-up-right" class="text-base"></iconify-icon></a>
+          </div>
+        </div>
+
+        <div class="relative min-h-[360px] md:col-span-7" aria-label="Scenario explanation: unhedged loss offset by hedge payout" data-sd-id="18">
+          <div class="absolute right-0 top-0 font-mono text-[10px] uppercase tracking-[.12em] text-[#596274]" data-sd-id="19">Illustrative scenario · ETH / 5% move</div>
+          <div class="absolute left-[3%] top-[18%] h-[250px] w-[88%] border border-[#1213172e] bg-[#FFFDF7]" data-sd-id="20"></div>
+          <div class="hero-paper absolute left-[8%] top-[23%] h-[218px] w-[76%] border border-[#F05A47] bg-[#F05A47] p-5 shadow-[10px_10px_0_#12131712]" data-sd-id="21">
+            <div class="flex items-start justify-between font-mono text-[10px] uppercase tracking-[.1em] text-white"><span>BTC/ETH Exposure</span><span>−$100.00</span></div>
+            <div class="absolute bottom-7 left-5 right-5 border-t border-white/60"></div>
+            <div class="absolute bottom-10 right-6 text-right text-white"><p class="m-0 text-[10px] uppercase tracking-[.1em]">Unhedged loss</p><strong class="font-mono text-3xl tracking-[-.06em]">−5.0%</strong></div>
+          </div>
+          <div class="hero-shield absolute bottom-[14%] right-[5%] h-[126px] w-[67%] border-2 border-[#315CFF] bg-[#315CFF] p-5 text-white shadow-[-12px_12px_0_#12131712]" data-sd-id="22">
+            <div class="flex items-start justify-between font-mono text-[10px] uppercase tracking-[.1em]"><span>DOWN contract</span><span>Protection rail</span></div>
+            <div class="absolute bottom-4 left-5 right-5 flex items-end justify-between"><div><p class="m-0 text-[10px] uppercase tracking-[.1em] text-white/75">Hedge payout</p><strong class="font-mono text-2xl tracking-[-.05em]">+$78.50</strong></div><div class="flex items-center gap-1 opacity-80"><div class="h-1 w-8 bg-white/40"></div><iconify-icon icon="lucide:trending-down" class="text-2xl"></iconify-icon></div></div>
+          </div>
+          <div class="absolute bottom-[2%] left-[4%] border-l-2 border-[#121317] pl-3" data-sd-id="23"><p class="m-0 font-mono text-[10px] uppercase tracking-[.1em] text-[#596274]">Residual loss</p><strong class="font-mono text-[22px] tracking-[-.05em]">−$21.50</strong></div>
+          <div class="absolute left-[3%] top-[10%] h-8 border-l border-dashed border-[#F05A47]" data-sd-id="24"></div>
+        </div>
+      </header>
+
+      <section id="planner" class="border-b border-[#1213172e] py-14" aria-labelledby="planner-title" data-sd-id="25">
+        <div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end" data-sd-id="26">
+          <div><p class="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[.18em] text-[#315CFF]">Protection planner / 02</p><h2 id="planner-title" class="m-0 text-[24px] font-medium tracking-[-.04em]">Configure your protection</h2></div>
+          <p class="m-0 max-w-[330px] text-right text-[12px] leading-[1.5] text-[#596274]">Indicative only. Top-of-book estimates exclude depth, slippage, fees, and execution.</p>
+        </div>
+        <div class="grid grid-cols-1 border border-[#1213172e] bg-[#FFFDF7] md:grid-cols-12" data-sd-id="27">
+          <div class="grid gap-7 border-b border-[#1213172e] p-6 md:col-span-4 md:border-b-0 md:border-r" data-sd-id="28">
+            <fieldset class="m-0 grid grid-cols-2 gap-0 border border-[#1213172e] p-0"><legend class="sr-only">Asset</legend><button type="button" class="border-r border-[#1213172e] bg-[#F5F1E8] px-3 py-3 text-left font-mono text-[12px] text-[#596274]">BTC</button><button type="button" class="bg-[#315CFF] px-3 py-3 text-left font-mono text-[12px] text-white">ETH</button></fieldset>
+            <label class="grid gap-2 text-[11px] font-medium uppercase tracking-[.08em] text-[#596274]">Exposure<div class="flex items-center border-b border-[#12131766] pb-2 text-[20px] text-[#121317]"><span class="mr-2 font-mono text-[14px]">$</span><input type="number" min="1" value="2000" class="w-full border-0 bg-transparent font-mono outline-none"></div></label>
+            <label class="grid gap-2 text-[11px] font-medium uppercase tracking-[.08em] text-[#596274]">Maximum budget<div class="flex items-center border-b border-[#12131766] pb-2 text-[20px] text-[#121317]"><span class="mr-2 font-mono text-[14px]">$</span><input type="number" min="1" value="20" class="w-full border-0 bg-transparent font-mono outline-none"></div></label>
+            <label class="grid gap-3 text-[11px] font-medium uppercase tracking-[.08em] text-[#596274]">Downside scenario<div class="flex items-center gap-4"><input type="range" min="1" max="25" value="5" class="w-full"><strong class="font-mono text-[15px] font-medium text-[#121317]">5%</strong></div></label>
+            <button type="button" disabled class="flex items-center justify-center gap-2 border border-[#1213172e] bg-[#1213170a] px-4 py-3 text-[12px] font-semibold text-[#596274]">Review protection <iconify-icon icon="lucide:lock-keyhole" class="text-sm"></iconify-icon></button>
+          </div>
+          <div class="p-6 md:col-span-8 md:p-8" data-sd-id="29">
+            <div class="flex flex-col justify-between gap-5 border-b border-[#1213172e] pb-6 sm:flex-row sm:items-end"><div><p class="m-0 mb-2 font-mono text-[10px] uppercase tracking-[.12em] text-[#596274]">ETH · 24h window</p><h3 class="m-0 max-w-[430px] text-[30px] font-medium leading-[1.05] tracking-[-.055em]">78.5% of portfolio loss is offset.</h3></div><span class="font-mono text-[12px] text-[#315CFF]">Indicative quote</span></div>
+            <div class="mt-6 grid grid-cols-1 gap-0 sm:grid-cols-3" data-sd-id="30">
+              <div class="border-b border-[#1213172e] py-4 sm:border-b-0 sm:border-r sm:pr-5"><p class="m-0 text-[11px] text-[#596274]">Estimated cost</p><strong class="mt-2 block font-mono text-[22px] font-medium tracking-[-.05em]">$19.85</strong></div>
+              <div class="border-b border-[#1213172e] py-4 sm:border-b-0 sm:px-5 sm:border-r"><p class="m-0 text-[11px] text-[#596274]">Hedge payout</p><strong class="mt-2 block font-mono text-[22px] font-medium tracking-[-.05em] text-[#315CFF]">$78.50</strong></div>
+              <div class="py-4 sm:pl-5"><p class="m-0 text-[11px] text-[#596274]">Residual loss</p><strong class="mt-2 block font-mono text-[22px] font-medium tracking-[-.05em] text-[#F05A47]">$21.50</strong></div>
+            </div>
+            <div class="mt-5 flex flex-wrap gap-x-8 gap-y-2 border-t border-[#1213172e] pt-4 font-mono text-[11px] text-[#596274]"><span>Scenario loss <b class="font-medium text-[#121317]">$100.00</b></span><span>DOWN ask <b class="font-medium text-[#121317]">0.145 USDC</b></span><span>Coverage <b class="font-medium text-[#315CFF]">78.5%</b></span></div>
+          </div>
+        </div>
+        <p class="m-0 mt-4 text-[11px] leading-[1.5] text-[#596274]">Preview only. Transaction execution remains intentionally disabled during Phase 0.</p>
+      </section>
+
+      <section id="markets" class="py-14" aria-labelledby="markets-title" data-sd-id="31">
+        <div class="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end"><div><p class="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[.18em] text-[#315CFF]">DreamDEX signal / 03</p><h2 id="markets-title" class="m-0 text-[24px] font-medium tracking-[-.04em]">Live protection windows</h2></div><p class="m-0 font-mono text-[10px] text-[#596274]">Snapshot 10:42 AM PST · refreshed live</p></div>
+        <div class="overflow-x-auto border-y border-[#1213172e]" data-sd-id="32"><div class="min-w-[720px]" role="table" aria-label="Live protection windows">
+          <div class="grid grid-cols-[.7fr_.8fr_1fr_1fr_1.5fr] items-center gap-4 border-b border-[#1213172e] py-3 font-mono text-[10px] uppercase tracking-[.1em] text-[#596274]" role="row"><span>Asset</span><span>Window</span><span>Closes in</span><span>DOWN ask</span><span>Contract ID</span></div>
+          <div class="grid grid-cols-[.7fr_.8fr_1fr_1fr_1.5fr] items-center gap-4 border-b border-[#1213172e] py-4 text-[12px]" role="row"><span class="w-fit bg-[#121317] px-2 py-1 font-mono text-[10px] font-semibold text-white">ETH</span><span>24h</span><span class="font-mono">12h 45m</span><span class="font-mono font-semibold text-[#315CFF]">0.145 USDC</span><span class="font-mono text-[11px] text-[#596274]">0x8f3a…2b9d4e</span></div>
+          <div class="grid grid-cols-[.7fr_.8fr_1fr_1fr_1.5fr] items-center gap-4 border-b border-[#1213172e] py-4 text-[12px]" role="row"><span class="w-fit border border-[#121317] px-2 py-1 font-mono text-[10px] font-semibold">BTC</span><span>24h</span><span class="font-mono">4h 12m</span><span class="font-mono font-semibold text-[#315CFF]">0.082 USDC</span><span class="font-mono text-[11px] text-[#596274]">0x1a4f…8c3d9a</span></div>
+          <div class="grid grid-cols-[.7fr_.8fr_1fr_1fr_1.5fr] items-center gap-4 py-4 text-[12px]" role="row"><span class="w-fit bg-[#121317] px-2 py-1 font-mono text-[10px] font-semibold text-white">ETH</span><span>7d</span><span class="font-mono">4d 18h</span><span class="font-mono font-semibold text-[#596274]">No quote</span><span class="font-mono text-[11px] text-[#596274]">0x4b7c…1f8e2d</span></div>
+        </div></div>
+      </section>
+
+      <footer class="flex flex-col justify-between gap-4 border-t border-[#1213172e] py-7 text-[11px] text-[#596274] sm:flex-row sm:items-center" data-sd-id="33"><p class="m-0">Downrail provides partial, scenario-dependent hedging—not insurance or guaranteed protection.</p><span class="font-mono">Built on Somnia × DreamDEX</span></footer>
+    </main>
+  </div>
+</body>
+</html>

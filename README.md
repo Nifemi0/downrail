@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Downrail
 
-## Getting Started
+Downrail turns DreamDEX BTC and ETH Event Contracts into transparent, short-duration downside protection plans. It is a hedging interface—not a prediction-market creator, insurer, or guaranteed-protection product.
 
-First, run the development server:
+The current build reads live DreamDEX inventory on Somnia Shannon, constructs deterministic depth-aware multi-window plans, connects injected wallets, builds exact unsigned order calls, and includes an explicitly gated tiny-pilot sender with receipt and indexer reconciliation. No private key is accepted or stored.
 
-```bash
+## Requirements
+
+- Node.js 22.20.0
+- npm 11.6.2
+
+## Setup
+
+```powershell
+npm install
+Copy-Item .env.example .env.local
+npm run doctor
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. The diagnostic and planner perform no writes and require no wallet.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` — start the development server.
+- `npm run doctor` — verify discovery, on-chain status, book parameters, and an order-book read.
+- `npm test` — run planner, preflight, approval-cap, and execution-state tests.
+- `npm run typecheck` — run TypeScript without emitting files.
+- `npm run lint` — run ESLint.
+- `npm run build` — create a production build.
 
-## Learn More
+## Structure
 
-To learn more about Next.js, take a look at the following resources:
+```text
+scripts/doctor.ts                              Read-only DreamDEX diagnostic
+src/app/api/hedge-plan/                        Live chain-verified planner
+src/app/api/order-preflight/                   Unsigned bounded-call builder
+src/app/api/execution-reconciliation/          Fill and position reconciliation
+src/components/                               Planner, wallet, and execution UI
+src/features/hedge-planner/                    Pure bigint planning and preflight
+src/features/execution/                        Tiny-pilot validation and receipts
+src/lib/dreamdex/                              Network config and SDK adapters
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The complete product specification and execution guide are in `../project.md` and `../agent.md`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Execution safety boundary
 
-## Deploy on Vercel
+- Planning and unsigned review never open the wallet or send a transaction.
+- The first live pilot is limited to one IOC protection leg and at most 2.00 collateral units.
+- Every quote, market state, pool grid, and expiry is refreshed before the review is encoded.
+- DOWN prices are converted to the SDK's complementary YES-price representation deterministically.
+- ERC-20 approval calldata is rewritten from the SDK's unlimited default to the exact reviewed maximum cost.
+- Reviews expire after two minutes and are bound to the connected account, Shannon chain ID, and a tamper-evident fingerprint.
+- Submission remains disabled until the user checks the exact-review acknowledgement. Each call still requires confirmation inside the wallet.
+- Calls are sent sequentially. A reverted or unconfirmed receipt stops the sequence.
+- Confirmed execution is reconciled by stable market ID against indexed fills, positions, and resting orders.
+- Downrail provides partial, scenario-dependent hedging—not insurance or guaranteed protection.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tiny testnet pilot
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Connect a funded Shannon testnet wallet.
+2. Set **Maximum spend** to `2.00` or less.
+3. Build the unsigned one-leg review.
+4. Inspect the fingerprint, approval target, exact allowance, order target, calldata, and expiry.
+5. Check the authorization acknowledgement only if the calls are acceptable.
+6. Submit and confirm each testnet call in the wallet.
+7. Keep the page open while Downrail verifies receipts and reconciles the resulting fill or IOC cancellation.
+
+Do not use a mainnet wallet, seed phrase, or private key with this project.

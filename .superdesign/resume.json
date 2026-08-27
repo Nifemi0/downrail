@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "/": {
+      "targetKind": "existing-ui",
+      "projectId": "db007e0d-d92f-403e-8868-87033d44ae6b",
+      "baselineDraftId": "b2371ffc-f2a1-4aba-9d79-c2449cc39b06",
+      "activeDraftId": "0765c1cd-d985-4813-bd57-26086fc1e551",
+      "designSystemPath": ".superdesign/design-system.md",
+      "referenceIds": [
+        "e7461e88-1eda-4778-a85d-0e9cb99b4159",
+        "5f92f8e9-4bf9-4393-a12b-250423c5be1f",
+        "public-brand-downrail-logo.svg"
+      ],
+      "brandAssets": {
+        "logo": {
+          "assetKey": "public-brand-downrail-logo.svg",
+          "localPath": "public/brand/downrail-logo.svg",
+          "publicUrl": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/db007e0d-d92f-403e-8868-87033d44ae6b/brand-assets/public-brand-downrail-logo.svg/downrail-logo.svg"
+        }
+      },
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        "src/app/globals.css",
+        "src/app/page.tsx",
+        "src/components/hedge-preview.tsx"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "3c498597b9925888f17814e3f9bbfd45d121843931e680473c8200b0afdb231f",
+        "src/app/globals.css": "1203a72f62816768b3075b1b94392cbf7e9e800b55eeb1125e742029b04f9e41",
+        "src/app/page.tsx": "46e0b9fcaf4a6480be49d3733fe66f0b9d2b80ba3e8dafaaedb6afb1973e3da7",
+        "src/components/hedge-preview.tsx": "43a86da5981f18dfd1eb1ea033dbfbc8afc8457c5831a32ff1e3a31ebb4f923a"
+      },
+      "drafts": {
+        "b2371ffc-f2a1-4aba-9d79-c2449cc39b06": {
+          "title": "Current HedgeFlow baseline",
+          "visualDirection": "reproduction of the rejected dark-green editorial page",
+          "currentVersion": 1
+        },
+        "9116ba2a-48c5-45de-a5d0-556fea76cc3f": {
+          "title": "HedgeFlow — Editorial Redesign",
+          "visualDirection": "navy left rail, warm canvas, product illustration and compact risk controls",
+          "parentDraftId": "b2371ffc-f2a1-4aba-9d79-c2449cc39b06",
+          "currentVersion": 1
+        },
+        "d233129e-f0bf-4783-a7cc-cf00fa3da07f": {
+          "title": "HedgeFlow — Fintech Workbench",
+          "visualDirection": "compact form and large explanatory hedge-outcome chart",
+          "parentDraftId": "b2371ffc-f2a1-4aba-9d79-c2449cc39b06",
+          "currentVersion": 1
+        },
+        "0765c1cd-d985-4813-bd57-26086fc1e551": {
+          "title": "Downrail — Downside Protection",
+          "visualDirection": "warm editorial protection interface using the Downrail identity and intercepted-loss rail visual",
+          "parentDraftId": "b2371ffc-f2a1-4aba-9d79-c2449cc39b06",
+          "currentVersion": 2
+        }
+      },
+      "updatedAt": "2026-08-27T16:52:00.000Z"
+    }
+  }
+}

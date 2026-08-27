@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Downrail mark</title>
+  <desc id="desc">A falling red line stopped by a blue rail inside the letter D.</desc>
+  <path fill="#121317" fill-rule="evenodd" d="M7 5h21c18 0 29 10.7 29 27S46 59 28 59H7V5Zm13 12v30h8c10.5 0 17-5.8 17-15s-6.5-15-17-15h-8Z"/>
+  <path fill="#F05A47" d="M20 9h9l12 20h-9L20 9Z"/>
+  <path fill="#315CFF" d="M13 29h39l7 7H13v-7Z"/>
+</svg>
