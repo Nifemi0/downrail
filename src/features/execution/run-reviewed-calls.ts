@@ -179,7 +179,12 @@ export async function estimateReviewedCall(
 export async function waitForSuccessfulReceipt(
   provider: TransactionProvider,
   hash: string,
-  options: { timeoutMs?: number; pollMs?: number } = {},
+  options: {
+    timeoutMs?: number;
+    pollMs?: number;
+    expectedFrom?: string;
+    expectedTo?: string;
+  } = {},
 ): Promise<ReceiptRecord> {
   if (!isHash(hash)) throw new RangeError("wallet returned an invalid transaction hash");
   const timeoutMs = options.timeoutMs ?? 120_000;
@@ -199,6 +204,20 @@ export async function waitForSuccessfulReceipt(
           receipt.transactionHash.toLowerCase() !== hash.toLowerCase())
       ) {
         throw new Error("wallet RPC returned a receipt for a different transaction");
+      }
+      if (
+        options.expectedFrom
+        && typeof receipt.from === "string"
+        && getAddress(receipt.from) !== getAddress(options.expectedFrom)
+      ) {
+        throw new Error("wallet RPC returned a receipt from a different account");
+      }
+      if (
+        options.expectedTo
+        && typeof receipt.to === "string"
+        && getAddress(receipt.to) !== getAddress(options.expectedTo)
+      ) {
+        throw new Error("wallet RPC returned a receipt for a different destination");
       }
       if (parseStatus(receipt.status) !== 1n) {
         throw new Error(`transaction ${hash} reverted on chain`);
@@ -267,7 +286,10 @@ export async function runReviewedPilot(
       throw new Error("wallet did not return a valid transaction hash");
     }
     onProgress?.({ index, total: calls.length, phase: "MINING", call, hash: result });
-    const receipt = await waitForSuccessfulReceipt(provider, result);
+    const receipt = await waitForSuccessfulReceipt(provider, result, {
+      expectedFrom: account,
+      expectedTo: call.to,
+    });
     completed.push({ call, hash: result, receipt });
     onProgress?.({ index, total: calls.length, phase: "CONFIRMED", call, hash: result });
   }

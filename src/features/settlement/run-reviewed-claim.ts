@@ -114,7 +114,10 @@ export async function runReviewedClaim(
     }
     const transactionHash = hash as Hex;
     onHash?.(call, transactionHash);
-    const receipt = await waitForSuccessfulReceipt(provider, transactionHash);
+    const receipt = await waitForSuccessfulReceipt(provider, transactionHash, {
+      expectedFrom: account,
+      expectedTo: call.to,
+    });
     completed.push({ call, hash: transactionHash, receipt });
   }
   return completed;
