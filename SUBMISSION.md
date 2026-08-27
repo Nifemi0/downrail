@@ -41,7 +41,7 @@ Downrail makes those decisions inspectable and keeps the spending boundary expli
 2. Recheck each candidate's on-chain Trading status, pool parameters, and expiry headroom.
 3. Convert live book depth into executable DOWN prices.
 4. Allocate the user's budget across aligned windows using integer-only calculations.
-5. Show cost, maximum payout, coverage ratio, residual risk, and every proposed leg.
+5. Show current cost, conditional payout under each explicit outcome, residual risk, and every proposed leg.
 6. Build a short-lived, fingerprint-bound transaction review for the connected wallet.
 7. Replace unlimited token approval with the exact reviewed collateral allowance.
 8. Submit calls sequentially only after explicit acknowledgement, verify mined receipts, and reconcile fills and positions by stable market ID.
@@ -51,7 +51,7 @@ Downrail makes those decisions inspectable and keeps the spending boundary expli
 
 Most Event Contract products help users speculate on an outcome or discover a trading signal. Downrail starts from an existing portfolio exposure and asks a different question: “How much temporary downside protection can this budget buy?”
 
-The innovation is the product layer around the contracts: horizon-aware window selection, depth-aware sizing, scenario-based coverage, bounded execution, lifecycle tracking, and rollover as one coherent hedge.
+The innovation is the product layer around the contracts: horizon-aware window selection, depth-aware sizing, explicit conditional-outcome modeling, bounded execution, lifecycle tracking, settlement discovery, and manual rollover as one coherent hedge.
 
 ## Technical implementation
 

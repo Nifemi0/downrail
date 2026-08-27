@@ -34,7 +34,7 @@ Target length: 2 minutes 30 seconds. Record only after the public app, public re
 
 **Voiceover:**
 
-> Downrail reads live DreamDEX markets, verifies Trading state on-chain, checks executable order-book depth, and sizes each leg on the protocol's tick and lot grid. I can see the maximum cost, possible fixed payout, coverage under each scenario, and the risk the hedge does not cover.
+> Downrail reads live DreamDEX markets, verifies Trading state on-chain, checks executable order-book depth, and sizes the current leg on the protocol's tick and lot grid. I can see the maximum cost, the conditional payout if DOWN resolves YES or NO, and the residual portfolio risk.
 
 ### 1:02–1:25 — Prove execution safety
 
@@ -87,4 +87,3 @@ Target length: 2 minutes 30 seconds. Record only after the public app, public re
 ## Contingency cut
 
 If no suitable market is liquid during recording, use a previously captured real transaction and receipt, clearly label it as recorded Shannon evidence, and keep the current live market read on screen. Do not substitute mocked fills.
-
