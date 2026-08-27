@@ -4,7 +4,7 @@ Downrail turns DreamDEX BTC and ETH Event Contracts into transparent, short-dura
 
 The current build reads live DreamDEX inventory on Somnia Shannon, constructs deterministic depth-aware multi-window plans, connects injected wallets, builds exact unsigned order calls, and includes an explicitly gated tiny-pilot sender with receipt and indexer reconciliation. No private key is accepted or stored.
 
-Owner-only production deployment: https://downrail.sky11120.chatgpt.site
+Production deployment: https://downrail.vercel.app
 
 ## Requirements
 

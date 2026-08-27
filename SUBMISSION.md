@@ -65,7 +65,7 @@ The innovation is the product layer around the contracts: horizon-aware window s
 - Exact ERC-20 allowance rewriting instead of unlimited approval.
 - Sequential transaction submission, receipt-status validation, timeout handling, and stop-on-revert behavior.
 - Fill, position, and resting-order reconciliation keyed by market ID rather than reusable pool address.
-- Owner-only hosted preview while the public deployment destination is being decided.
+- Public Vercel production deployment at `https://downrail.vercel.app`; the earlier Sites preview remains owner-only.
 
 ## Safety and honesty
 
@@ -99,13 +99,13 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - Capture the transaction hash, successful receipt, and indexed fill or legitimate unfilled IOC result.
 - Implement and verify finalized-market discovery, claimability, one claim path, and rollover recommendation.
 - Publish the source in a public GitHub repository.
-- Publish a judge-accessible deployment.
+- Keep the verified Vercel deployment judge-accessible through submission.
 - Record and link a two-to-three-minute demo video.
 - Replace every placeholder below with final public links.
 
 ## Links
 
-- Live application: `TBD — public deployment`
+- Live application: https://downrail.vercel.app
 - GitHub repository: `TBD — public repository`
 - Demo video: `TBD — 2–3 minute video`
 - Transaction evidence: `TBD — Shannon explorer link`
@@ -131,7 +131,6 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - [ ] Position lifecycle, finalized-market discovery, and claim proof.
 - [ ] Rollover recommendation demonstrated.
 - [ ] Public GitHub repository.
-- [ ] Judge-accessible deployment.
+- [x] Judge-accessible deployment.
 - [ ] Two-to-three-minute demo video.
 - [ ] DoraHacks form reviewed and submitted.
-
