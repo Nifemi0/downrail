@@ -129,7 +129,7 @@ export async function POST(request: Request) {
       mode: "UNSIGNED_CLAIM_REVIEW",
       fingerprint: createClaimFingerprint(commitment),
       warnings: [
-        "No transaction was sent. Claim signing is locked during the safety rebuild.",
+        "No transaction was sent. Claim signing is disabled by the production safety flag.",
         "The review redeems the full live winning outcome balance to the connected account.",
       ],
     });

@@ -124,5 +124,4 @@ The repository contains concrete implementations for:
 - sequential receipt verification in `src/features/execution/run-reviewed-calls.ts`;
 - market-ID reconciliation in `src/app/api/execution-reconciliation/route.ts`.
 
-Finalized-market claiming remains in progress, so this report does not claim that path has been verified yet.
-
+Finalized-market claiming is implemented behind the production signing lock; a real finalized position and claim receipt are still required before that path can be called live-verified.

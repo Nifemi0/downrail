@@ -45,7 +45,7 @@ Downrail makes those decisions inspectable and keeps the spending boundary expli
 6. Build a short-lived, fingerprint-bound transaction review for the connected wallet.
 7. Replace unlimited token approval with the exact reviewed collateral allowance.
 8. Submit calls sequentially only after explicit acknowledgement, verify mined receipts, and reconcile fills and positions by stable market ID.
-9. Detect finalized positions, surface claims, and recommend the next rollover window. *(Lifecycle work remains in progress.)*
+9. Detect finalized positions, surface claims, and recommend the next rollover window. *(Implementation is present; live lifecycle evidence remains to be captured.)*
 
 ## Why it is different
 

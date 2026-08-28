@@ -698,7 +698,7 @@ export function HedgePreview() {
                       type="button"
                     >
                       {!EXECUTION_ENABLED
-                        ? "Signing locked during safety rebuild"
+                        ? "Signing locked by production flag"
                         : executionPending
                           ? "Wallet flow active…"
                           : "Submit reviewed pilot"}
@@ -706,7 +706,7 @@ export function HedgePreview() {
                     <p className="pilot-warning">
                       {EXECUTION_ENABLED
                         ? "This button opens your wallet. Each call still requires your confirmation; Downrail cannot sign for you."
-                        : "Unsigned review remains available, but wallet submission is disabled until decoded-call validation is complete."}
+                        : "Unsigned review remains available, but wallet submission is disabled by the production safety flag."}
                     </p>
                   </div>
 
