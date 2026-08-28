@@ -94,6 +94,19 @@ button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid rgb
 .execution-lock>span:first-child { color:var(--blue); font-size:1.35rem; }
 .execution-lock>span:last-child>span { display:block; margin-top:2px; color:var(--muted); font-size:.63rem; }
 .execution-lock strong { display:block; font-size:.7rem; }
+.mode-switch { grid-column:1/-1; }
+.mode-switch button:first-child { color:var(--blue); }
+.demo-review { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-top:24px; padding:20px; border:1px solid var(--blue); background:rgba(49,92,255,.06); }
+.demo-review .eyebrow { margin:0 0 7px; color:var(--blue); }
+.demo-review h4 { margin:0; font-size:1rem; }
+.demo-review p:not(.eyebrow) { max-width:500px; margin:7px 0 0; color:var(--muted); font-size:.65rem; line-height:1.5; }
+.demo-review button { flex:0 0 auto; min-height:42px; border:1px solid var(--blue); background:var(--blue); color:white; padding:0 15px; cursor:pointer; font-family:var(--font-geist-mono),monospace; font-size:.62rem; letter-spacing:.04em; }
+.demo-result { border-color:var(--blue); }
+.demo-result-grid { display:grid; grid-template-columns:1fr .7fr .7fr; gap:14px; padding:18px 20px; }
+.demo-result-grid div { display:grid; gap:5px; }
+.demo-result-grid span { color:var(--muted); font-family:var(--font-geist-mono),monospace; font-size:.56rem; letter-spacing:.06em; text-transform:uppercase; }
+.demo-result-grid strong { font-size:.78rem; line-height:1.35; }
+.demo-switch { display:inline-block; margin:0 20px 18px; border:0; background:transparent; padding:0; cursor:pointer; }
 .plan-output { min-width:0; min-height:570px; padding:30px; }
 .plan-message { display:grid; min-height:500px; place-content:center; justify-items:center; color:var(--muted); text-align:center; }
 .plan-message p { max-width:330px; line-height:1.55; }
@@ -292,6 +305,9 @@ footer p { margin:0; }
   .rollover-timeline b { grid-column:2; }
   .order-review { align-items:stretch; flex-direction:column; }
   .order-review button { width:100%; }
+  .demo-review { align-items:stretch; flex-direction:column; }
+  .demo-review button { width:100%; }
+  .demo-result-grid { grid-template-columns:1fr; }
   .preflight-result dl { grid-template-columns:1fr; }
   .preflight-result dt { margin-top:4px; }
   .settlement-board>article { grid-template-columns:1fr; }

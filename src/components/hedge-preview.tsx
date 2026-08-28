@@ -37,6 +37,16 @@ const EXECUTION_ENABLED =
   process.env.NEXT_PUBLIC_EXECUTION_ENABLED === "true";
 
 type LoadState = "loading" | "ready" | "error";
+type PlannerMode = "demo" | "testnet";
+
+type DemoReview = {
+  generatedAt: string;
+  marketQuestion: string;
+  marketWindow: string;
+  maximumCost: string;
+  conditionalPayout: string;
+  fingerprint: string;
+};
 
 type StoredOrderPreflight = OrderReview & {
   intentKey: string;
@@ -196,6 +206,7 @@ export function HedgePreview() {
   const budgetId = useId();
   const downsideId = useId();
   const [asset, setAsset] = useState<"BTC" | "ETH">("ETH");
+  const [mode, setMode] = useState<PlannerMode>("demo");
   const [exposure, setExposure] = useState("2000");
   const [budget, setBudget] = useState("20");
   const [dropPercent, setDropPercent] = useState(5);
@@ -206,13 +217,14 @@ export function HedgePreview() {
   const [preflight, setPreflight] = useState<StoredOrderPreflight | null>(null);
   const [preflightPending, setPreflightPending] = useState(false);
   const [preflightError, setPreflightError] = useState<StoredPreflightError | null>(null);
+  const [demoReview, setDemoReview] = useState<DemoReview | null>(null);
   const [acknowledgedFingerprint, setAcknowledgedFingerprint] = useState<string | null>(null);
   const [execution, setExecution] = useState<ExecutionProgress | null>(null);
   const [executionPending, setExecutionPending] = useState(false);
   const [journalRecords, setJournalRecords] = useState<ExecutionJournalRecord[]>([]);
   const [recheckingJournalId, setRecheckingJournalId] = useState<string | null>(null);
   const [refreshNonce, setRefreshNonce] = useState(0);
-  const intentKey = [account, chainId, asset, exposure, budget, dropPercent, horizonSeconds].join(":");
+  const intentKey = [account, chainId, mode, asset, exposure, budget, dropPercent, horizonSeconds].join(":");
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -314,6 +326,19 @@ export function HedgePreview() {
     } finally {
       setPreflightPending(false);
     }
+  }
+
+  function buildDemoReview() {
+    if (!plan?.legs.length) return;
+    const leg = plan.legs[0];
+    setDemoReview({
+      generatedAt: new Date().toISOString(),
+      marketQuestion: leg.question,
+      marketWindow: formatWindow(leg.intervalSeconds),
+      maximumCost: formatUsd(leg.maximumCostRaw, quoteDecimals),
+      conditionalPayout: formatUsd(plan.conditionalNetPayoutRaw, quoteDecimals),
+      fingerprint: `demo-${asset.toLowerCase()}-${leg.marketId.slice(-8)}-${horizonSeconds}`,
+    });
   }
 
   async function submitReviewedPilot() {
@@ -531,6 +556,14 @@ export function HedgePreview() {
 
       <div className="planner-frame">
         <form className="planner-controls" onSubmit={(event) => event.preventDefault()}>
+          <fieldset className="segmented-control mode-switch">
+            <legend>Experience</legend>
+            <div>
+              <button aria-pressed={mode === "demo"} className={mode === "demo" ? "active" : ""} onClick={() => setMode("demo")} type="button">Try demo</button>
+              <button aria-pressed={mode === "testnet"} className={mode === "testnet" ? "active" : ""} onClick={() => setMode("testnet")} type="button">Testnet</button>
+            </div>
+          </fieldset>
+
           <fieldset className="segmented-control">
             <legend>Asset held</legend>
             <div>
@@ -580,7 +613,7 @@ export function HedgePreview() {
             </div>
           </fieldset>
 
-          <div className="execution-lock"><span aria-hidden="true">⌁</span><span><strong>Read-only planning</strong><span>No funds move from this screen.</span></span></div>
+          <div className="execution-lock"><span aria-hidden="true">{mode === "demo" ? "◌" : "⌁"}</span><span><strong>{mode === "demo" ? "Demo mode · no wallet needed" : "Testnet execution"}</strong><span>{mode === "demo" ? "Explore a simulated review with live market data." : "Wallet, STT gas, and TESDC collateral are required."}</span></span></div>
         </form>
 
         <div className="plan-output" aria-busy={loadState === "loading"} aria-live="polite">
@@ -646,9 +679,19 @@ export function HedgePreview() {
               {plan.warnings.length > 0 && <p className="plan-warning">{plan.warnings.join(" ")}</p>}
               <p className="verification-note">{snapshot.chainVerifiedCandidateCount} candidate windows verified on Shannon · refreshed {new Date(snapshot.generatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
 
+              {mode === "demo" ? (
+                <div className="demo-review">
+                  <div>
+                    <p className="eyebrow">Instant walkthrough</p>
+                    <h4>See the protection flow without funding a wallet.</h4>
+                    <p>We use the live market snapshot above to create a simulated review. Nothing is signed, submitted, or written on-chain.</p>
+                  </div>
+                  <button onClick={buildDemoReview} type="button">{demoReview ? "Refresh demo review" : "Build demo review"}</button>
+                </div>
+              ) : (
               <div className="order-review">
                 <div>
-                  <p className="eyebrow">Manual execution gate</p>
+                  <p className="eyebrow">Testnet execution gate</p>
                   <h4>Inspect the exact order calls.</h4>
                   <p>{!account ? "Connect a wallet to bind the review to your address." : chainId !== "0xc488" ? "Switch the connected wallet to Shannon first." : "This regenerates one closest-window pilot leg and encodes unsigned calls. Your wallet will not open."}</p>
                 </div>
@@ -656,9 +699,26 @@ export function HedgePreview() {
                   {preflightPending ? "Building review…" : "Build unsigned review"}
                 </button>
               </div>
+              )}
 
-              {activePreflightError && <p className="preflight-error" role="alert">{activePreflightError}</p>}
-              {activePreflight && (
+              {mode === "demo" && demoReview && (
+                <div className="preflight-result demo-result">
+                  <div className="preflight-heading">
+                    <div><span>Simulated review ready</span><strong>{demoReview.marketWindow} DOWN · live market snapshot</strong></div>
+                    <code>{shortId(demoReview.fingerprint)}</code>
+                  </div>
+                  <div className="demo-result-grid">
+                    <div><span>Market</span><strong>{demoReview.marketQuestion}</strong></div>
+                    <div><span>Simulated maximum cost</span><strong>{demoReview.maximumCost}</strong></div>
+                    <div><span>Conditional net payout</span><strong>{demoReview.conditionalPayout}</strong></div>
+                  </div>
+                  <p className="preflight-expiry">Generated {new Date(demoReview.generatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}. Demo only — no wallet or transaction required.</p>
+                  <button className="text-action demo-switch" onClick={() => setMode("testnet")} type="button">Ready to use a funded wallet? Switch to Testnet ↗</button>
+                </div>
+              )}
+
+              {mode === "testnet" && activePreflightError && <p className="preflight-error" role="alert">{activePreflightError}</p>}
+              {mode === "testnet" && activePreflight && (
                 <div className="preflight-result">
                   <div className="preflight-heading">
                     <div><span>Unsigned review ready</span><strong>{activePreflight.legs.reduce((total, leg) => total + leg.calls.length, 0)} calls · {activePreflight.legs.length} legs</strong></div>
