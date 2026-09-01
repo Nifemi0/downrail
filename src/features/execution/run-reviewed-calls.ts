@@ -45,6 +45,7 @@ export type ExecutedReviewedCall = {
 
 const ERC20_READ_ABI = parseAbi([
   "function balanceOf(address owner) view returns (uint256)",
+  "function allowance(address owner, address spender) view returns (uint256)",
 ]);
 
 function parseRpcQuantity(name: string, value: unknown) {
@@ -121,7 +122,7 @@ export async function assertPilotFunding(
   review: OrderReview,
 ) {
   const leg = review.legs[0];
-  const [collateralResult, nativeResult, gasPriceResult] = await Promise.all([
+  const [collateralResult, allowanceResult, nativeResult, gasPriceResult] = await Promise.all([
     provider.request({
       method: "eth_call",
       params: [{
@@ -131,6 +132,18 @@ export async function assertPilotFunding(
           abi: ERC20_READ_ABI,
           functionName: "balanceOf",
           args: [getAddress(review.account)],
+        }),
+      }, "latest"],
+    }),
+    provider.request({
+      method: "eth_call",
+      params: [{
+        from: getAddress(review.account),
+        to: getAddress(leg.collateralToken),
+        data: encodeFunctionData({
+          abi: ERC20_READ_ABI,
+          functionName: "allowance",
+          args: [getAddress(review.account), getAddress(leg.poolAddress)],
         }),
       }, "latest"],
     }),
@@ -148,13 +161,21 @@ export async function assertPilotFunding(
     functionName: "balanceOf",
     data: collateralResult as Hex,
   });
+  if (typeof allowanceResult !== "string" || !/^0x[0-9a-f]*$/i.test(allowanceResult)) {
+    throw new RangeError("wallet RPC returned an invalid collateral allowance");
+  }
+  const collateralAllowance = decodeFunctionResult({
+    abi: ERC20_READ_ABI,
+    functionName: "allowance",
+    data: allowanceResult as Hex,
+  });
   if (collateralBalance < BigInt(review.plan.totalMaximumCostRaw)) {
     throw new RangeError("wallet has insufficient collateral for the reviewed maximum cost");
   }
   const nativeBalance = parseRpcQuantity("native balance", nativeResult);
   const gasPrice = parseRpcQuantity("gas price", gasPriceResult);
   if (nativeBalance === 0n) throw new RangeError("wallet has no native token for gas");
-  return { collateralBalance, nativeBalance, gasPrice };
+  return { collateralBalance, collateralAllowance, nativeBalance, gasPrice };
 }
 
 export async function estimateReviewedCall(
@@ -254,12 +275,16 @@ export async function runReviewedPilot(
     call: calls[0],
   });
   const funding = await assertPilotFunding(provider, review);
+  const callsToExecute = calls.filter(
+    (call) => call.kind !== "APPROVAL"
+      || funding.collateralAllowance < BigInt(review.plan.totalMaximumCostRaw),
+  );
   let remainingNative = funding.nativeBalance;
 
-  for (const [index, call] of calls.entries()) {
+  for (const [index, call] of callsToExecute.entries()) {
     assertTinyPilot(review, account);
     await assertCurrentWalletContext(provider, account);
-    onProgress?.({ index, total: calls.length, phase: "SIMULATING", call });
+    onProgress?.({ index, total: callsToExecute.length, phase: "SIMULATING", call });
     const estimatedGas = await estimateReviewedCall(provider, account, call);
     const estimatedGasCost = estimatedGas * funding.gasPrice;
     if (remainingNative < estimatedGasCost) {
@@ -268,7 +293,7 @@ export async function runReviewedPilot(
     remainingNative -= estimatedGasCost;
     onProgress?.({
       index,
-      total: calls.length,
+      total: callsToExecute.length,
       phase: "AWAITING_SIGNATURE",
       call,
       estimatedGas,
@@ -285,13 +310,13 @@ export async function runReviewedPilot(
     if (typeof result !== "string" || !isHash(result)) {
       throw new Error("wallet did not return a valid transaction hash");
     }
-    onProgress?.({ index, total: calls.length, phase: "MINING", call, hash: result });
+    onProgress?.({ index, total: callsToExecute.length, phase: "MINING", call, hash: result });
     const receipt = await waitForSuccessfulReceipt(provider, result, {
       expectedFrom: account,
       expectedTo: call.to,
     });
     completed.push({ call, hash: result, receipt });
-    onProgress?.({ index, total: calls.length, phase: "CONFIRMED", call, hash: result });
+    onProgress?.({ index, total: callsToExecute.length, phase: "CONFIRMED", call, hash: result });
   }
 
   return completed;

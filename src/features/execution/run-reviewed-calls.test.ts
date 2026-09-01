@@ -24,6 +24,9 @@ const APPROVAL_ABI = parseAbi([
 const BALANCE_ABI = parseAbi([
   "function balanceOf(address owner) view returns (uint256)",
 ]);
+const ALLOWANCE_ABI = parseAbi([
+  "function allowance(address owner, address spender) view returns (uint256)",
+]);
 const ORDER_ABI = parseAbi([
   "function placeBinaryOrder(uint8 kind, uint256 price, uint256 quantity, uint64 expireTimestampNs, uint8 orderType, uint8 selfMatchingOption, address builder, uint96 builderFeeBpsTimes1k, uint64 userData) payable returns (bool success, uint128 id)",
 ]);
@@ -38,8 +41,23 @@ const DOWN_PRICE = 250_000n;
 const YES_PRICE = 750_000n;
 const QUANTITY = 8_000_000n;
 
-function fundingResponse(method: string) {
+function fundingResponse(
+  method: string,
+  params?: unknown[] | Record<string, unknown>,
+  allowance = 0n,
+) {
   if (method === "eth_call") {
+    const call = Array.isArray(params) ? params[0] : null;
+    const data = call && typeof call === "object" && "data" in call
+      ? String(call.data)
+      : "";
+    if (data.startsWith("0xdd62ed3e")) {
+      return encodeFunctionResult({
+        abi: ALLOWANCE_ABI,
+        functionName: "allowance",
+        result: allowance,
+      });
+    }
     return encodeFunctionResult({
       abi: BALANCE_ABI,
       functionName: "balanceOf",
@@ -188,15 +206,22 @@ describe("assertTinyPilot", () => {
 
 describe("runReviewedPilot", () => {
   it("stops before signatures when collateral is insufficient", async () => {
-    const request = vi.fn(async ({ method }: { method: string }) => {
+    const request = vi.fn(async ({ method, params }: { method: string; params?: unknown[] | Record<string, unknown> }) => {
       if (method === "eth_call") {
+        const existing = fundingResponse(method, params);
+        if (Array.isArray(params)) {
+          const call = params[0];
+          if (call && typeof call === "object" && "data" in call && String(call.data).startsWith("0xdd62ed3e")) {
+            return existing;
+          }
+        }
         return encodeFunctionResult({
           abi: BALANCE_ABI,
           functionName: "balanceOf",
           result: 1n,
         });
       }
-      const funding = fundingResponse(method);
+      const funding = fundingResponse(method, params);
       return funding;
     });
 
@@ -209,8 +234,8 @@ describe("runReviewedPilot", () => {
 
   it("rechecks account and chain before each sequential call", async () => {
     const hashes = [HASH_A, HASH_B];
-    const request = vi.fn(async ({ method }: { method: string }) => {
-      const funding = fundingResponse(method);
+    const request = vi.fn(async ({ method, params }: { method: string; params?: unknown[] | Record<string, unknown> }) => {
+      const funding = fundingResponse(method, params);
       if (funding !== undefined) return funding;
       if (method === "eth_accounts") return [ACCOUNT];
       if (method === "eth_chainId") return "0xc488";
@@ -223,6 +248,7 @@ describe("runReviewedPilot", () => {
 
     expect(result.map((item) => item.hash)).toEqual([HASH_A, HASH_B]);
     expect(request.mock.calls.map(([request]) => request.method)).toEqual([
+      "eth_call",
       "eth_call",
       "eth_getBalance",
       "eth_gasPrice",
@@ -241,8 +267,8 @@ describe("runReviewedPilot", () => {
 
   it("stops before the order when the account changes after approval", async () => {
     let contextChecks = 0;
-    const request = vi.fn(async ({ method }: { method: string }) => {
-      const funding = fundingResponse(method);
+    const request = vi.fn(async ({ method, params }: { method: string; params?: unknown[] | Record<string, unknown> }) => {
+      const funding = fundingResponse(method, params);
       if (funding !== undefined) return funding;
       if (method === "eth_accounts") {
         contextChecks += 1;
@@ -262,8 +288,8 @@ describe("runReviewedPilot", () => {
 
   it("stops when a mined transaction reverted", async () => {
     const provider: TransactionProvider = {
-      request: vi.fn(async ({ method }) => {
-        const funding = fundingResponse(method);
+      request: vi.fn(async ({ method, params }) => {
+        const funding = fundingResponse(method, params);
         if (funding !== undefined) return funding;
         if (method === "eth_accounts") return [ACCOUNT];
         if (method === "eth_chainId") return "0xc488";
@@ -275,5 +301,22 @@ describe("runReviewedPilot", () => {
     await expect(runReviewedPilot(provider, buildReview(), ACCOUNT)).rejects.toThrow(
       "reverted on chain",
     );
+  });
+
+  it("skips a redundant approval when the exact allowance is already sufficient", async () => {
+    const request = vi.fn(async ({ method, params }: { method: string; params?: unknown[] | Record<string, unknown> }) => {
+      const funding = fundingResponse(method, params, MAXIMUM_COST);
+      if (funding !== undefined) return funding;
+      if (method === "eth_accounts") return [ACCOUNT];
+      if (method === "eth_chainId") return "0xc488";
+      if (method === "eth_sendTransaction") return HASH_B;
+      return { status: "0x1", transactionHash: HASH_B };
+    });
+
+    const result = await runReviewedPilot({ request }, buildReview(), ACCOUNT);
+
+    expect(result.map((item) => item.call.kind)).toEqual(["ORDER"]);
+    expect(request.mock.calls.filter(([call]) => call.method === "eth_sendTransaction"))
+      .toHaveLength(1);
   });
 });
