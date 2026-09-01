@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, ShieldCheck, TrendingDown, TrendingUp } from "lucide-react";
 
 export default function Home() {
   return (
@@ -41,6 +41,36 @@ export default function Home() {
             <article><span>02</span><div><h3>Compare outcomes</h3><p>See maximum cost and the combined portfolio result if the DOWN contract resolves either way.</p></div></article>
             <article><span>03</span><div><h3>Review exact calls</h3><p>Start with a wallet-free demo, then inspect every Shannon call before confirming testnet execution.</p></div></article>
           </div>
+        </section>
+
+        <section className="landing-story" aria-labelledby="story-title">
+          <div className="section-intro">
+            <div><p className="eyebrow">A concrete example</p><h2 id="story-title">Meet Maya. She keeps her ETH—and buys time.</h2></div>
+            <p>Downrail does not create money. It turns a known spend into a clearly sized, conditional buffer for an asset she already owns.</p>
+          </div>
+          <div className="story-frame">
+            <article className="story-persona">
+              <div className="story-persona-top"><span className="story-avatar">M</span><span className="story-label">Maya&apos;s 24-hour plan</span></div>
+              <h3>&ldquo;I want to keep my ETH, but I don&apos;t want one bad day to erase my gains.&rdquo;</h3>
+              <dl className="story-facts">
+                <div><dt>ETH exposure</dt><dd>$1,000</dd></div>
+                <div><dt>Maximum spend</dt><dd>$20</dd></div>
+                <div><dt>Protection window</dt><dd>24 hours</dd></div>
+              </dl>
+            </article>
+            <div className="story-journey" aria-label="Maya's protection journey">
+              <article className="story-step"><span className="story-icon"><ShieldCheck aria-hidden="true" /></span><div><strong>She sets the boundary</strong><p>Downrail checks live DOWN liquidity and shows exactly what the $20 limit can buy.</p></div></article>
+              <ArrowRight aria-hidden="true" />
+              <article className="story-step"><span className="story-icon"><ArrowDownRight aria-hidden="true" /></span><div><strong>She reviews the tradeoff</strong><p>She keeps the upside, accepts the known hedge cost, and sees the payout is conditional.</p></div></article>
+              <ArrowRight aria-hidden="true" />
+              <article className="story-step"><span className="story-icon"><ShieldCheck aria-hidden="true" /></span><div><strong>She decides with context</strong><p>Her wallet confirms only the exact bounded calls she has reviewed.</p></div></article>
+            </div>
+            <div className="story-outcomes">
+              <article className="story-outcome upside"><div><TrendingUp aria-hidden="true" /><span>ETH closes up</span></div><strong>She keeps the upside.</strong><p>The hedge may expire worthless, but her ETH gains value. Her known cost is the amount she chose to spend.</p></article>
+              <article className="story-outcome downside"><div><TrendingDown aria-hidden="true" /><span>ETH closes down</span></div><strong>The hedge pays conditionally.</strong><p>Winning contracts pay from the fully collateralized Event Contract market, cushioning part of the ETH decline.</p></article>
+            </div>
+          </div>
+          <p className="story-footnote">Example only. The payout depends on the selected market outcome and the number of contracts the live order book can fill. Downrail is not insurance or guaranteed coverage.</p>
         </section>
 
         <section className="landing-principles" aria-labelledby="principles-title">

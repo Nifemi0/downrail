@@ -352,6 +352,34 @@ footer p { margin:0; }
 .site-footer a { color:var(--ink); font-weight:650; }
 
 .landing-process { padding:64px 0; border-bottom:1px solid var(--line); }
+.landing-story { padding:70px 0 64px; border-bottom:1px solid var(--line); }
+.story-frame { display:grid; grid-template-columns:minmax(240px,.85fr) minmax(0,1.45fr); gap:0; border:1px solid var(--ink); background:var(--paper); }
+.story-persona { grid-row:1 / span 2; padding:28px; border-right:1px solid var(--line); background:var(--ink); color:white; }
+.story-persona-top { display:flex; align-items:center; gap:10px; }
+.story-avatar { display:grid; place-items:center; width:31px; height:31px; border:1px solid rgba(255,255,255,.45); color:var(--blue); font-family:var(--font-geist-mono),monospace; font-size:.7rem; font-weight:700; }
+.story-label { color:rgba(255,255,255,.62); font-family:var(--font-geist-mono),monospace; font-size:.59rem; letter-spacing:.1em; text-transform:uppercase; }
+.story-persona h3 { max-width:300px; margin:38px 0 40px; font-size:1.35rem; font-weight:520; letter-spacing:-.045em; line-height:1.12; }
+.story-facts { display:grid; gap:0; margin:0; }
+.story-facts div { display:flex; align-items:baseline; justify-content:space-between; gap:18px; padding:12px 0; border-top:1px solid rgba(255,255,255,.2); }
+.story-facts dt { color:rgba(255,255,255,.58); font-size:.63rem; }
+.story-facts dd { margin:0; color:white; font-family:var(--font-geist-mono),monospace; font-size:.68rem; }
+.story-journey { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; align-items:center; gap:12px; padding:25px 25px 23px; border-bottom:1px solid var(--line); }
+.story-journey>svg { width:15px; color:var(--blue); }
+.story-step { display:grid; gap:12px; }
+.story-icon { display:grid; place-items:center; width:31px; height:31px; border:1px solid var(--blue); color:var(--blue); }
+.story-icon svg { width:15px; height:15px; stroke-width:1.8; }
+.story-step strong { display:block; font-size:.76rem; }
+.story-step p { margin:7px 0 0; color:var(--muted); font-size:.66rem; line-height:1.5; }
+.story-outcomes { grid-column:2; display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:0 25px 25px; }
+.story-outcome { min-width:0; padding:17px; border-top:3px solid var(--blue); background:var(--chalk); }
+.story-outcome.downside { border-top-color:var(--red); }
+.story-outcome>div { display:flex; align-items:center; gap:8px; color:var(--blue); }
+.story-outcome.downside>div { color:var(--red); }
+.story-outcome>div svg { width:15px; height:15px; }
+.story-outcome span { color:var(--muted); font-family:var(--font-geist-mono),monospace; font-size:.57rem; letter-spacing:.08em; text-transform:uppercase; }
+.story-outcome strong { display:block; margin-top:14px; font-size:.84rem; }
+.story-outcome p { margin:7px 0 0; color:var(--muted); font-size:.66rem; line-height:1.5; }
+.story-footnote { max-width:760px; margin:16px 0 0; color:var(--muted); font-family:var(--font-geist-mono),monospace; font-size:.59rem; line-height:1.55; }
 .landing-steps { border-top:1px solid var(--line); }
 .landing-principles { display:grid; grid-template-columns:5fr 7fr; gap:clamp(2rem,7vw,6rem); padding:70px 0; border-bottom:1px solid var(--line); }
 .landing-principles h2 { max-width:430px; margin:0; font-size:clamp(1.75rem,3.2vw,2.65rem); font-weight:560; letter-spacing:-.055em; line-height:1.05; }
@@ -463,6 +491,13 @@ footer p { margin:0; }
   .nav-status .network-chip { display:none; }
   .site-footer div { gap:12px; }
   .landing-principles { grid-template-columns:1fr; gap:30px; padding:52px 0; }
+  .landing-story { padding:52px 0; }
+  .story-frame { grid-template-columns:1fr; }
+  .story-persona { grid-row:auto; border-right:0; border-bottom:1px solid var(--line); }
+  .story-persona h3 { margin:28px 0 30px; }
+  .story-journey { grid-template-columns:1fr; gap:18px; }
+  .story-journey>svg { justify-self:center; transform:rotate(90deg); }
+  .story-outcomes { grid-column:auto; grid-template-columns:1fr; padding:0 20px 20px; }
   .principle-list article { grid-template-columns:1fr; gap:8px; }
   .landing-cta { align-items:flex-start; flex-direction:column; margin:48px 0; padding:26px 23px; }
   .app-page-shell { padding-top:36px; }
