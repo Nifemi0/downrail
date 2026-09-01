@@ -143,19 +143,14 @@ export function WalletControl() {
     setPending(true);
     setMessage(null);
     try {
-      await selected.provider.request({
+      const switchNetwork = () => selected.provider.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: SHANNON_CHAIN_ID_HEX }],
       });
-      const currentChain = await selected.provider.request({ method: "eth_chainId" });
-      setChainId(typeof currentChain === "string" ? currentChain.toLowerCase() : null);
-    } catch (error) {
-      if (getErrorCode(error) !== 4902) {
-        setMessage(getErrorCode(error) === 4001 ? "Network switch cancelled." : "Could not switch networks.");
-        setPending(false);
-        return;
-      }
       try {
+        await switchNetwork();
+      } catch (error) {
+        if (getErrorCode(error) !== 4902) throw error;
         await selected.provider.request({
           method: "wallet_addEthereumChain",
           params: [{
@@ -166,9 +161,13 @@ export function WalletControl() {
             blockExplorerUrls: [SHANNON_EXPLORER_URL],
           }],
         });
-      } catch (addError) {
-        setMessage(getErrorCode(addError) === 4001 ? "Network addition cancelled." : "Could not add Shannon testnet.");
+        // Some wallets add the chain without selecting it. Retry explicitly.
+        await switchNetwork();
       }
+      const currentChain = await selected.provider.request({ method: "eth_chainId" });
+      setChainId(typeof currentChain === "string" ? currentChain.toLowerCase() : null);
+    } catch (error) {
+      setMessage(getErrorCode(error) === 4001 ? "Network switch cancelled." : "Could not switch networks. Open your wallet and add Somnia Shannon manually (chain ID 50312). ");
     } finally {
       setPending(false);
     }
