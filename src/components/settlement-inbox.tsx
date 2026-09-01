@@ -39,7 +39,7 @@ function statusLabel(status: SettlementPosition["status"]) {
   return status.toLowerCase().replaceAll("_", " ");
 }
 
-export function SettlementInbox() {
+export function SettlementInbox({ compact = false }: { compact?: boolean }) {
   const { account, chainId, provider } = useWalletSession();
   const [inbox, setInbox] = useState<SettlementInboxData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -181,14 +181,18 @@ export function SettlementInbox() {
   }
 
   return (
-    <section className="settlement-section" aria-labelledby="settlement-title">
-      <div className="section-intro">
-        <div>
-          <p className="eyebrow">Settlement inbox / 04</p>
-          <h2 id="settlement-title">Find what the chain owes you.</h2>
+    <section className={`settlement-section${compact ? " settlement-compact" : ""}`} aria-labelledby="settlement-title">
+      {compact ? (
+        <h2 className="sr-only" id="settlement-title">Portfolio positions and settlement</h2>
+      ) : (
+        <div className="section-intro">
+          <div>
+            <p className="eyebrow">Settlement inbox / 04</p>
+            <h2 id="settlement-title">Find what the chain owes you.</h2>
+          </div>
+          <p>Historical positions are checked independently of today&apos;s live market list. Claims require finalization and explicit wallet confirmation.</p>
         </div>
-        <p>Historical positions are checked independently of today&apos;s live market list. Claim signing remains locked.</p>
-      </div>
+      )}
 
       {!account ? (
         <div className="settlement-empty"><strong>Connect a wallet to scan positions.</strong><span>No signature is requested.</span></div>

@@ -1,50 +1,18 @@
-import Image from "next/image";
+import Link from "next/link";
 
-import { HedgePreview } from "@/components/hedge-preview";
-import { SettlementInbox } from "@/components/settlement-inbox";
-import { WalletControl } from "@/components/wallet-control";
-import { WalletSessionProvider } from "@/components/wallet-session";
-import { getMarketBoardSnapshot } from "@/lib/dreamdex/market-board";
-
-export const dynamic = "force-dynamic";
-
-function shortId(value: string) {
-  return `${value.slice(0, 8)}…${value.slice(-6)}`;
-}
-
-function timeUntil(expiryUnixSeconds: number) {
-  const seconds = Math.max(0, expiryUnixSeconds - Math.floor(Date.now() / 1_000));
-  if (seconds >= 86_400) return `${Math.floor(seconds / 86_400)}d ${Math.floor((seconds % 86_400) / 3_600)}h`;
-  if (seconds >= 3_600) return `${Math.floor(seconds / 3_600)}h ${Math.floor((seconds % 3_600) / 60)}m`;
-  return `${Math.floor(seconds / 60)}m`;
-}
-
-export default async function Home() {
-  const snapshot = await getMarketBoardSnapshot();
-
+export default function Home() {
   return (
-    <WalletSessionProvider><main id="top">
-      <nav className="topbar" aria-label="Primary navigation">
-        <a className="brand" href="#top" aria-label="Downrail home">
-          <Image src="/brand/downrail-logo.svg" alt="Downrail" width={143} height={32} priority />
-        </a>
-        <div className="nav-status">
-          <span className="read-only-chip">Planner live · signing locked</span>
-          <span className="network-chip"><i className={snapshot.ok ? "live" : ""} /> Shannon · {snapshot.ok ? "live" : "degraded"}</span>
-          <WalletControl />
-        </div>
-      </nav>
-
-      <div className="page-shell">
-        <header className="hero">
+    <main id="top">
+      <div className="page-shell landing-shell">
+        <header className="hero landing-hero">
           <div className="hero-copy">
             <p className="eyebrow">Portfolio protection / 01</p>
             <h1>Keep the upside.<span>Guard the downside.</span></h1>
             <p className="hero-text">Downrail uses existing DreamDEX DOWN contracts to add a conditional payout alongside BTC or ETH you already own.</p>
             <p className="category-note"><span>Not insurance.</span> You choose the exposure, horizon, and maximum spend; every payout still depends on the selected contract&apos;s exact result.</p>
             <div className="hero-actions">
-              <a className="primary-action" href="#planner">Plan protection <span aria-hidden="true">↘</span></a>
-              <a className="text-action" href="#windows">Inspect live windows <span aria-hidden="true">↗</span></a>
+              <Link className="primary-action" href="/app">Open Downrail <span aria-hidden="true">↗</span></Link>
+              <Link className="text-action" href="/docs">Learn how it works <span aria-hidden="true">↗</span></Link>
             </div>
           </div>
 
@@ -63,44 +31,32 @@ export default async function Home() {
           </div>
         </header>
 
-        <div id="planner"><HedgePreview /></div>
-
-        <section id="windows" className="windows-section" aria-labelledby="windows-title">
+        <section className="landing-process" aria-labelledby="process-title">
           <div className="section-intro">
-            <div><p className="eyebrow">DreamDEX inventory / 03</p><h2 id="windows-title">Live protection windows.</h2></div>
-            <p>Snapshot {new Date(snapshot.generatedAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZoneName: "short" })}</p>
+            <div><p className="eyebrow">How it works / 02</p><h2 id="process-title">From exposure to review in three steps.</h2></div>
+            <p>The landing page explains the product. The app handles every live market and wallet interaction.</p>
           </div>
-          {snapshot.error ? (
-            <div className="feed-error"><strong>Protection feed unavailable</strong><p>{snapshot.error}</p></div>
-          ) : (
-            <div className="market-table">
-              <table>
-                <caption className="sr-only">Live DreamDEX protection windows</caption>
-                <thead><tr className="market-row market-header"><th>Asset</th><th>Window</th><th>Closes in</th><th>DOWN ask</th><th>Contract ID</th></tr></thead>
-                <tbody>{snapshot.markets.map((market) => (
-                  <tr className="market-row" key={market.marketId}>
-                    <td><span className={`asset-badge ${market.asset.toLowerCase()}`}>{market.asset}</span></td>
-                    <td>{market.intervalLabel}</td>
-                    <td className="mono">{timeUntil(market.expiryUnixSeconds)}</td>
-                    <td className={market.bestNoAskDisplay ? "quote-value" : "muted-value"}>{market.bestNoAskDisplay ?? "No quote"}</td>
-                    <td className="mono" title={market.marketId}>{shortId(market.marketId)}</td>
-                  </tr>
-                ))}</tbody>
-              </table>
-            </div>
-          )}
+          <div className="trust-strip landing-steps">
+            <article><span>01</span><div><h3>Define the risk</h3><p>Choose BTC or ETH, enter the exposure, downside scenario, budget, and horizon.</p></div></article>
+            <article><span>02</span><div><h3>Compare outcomes</h3><p>See maximum cost and the combined portfolio result if the DOWN contract resolves either way.</p></div></article>
+            <article><span>03</span><div><h3>Review exact calls</h3><p>Start with a wallet-free demo, then inspect every Shannon call before confirming testnet execution.</p></div></article>
+          </div>
         </section>
 
-        <SettlementInbox />
-
-        <section className="trust-strip" aria-label="Downrail operating principles">
-          <article><span>01</span><div><h3>Budget bounded</h3><p>The proposed maximum cost cannot exceed the spend you enter.</p></div></article>
-          <article><span>02</span><div><h3>Depth aware</h3><p>Plans consume live resting liquidity instead of assuming an infinite top quote.</p></div></article>
-          <article><span>03</span><div><h3>Candidate checked</h3><p>Every planned leg verifies market state, expiry, decimal scale, tick, lot, and minimum size.</p></div></article>
+        <section className="landing-principles" aria-labelledby="principles-title">
+          <div><p className="eyebrow">Built for clarity / 03</p><h2 id="principles-title">A protection workflow—not a prediction terminal.</h2></div>
+          <div className="principle-list">
+            <article><strong>Budget bounded</strong><p>The proposed maximum cost cannot exceed the spend you enter.</p></article>
+            <article><strong>Depth aware</strong><p>Plans consume live resting liquidity instead of assuming an infinite top quote.</p></article>
+            <article><strong>Wallet controlled</strong><p>Downrail builds and decodes calls, but your wallet confirms every transaction.</p></article>
+          </div>
         </section>
 
-        <footer><p>Downrail provides partial, scenario-dependent hedging—not insurance or guaranteed protection.</p><span>Built on Somnia × DreamDEX</span></footer>
+        <section className="landing-cta" aria-labelledby="landing-cta-title">
+          <div><p className="eyebrow">Ready to explore?</p><h2 id="landing-cta-title">Build a live protection plan.</h2><p>Try the complete flow without a wallet, or connect to Somnia Shannon when you are ready.</p></div>
+          <Link className="primary-action" href="/app">Open the app <span aria-hidden="true">↗</span></Link>
+        </section>
       </div>
-    </main></WalletSessionProvider>
+    </main>
   );
 }

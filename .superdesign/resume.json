@@ -22,14 +22,22 @@
       "contextFiles": [
         ".superdesign/design-system.md",
         "src/app/globals.css",
+        "src/app/layout.tsx",
         "src/app/page.tsx",
-        "src/components/hedge-preview.tsx"
+        "src/components/site-header.tsx",
+        "src/components/site-footer.tsx",
+        "src/components/wallet-control.tsx",
+        "src/components/wallet-session.tsx"
       ],
       "fingerprints": {
         ".superdesign/design-system.md": "3c498597b9925888f17814e3f9bbfd45d121843931e680473c8200b0afdb231f",
-        "src/app/globals.css": "1203a72f62816768b3075b1b94392cbf7e9e800b55eeb1125e742029b04f9e41",
-        "src/app/page.tsx": "46e0b9fcaf4a6480be49d3733fe66f0b9d2b80ba3e8dafaaedb6afb1973e3da7",
-        "src/components/hedge-preview.tsx": "43a86da5981f18dfd1eb1ea033dbfbc8afc8457c5831a32ff1e3a31ebb4f923a"
+        "src/app/globals.css": "9bb9f5962881633ea4f589a05894efd148c11c5379f7560ff5060cd009fa7d4a",
+        "src/app/layout.tsx": "b53bfa0af4034108439551d097ff188ebb824f2d2e7329c667cedf567c163437",
+        "src/app/page.tsx": "081b7b27a66725da295de0fa0b209646582248d9ebdb847145e7c0d76dd5a00d",
+        "src/components/site-header.tsx": "f1c1364a6a815e195b66d0061648bdd6e6371b9b8cacdca5c8fa1521f3c2c8d1",
+        "src/components/site-footer.tsx": "da69149243a7b8c1d6a90d3b0f6fd1bdc4361e681766cef0c139f9a4e9af9e3e",
+        "src/components/wallet-control.tsx": "769ca199f26a67af897c3247ca705838fb0d025e5ed47544c59ab4847986bcb4",
+        "src/components/wallet-session.tsx": "8f226910b887c0bee2f45793c5d3ec024fe33daa0c380ee17ec82e73830ba9cf"
       },
       "drafts": {
         "b2371ffc-f2a1-4aba-9d79-c2449cc39b06": {
@@ -53,10 +61,112 @@
           "title": "Downrail — Downside Protection",
           "visualDirection": "warm editorial protection interface using the Downrail identity and intercepted-loss rail visual",
           "parentDraftId": "b2371ffc-f2a1-4aba-9d79-c2449cc39b06",
-          "currentVersion": 2
+          "currentVersion": 4
         }
       },
-      "updatedAt": "2026-08-27T16:52:00.000Z"
+      "updatedAt": "2026-09-01T10:48:10.0737213Z"
+    },
+    "/app": {
+      "targetKind": "new-ui",
+      "projectId": "db007e0d-d92f-403e-8868-87033d44ae6b",
+      "activeDraftId": "b755dd58-6df6-44c1-8c88-0f87dba836a8",
+      "sourceTarget": "/",
+      "sourceDraftId": "0765c1cd-d985-4813-bd57-26086fc1e551",
+      "designSystemPath": ".superdesign/design-system.md",
+      "referenceIds": [
+        "e7461e88-1eda-4778-a85d-0e9cb99b4159",
+        "5f92f8e9-4bf9-4393-a12b-250423c5be1f",
+        "public-brand-downrail-logo.svg"
+      ],
+      "brandAssets": {
+        "logo": {
+          "assetKey": "public-brand-downrail-logo.svg",
+          "localPath": "public/brand/downrail-logo.svg",
+          "publicUrl": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/db007e0d-d92f-403e-8868-87033d44ae6b/brand-assets/public-brand-downrail-logo.svg/downrail-logo.svg"
+        }
+      },
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        "src/app/globals.css",
+        "src/app/layout.tsx",
+        "src/app/app/page.tsx",
+        "src/components/hedge-preview.tsx",
+        "src/components/settlement-inbox.tsx",
+        "src/components/site-header.tsx",
+        "src/components/site-footer.tsx",
+        "src/components/wallet-control.tsx",
+        "src/components/wallet-session.tsx"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "3c498597b9925888f17814e3f9bbfd45d121843931e680473c8200b0afdb231f",
+        "src/app/globals.css": "9bb9f5962881633ea4f589a05894efd148c11c5379f7560ff5060cd009fa7d4a",
+        "src/app/layout.tsx": "b53bfa0af4034108439551d097ff188ebb824f2d2e7329c667cedf567c163437",
+        "src/app/app/page.tsx": "4a7a1543f0ccaa356f273f0b7ab389950c18918f67e5e276e356c8457ffed35c",
+        "src/components/hedge-preview.tsx": "620264999e1faca626c5a3bb0afed159e93fcae02159be7fa62fea35cd092d72",
+        "src/components/settlement-inbox.tsx": "5522cbc8ff73dc86f5e02defb61945bccd8463c80f28e87a7162ec308adbe54d",
+        "src/components/site-header.tsx": "f1c1364a6a815e195b66d0061648bdd6e6371b9b8cacdca5c8fa1521f3c2c8d1",
+        "src/components/site-footer.tsx": "da69149243a7b8c1d6a90d3b0f6fd1bdc4361e681766cef0c139f9a4e9af9e3e",
+        "src/components/wallet-control.tsx": "769ca199f26a67af897c3247ca705838fb0d025e5ed47544c59ab4847986bcb4",
+        "src/components/wallet-session.tsx": "8f226910b887c0bee2f45793c5d3ec024fe33daa0c380ee17ec82e73830ba9cf"
+      },
+      "drafts": {
+        "b755dd58-6df6-44c1-8c88-0f87dba836a8": {
+          "title": "Downrail — App Workspace",
+          "visualDirection": "existing Downrail market and protection controls organized into a focused app workspace with a compact portfolio rail",
+          "parentDraftId": "0765c1cd-d985-4813-bd57-26086fc1e551",
+          "currentVersion": 1
+        }
+      },
+      "updatedAt": "2026-09-01T10:48:10.0737213Z"
+    },
+    "/docs": {
+      "targetKind": "new-ui",
+      "projectId": "db007e0d-d92f-403e-8868-87033d44ae6b",
+      "activeDraftId": "4a60e980-4b91-4964-93b7-95fd364eb565",
+      "sourceTarget": "/",
+      "sourceDraftId": "0765c1cd-d985-4813-bd57-26086fc1e551",
+      "designSystemPath": ".superdesign/design-system.md",
+      "referenceIds": [
+        "e7461e88-1eda-4778-a85d-0e9cb99b4159",
+        "5f92f8e9-4bf9-4393-a12b-250423c5be1f",
+        "public-brand-downrail-logo.svg"
+      ],
+      "brandAssets": {
+        "logo": {
+          "assetKey": "public-brand-downrail-logo.svg",
+          "localPath": "public/brand/downrail-logo.svg",
+          "publicUrl": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/db007e0d-d92f-403e-8868-87033d44ae6b/brand-assets/public-brand-downrail-logo.svg/downrail-logo.svg"
+        }
+      },
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        "src/app/globals.css",
+        "src/app/layout.tsx",
+        "src/app/docs/page.tsx",
+        "src/components/site-header.tsx",
+        "src/components/site-footer.tsx",
+        "src/components/wallet-control.tsx",
+        "src/components/wallet-session.tsx"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "3c498597b9925888f17814e3f9bbfd45d121843931e680473c8200b0afdb231f",
+        "src/app/globals.css": "9bb9f5962881633ea4f589a05894efd148c11c5379f7560ff5060cd009fa7d4a",
+        "src/app/layout.tsx": "b53bfa0af4034108439551d097ff188ebb824f2d2e7329c667cedf567c163437",
+        "src/app/docs/page.tsx": "2c59174503bd350998785a3d883490f4299607bee8fc904e80d37bf0ecdba6eb",
+        "src/components/site-header.tsx": "f1c1364a6a815e195b66d0061648bdd6e6371b9b8cacdca5c8fa1521f3c2c8d1",
+        "src/components/site-footer.tsx": "da69149243a7b8c1d6a90d3b0f6fd1bdc4361e681766cef0c139f9a4e9af9e3e",
+        "src/components/wallet-control.tsx": "769ca199f26a67af897c3247ca705838fb0d025e5ed47544c59ab4847986bcb4",
+        "src/components/wallet-session.tsx": "8f226910b887c0bee2f45793c5d3ec024fe33daa0c380ee17ec82e73830ba9cf"
+      },
+      "drafts": {
+        "4a60e980-4b91-4964-93b7-95fd364eb565": {
+          "title": "Downrail — Docs",
+          "visualDirection": "editorial product guide using the existing Downrail typography, borders, green accents, and warm paper canvas",
+          "parentDraftId": "0765c1cd-d985-4813-bd57-26086fc1e551",
+          "currentVersion": 1
+        }
+      },
+      "updatedAt": "2026-09-01T10:48:10.0737213Z"
     }
   }
 }

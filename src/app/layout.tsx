@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
+
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
+import { WalletSessionProvider } from "@/components/wallet-session";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -49,7 +54,13 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <WalletSessionProvider>
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </WalletSessionProvider>
+      </body>
     </html>
   );
 }
