@@ -1,6 +1,6 @@
 # Downrail demo runbook
 
-Target length: 2 minutes 30 seconds. Record only after the public app, public repository, and testnet transaction evidence are ready.
+Target length: 2 minutes 30 seconds. The public app and repository are ready. Record the final cut only after real order and claim evidence is captured.
 
 ## Recording rules
 
@@ -60,7 +60,7 @@ Target length: 2 minutes 30 seconds. Record only after the public app, public re
 
 > After finalization, Downrail discovers a claimable payout, verifies the claim, and proposes the next protection window. That turns isolated contracts into a continuous workflow while the user stays in control.
 
-> Do not record this segment until claim and rollover are implemented and verified.
+> The claim and rollover paths are implemented. Do not present this segment as live-proven until a real finalized position, claim receipt, post-claim state, and resulting rollover recommendation have been captured.
 
 ### 2:10–2:30 — Close
 
@@ -72,10 +72,11 @@ Target length: 2 minutes 30 seconds. Record only after the public app, public re
 
 ## Evidence checklist before recording
 
-- [ ] Public application loads in a fresh signed-out browser.
-- [ ] Public GitHub repository contains setup instructions and no secrets.
-- [ ] Live market board has usable BTC or ETH depth.
+- [x] Public application is deployed and its health route reports ready.
+- [x] Public MIT-licensed GitHub repository contains setup instructions.
+- [x] Live diagnostics return usable BTC and ETH market depth.
 - [ ] Dedicated wallet has enough Shannon gas and collateral.
+- [ ] Production Shannon signing is deliberately enabled and the deployment is reverified.
 - [ ] Tiny pilot review is at or below 2.00 collateral units.
 - [ ] Approval amount and order fingerprint have been inspected.
 - [ ] At least one known-good transaction receipt is bookmarked.
@@ -83,6 +84,12 @@ Target length: 2 minutes 30 seconds. Record only after the public app, public re
 - [ ] Finalization, claim, and rollover segment is backed by real evidence.
 - [ ] Final video is between two and three minutes.
 - [ ] Captions and link text are readable at 1080p.
+
+## Links to add before recording
+
+- Order explorer evidence: `TBD`
+- Claim explorer evidence: `TBD`
+- Public video URL: `TBD`
 
 ## Contingency cut
 

@@ -2,7 +2,9 @@
 
 Downrail turns DreamDEX BTC and ETH Event Contracts into transparent, short-duration downside protection plans. It is a hedging interface—not a prediction-market creator, insurer, or guaranteed-protection product.
 
-The current build reads live DreamDEX inventory on Somnia Shannon, constructs one depth-aware current DOWN leg plus explicit future rollover checkpoints, connects injected wallets, and builds canonical decoded unsigned order reviews. A strict tiny-pilot sender and recovery journal are present, but signing is feature-flagged off by default. No private key is accepted or stored.
+The current build reads live DreamDEX inventory on Somnia Shannon, constructs one depth-aware current DOWN leg plus explicit future rollover checkpoints, connects injected wallets, and builds canonical decoded order and claim reviews. It includes a strict tiny-pilot sender, receipt verification, reload recovery, historical settlement discovery, reviewed claims, and lifecycle-triggered rollover recommendations. No private key is accepted or stored.
+
+The public Vercel environment currently leaves testnet signing disabled. Read-only planning and unsigned reviews are live; enabling the Shannon-only pilot and capturing real order/claim receipts is the next release gate.
 
 Production deployment: https://downrail.vercel.app
 
@@ -34,6 +36,15 @@ Open http://localhost:3000. The diagnostic and planner perform no writes and req
 - `npm run lint` — run ESLint.
 - `npm run build` — create a production build.
 
+## Verified status — September 1, 2026
+
+- Production health reports ready on Shannon chain `50312`.
+- The live diagnostic discovers BTC and ETH markets with populated depth across currently available 5m, 15m, 1h, 4h, and 24h windows.
+- The public repository is MIT licensed and available at https://github.com/Nifemi0/downrail.
+- All 57 tests pass; typecheck and lint pass.
+- Order execution, recovery, settlement discovery, reviewed claims, and rollover recommendations are implemented but still require real wallet lifecycle evidence.
+- The required two-to-three-minute hackathon demo video is not yet published.
+
 ## Structure
 
 ```text
@@ -52,13 +63,15 @@ src/features/rollover/                         Lifecycle-triggered manual rollov
 src/lib/dreamdex/                              Network config and SDK adapters
 ```
 
-The complete product specification and execution guide are in `../project.md` and `../agent.md`.
+The public product specification and contributor guide are in [`project.md`](./project.md) and [`agent.md`](./agent.md).
 
 Hackathon materials:
 
 - [`SUBMISSION.md`](./SUBMISSION.md) — DoraHacks copy, judging alignment, and readiness gate.
 - [`DEMO.md`](./DEMO.md) — timed two-to-three-minute recording runbook.
 - [`FEEDBACK.md`](./FEEDBACK.md) — DreamDEX SDK and documentation feedback from the implementation.
+- [`HACKATHON_REVIEW.md`](./HACKATHON_REVIEW.md) — official event snapshot, current competitors, positioning, and evidence cross-check.
+- [`FIXING_PLAN.md`](./FIXING_PLAN.md) — ordered path from the current build to a judge-verifiable submission.
 
 ## Execution safety boundary
 

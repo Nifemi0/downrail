@@ -94,6 +94,10 @@ The SDK exposes the raw parameters needed for safe calculations, but application
 
 Official pure helper functions with tests would improve consistency across bots and consumer applications.
 
+### 9. Available-window documentation can lag the live venue
+
+During the September 1 verification, the configured Shannon venue exposed populated BTC and ETH windows at 5m, 15m, 1h, 4h, and 24h. Consumer-facing documentation still emphasizes a smaller set of intervals. A discovery-first note explaining that testnet cadence can change—and that applications should trust the current venue rather than hard-code documented intervals—would prevent stale assumptions.
+
 ## Suggested documentation example
 
 The most valuable addition would be one browser-oriented Event Contract walkthrough:
@@ -122,6 +126,9 @@ The repository contains concrete implementations for:
 - deterministic depth-aware planning in `src/features/hedge-planner/`;
 - bounded approval and BUY_NO construction in `src/features/hedge-planner/build-execution-preflight.ts`;
 - sequential receipt verification in `src/features/execution/run-reviewed-calls.ts`;
-- market-ID reconciliation in `src/app/api/execution-reconciliation/route.ts`.
+- market-ID reconciliation in `src/app/api/execution-reconciliation/route.ts`;
+- historical position and claimability discovery in `src/app/api/settlement-inbox/route.ts`;
+- canonical reviewed redemption calls in `src/app/api/claim-review/route.ts` and `src/features/settlement/`;
+- lifecycle-triggered manual rollover recommendations in `src/features/rollover/`.
 
-Finalized-market claiming is implemented behind the production signing lock; a real finalized position and claim receipt are still required before that path can be called live-verified.
+All 57 project tests pass, and typecheck and lint are clean. Finalized-market claiming is implemented behind the current production signing lock; a real order lifecycle, finalized position, claim receipt, and post-claim state are still required before those write paths can be called live-verified.
