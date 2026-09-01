@@ -1,6 +1,6 @@
 # Downrail — DoraHacks submission draft
 
-> Status: code-ready, evidence incomplete. Do not submit until the real testnet lifecycle and demo-video links are added.
+> Status: code-ready with real order-to-finalization evidence. Do not submit until the claim, post-claim rollover, and demo-video links are added.
 
 ## Project name
 
@@ -80,7 +80,7 @@ That distinction matters in the current field. Sluice Markets already focuses on
 - Quotes and reviews expire quickly and are bound to the connected account and Shannon chain.
 - The interface describes partial, scenario-dependent protection rather than guaranteed insurance.
 - Simulated values and unproven lifecycle behavior are never presented as live on-chain proof.
-- The Vercel deployment enables a Shannon-only tiny pilot capped at one IOC leg and 2.00 collateral units; real receipts are still required before submission.
+- The Vercel deployment enables a Shannon-only tiny pilot capped at one IOC leg and 2.00 collateral units. A real approval and order succeeded, the order filled exactly, reload recovery works, and the resulting winning position is finalized and claimable; see `EVIDENCE.md`.
 
 ## Ecosystem impact
 
@@ -99,14 +99,12 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - Bounded order execution, receipt checks, persistent recovery, transaction-keyed reconciliation, finalized-position discovery, reviewed claims, and manual rollover recommendation are implemented.
 - All 57 tests pass; typecheck and lint pass.
 - SDK and documentation feedback is complete.
+- The public evidence bundle records successful Shannon approval/order receipts, exact fill reconciliation, reload recovery, and finalized claimability.
 
 ## Still required before submission
 
-- Enable the Shannon-only production pilot deliberately after confirming the dedicated wallet is funded.
-- Execute one order capped at 2.00 collateral units with explicit wallet approval.
-- Capture the transaction hash, successful receipt, and indexed fill or legitimate unfilled IOC result.
-- Capture position recovery after reload.
-- Use a finalized position to prove claimability, one reviewed claim, post-claim state, and the resulting rollover recommendation.
+- Submit the reviewed claim for the verified finalized position only after explicit wallet confirmation.
+- Capture the claim receipt, authoritative post-claim state, and resulting rollover recommendation.
 - Add the final explorer links to this document and the demo.
 - Record and publish a two-to-three-minute demo video.
 - Review the final DoraHacks form and submit before the displayed September 8, 2026 deadline.
@@ -117,7 +115,9 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - GitHub repository: https://github.com/Nifemi0/downrail
 - Hackathon brief: https://dorahacks.io/hackathon/event-contracts/detail
 - Demo video: `TBD — 2–3 minute public video`
-- Order evidence: `TBD — Shannon explorer link`
+- Approval receipt: [Shannon explorer](https://shannon-explorer.somnia.network/tx/0xeff56d4f403f3937b28e56251977075066748afc1e8cf684d05c34f420376e09)
+- Filled order receipt: [Shannon explorer](https://shannon-explorer.somnia.network/tx/0xff6d45404a3e257eab9a4e2b87cad2086f0c6bc3a43e3d2de1b1c84107ea1c85)
+- Reconciliation evidence: [`EVIDENCE.md`](./EVIDENCE.md)
 - Claim evidence: `TBD — Shannon explorer link`
 - SDK and documentation feedback: [`FEEDBACK.md`](./FEEDBACK.md)
 - Current readiness review: [`HACKATHON_REVIEW.md`](./HACKATHON_REVIEW.md)
@@ -127,7 +127,7 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 | Criterion | Weight | Downrail evidence | Remaining proof |
 | --- | ---: | --- | --- |
 | Innovation and Originality | 20% | Reframes Event Contracts as exposure-first, scenario-specific portfolio protection rather than another prediction or risk-sized wager. | Make the unhedged-versus-protected outcome the central demo visual. |
-| Technical Implementation | 25% | Live SDK/on-chain reads, deterministic depth-aware planning, exact approvals, decoded calls, guarded sends, receipt checks, recovery, settlement scanning, claims, and rollover logic. | Add real order, claim, and rollover transaction evidence. |
+| Technical Implementation | 25% | Live SDK/on-chain reads, deterministic depth-aware planning, exact approvals, decoded calls, successful order receipts, exact fill reconciliation, recovery, settlement scanning, claims, and rollover logic. | Add the claim receipt and rollover evidence. |
 | User Experience and Design | 20% | Plain-language exposure, horizon, spending cap, conditional payout, residual risk, and portfolio lifecycle across focused routes. | Validate the complete wallet flow with a fresh test user. |
 | Business and Ecosystem Impact | 20% | Creates recurring holder and treasury demand for DreamDEX windows and a reusable protection-planning layer. | Add one quantified example showing repeat Event Contract usage. |
 | Presentation and Demo | 15% | Focused 2:30 before/after portfolio-loss story and evidence plan. | Record, caption, publish, and link the final video. |
@@ -143,7 +143,7 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - [x] SDK and documentation feedback report.
 - [x] 57 tests, typecheck, and lint passing.
 - [x] Production Shannon pilot enabled with the one-leg, 2.00-unit boundary.
-- [ ] Real testnet order, receipt, and fill/IOC evidence.
+- [x] Real testnet order, receipt, exact fill, and reload-recovery evidence.
 - [ ] Real finalized-position, claim, post-claim, and rollover evidence.
 - [ ] Two-to-three-minute demo video.
 - [ ] DoraHacks form reviewed and submitted.

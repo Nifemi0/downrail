@@ -11,7 +11,7 @@ This guide keeps contributors and coding agents aligned with Downrail's product 
 - Vercel production and the public MIT repository are ready.
 - All 57 tests pass; typecheck, lint, recent builds, live health, and read-only DreamDEX diagnostics pass.
 - `NEXT_PUBLIC_EXECUTION_ENABLED=true` is set for Vercel production; the Shannon-only sender remains capped at one IOC leg and 2.00 collateral units.
-- Real order, claim, post-claim, and rollover evidence plus the required demo video remain incomplete.
+- Real order, fill, reload recovery, and finalized claimability are verified in `EVIDENCE.md`; the claim receipt, post-claim state, rollover proof, and required demo video remain incomplete.
 
 ## Active goal
 
@@ -21,8 +21,8 @@ Produce a judge-verifiable lifecycle, add concise evidence to the product and su
 
 1. Confirm the dedicated wallet has Shannon gas and DreamDEX test collateral.
 2. Reverify the enabled production pilot and build a fresh one-leg, ≤2.00-unit review.
-3. Capture one real order receipt, fill or unfilled IOC result, and reload recovery.
-4. Capture one finalized claim, post-claim state, and rollover recommendation.
+3. Submit the prepared claim only after explicit wallet confirmation, then capture its receipt and post-claim state.
+4. Capture the resulting rollover recommendation.
 5. Add judge-facing explorer and implementation evidence.
 6. Record the demo and finish the DoraHacks form.
 

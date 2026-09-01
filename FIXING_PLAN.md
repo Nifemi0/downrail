@@ -36,11 +36,11 @@ Status: complete on September 1.
 - Use one verified test baseline: 57 passing tests plus clean typecheck and lint.
 - Mark the public repository, MIT license, and Vercel deployment complete.
 - Distinguish implemented lifecycle code from real transaction evidence.
-- State truthfully that the bounded production Shannon pilot is enabled but has no real receipt yet.
+- State truthfully that the bounded Shannon order, exact fill, reload recovery, and finalized claimability are live-proven.
 
 ## Phase 2 — enable and prove the tiny Shannon order
 
-Status: next.
+Status: complete on September 1. See `EVIDENCE.md`.
 
 ### Release preparation
 
@@ -71,7 +71,7 @@ Status: next.
 
 ## Phase 3 — prove settlement, claim, and rollover
 
-Status: blocked on a real position and finalization.
+Status: ready for wallet-confirmed claim; the real winning position is finalized and claimable.
 
 - Track the pilot market until finalization.
 - Verify the user's outcome-token balance and payout vector on-chain.
@@ -84,7 +84,7 @@ Status: blocked on a real position and finalization.
 
 ## Phase 4 — judge-facing product upgrades
 
-Status: pending after the first real receipt.
+Status: in progress; the first real receipt and finalized position are now available.
 
 ### Make the differentiation obvious
 
@@ -121,7 +121,7 @@ Status: pending.
 
 ## Phase 6 — record the demo
 
-Status: blocked on Phases 2 and 3.
+Status: blocked on Phase 3 claim and rollover proof.
 
 - Follow `DEMO.md` and target 2 minutes 30 seconds.
 - Record at 1080p with readable wallet and explorer details.
@@ -162,7 +162,7 @@ Until the submission is complete, do not spend time on:
 - [x] 57 tests, typecheck, and lint passing.
 - [x] Documentation synchronized with the current build.
 - [x] Production Shannon pilot enabled with the one-leg, 2.00-unit boundary.
-- [ ] Real order and fill/IOC evidence captured.
+- [x] Real order, exact fill, reload recovery, and finalized claimability captured.
 - [ ] Real claim and post-claim evidence captured.
 - [ ] Rollover demonstrated from real lifecycle state.
 - [ ] Judge-facing evidence surface complete.

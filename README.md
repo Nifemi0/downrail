@@ -4,7 +4,7 @@ Downrail turns DreamDEX BTC and ETH Event Contracts into transparent, short-dura
 
 The current build reads live DreamDEX inventory on Somnia Shannon, constructs one depth-aware current DOWN leg plus explicit future rollover checkpoints, connects injected wallets, and builds canonical decoded order and claim reviews. It includes a strict tiny-pilot sender, receipt verification, reload recovery, historical settlement discovery, reviewed claims, and lifecycle-triggered rollover recommendations. No private key is accepted or stored.
 
-The public Vercel environment enables a Shannon-only tiny pilot capped at one IOC leg and 2.00 collateral units. Read-only planning and unsigned reviews remain available; capturing real order and claim receipts is the next release gate.
+The public Vercel environment enables a Shannon-only tiny pilot capped at one IOC leg and 2.00 collateral units. A real pilot order is confirmed, fully filled, recovered after reload, finalized, and claimable; the claim receipt and post-claim state are the next release gate.
 
 Production deployment: https://downrail.vercel.app
 
@@ -71,7 +71,10 @@ Hackathon materials:
 - [`DEMO.md`](./DEMO.md) — timed two-to-three-minute recording runbook.
 - [`FEEDBACK.md`](./FEEDBACK.md) — DreamDEX SDK and documentation feedback from the implementation.
 - [`HACKATHON_REVIEW.md`](./HACKATHON_REVIEW.md) — official event snapshot, current competitors, positioning, and evidence cross-check.
+- [`EVIDENCE.md`](./EVIDENCE.md) — public Shannon receipts, reconciliation, finalized position, and claim checkpoint.
 - [`FIXING_PLAN.md`](./FIXING_PLAN.md) — ordered path from the current build to a judge-verifiable submission.
+
+Verified Shannon order: [approval receipt](https://shannon-explorer.somnia.network/tx/0xeff56d4f403f3937b28e56251977075066748afc1e8cf684d05c34f420376e09) · [filled order receipt](https://shannon-explorer.somnia.network/tx/0xff6d45404a3e257eab9a4e2b87cad2086f0c6bc3a43e3d2de1b1c84107ea1c85)
 
 ## Execution safety boundary
 
@@ -100,3 +103,5 @@ Hackathon materials:
 8. Downrail verifies receipts, persists hashes, and reconciles the resulting fill or proven IOC cancellation; the activity can be rechecked after reload.
 
 Do not use a mainnet wallet, seed phrase, or private key with this project.
+
+The first real pilot is documented in [`EVIDENCE.md`](./EVIDENCE.md), including successful approval and order receipts, an exact indexed fill, reload recovery, and the claimable finalized position.

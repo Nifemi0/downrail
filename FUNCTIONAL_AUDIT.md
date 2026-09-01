@@ -8,7 +8,7 @@ Scope: product correctness, DreamDEX integration, transaction safety, lifecycle 
 
 ## Executive verdict
 
-Downrail is a strong, differentiated testnet product with a working live-data path and a substantially implemented order-to-settlement lifecycle. It is no longer merely a read-only planner. The bounded Shannon production pilot is enabled; the remaining weakness is evidence because no real order, fill or IOC cancellation, finalized claim, post-claim state, or rollover has been captured for judges.
+Downrail is a strong, differentiated testnet product with a working live-data path and a proven order-to-finalization lifecycle. The bounded Shannon pilot produced successful approval and order receipts, an exact full fill, reload recovery, and a finalized claimable winning position. The remaining evidence gap is the claim receipt, authoritative post-claim state, rollover proof, and demo video.
 
 The application is technically competitive today. It becomes submission-ready only after the implemented write paths are exercised with a dedicated Shannon wallet and the resulting receipts are linked in the demo and submission.
 
@@ -33,18 +33,9 @@ The application is technically competitive today. It becomes submission-ready on
 
 `NEXT_PUBLIC_EXECUTION_ENABLED=true` is set in the Vercel production environment. The deployed sender remains restricted to Shannon chain `50312`, one IOC leg, an exact bounded approval, and no more than 2.00 collateral units.
 
-### Evidence blocker: no real wallet lifecycle
+### Evidence blocker: claim and rollover are not live-proven
 
-The sender, reconciliation, settlement, claim, and rollover code cannot be represented as live-proven until the project captures:
-
-1. reviewed approval/order calls;
-2. successful transaction receipts;
-3. a fill or proven unfilled IOC result;
-4. position recovery after reload;
-5. finalized claimability;
-6. a reviewed claim and successful receipt;
-7. post-claim authoritative state;
-8. the resulting rollover recommendation.
+`EVIDENCE.md` now proves reviewed approval/order execution, successful receipts, a full indexed fill, reload recovery, and finalized claimability. The project still needs a successful reviewed claim, post-claim authoritative state, and the resulting rollover recommendation.
 
 ### Submission blocker: no demo video
 
@@ -54,9 +45,9 @@ The official event requires a two-to-three-minute demo video. `DEMO.md` is ready
 
 | Criterion | Weight | Current strength | Risk before submission |
 | --- | ---: | --- | --- |
-| Technical Implementation | 25% | Strong implementation breadth, safety boundaries, live reads, and 57 tests. | Judges may discount unexecuted write paths without explorer evidence. |
+| Technical Implementation | 25% | Strong implementation breadth, safety boundaries, live reads, 57 tests, and real order/fill evidence. | Claim and rollover still need explorer-backed proof. |
 | Innovation and Originality | 20% | Exposure-first portfolio protection is distinct from AI signals and simple betting interfaces. | Sluice overlaps on safe budget sizing; Runs and Let It Ride overlap on rollover. |
-| User Experience and Design | 20% | Focused landing, app, and docs routes with plain-language planning and portfolio views. | The end-to-end wallet path must be tested by a fresh user after signing is enabled. |
+| User Experience and Design | 20% | Focused landing, app, and docs routes with plain-language planning, recovery, and a live claimable position. | The claim and post-claim path still need a fresh-user test. |
 | Business and Ecosystem Impact | 20% | Credible recurring-demand story for holders, treasuries, wallets, and future APIs. | The submission needs one quantified recurring-volume example. |
 | Presentation and Demo | 15% | Strong hook and timed script. | No published video or real lifecycle footage yet. |
 
@@ -78,11 +69,11 @@ The strongest one-sentence position is:
 | Exposure, horizon, and budget configuration | Complete | Verified |
 | Deterministic budget-safe plan | Complete | Verified |
 | Scenario-specific residual-risk display | Complete | Verified |
-| Exact decoded order review | Complete | Verified unsigned |
-| Wallet order execution | Complete and enabled for bounded Shannon pilot | Missing real transaction |
-| Receipt and fill/IOC reconciliation | Complete | Missing real transaction |
-| Reload recovery | Complete | Missing real transaction |
-| Finalized-position discovery | Complete | Missing funded position |
+| Exact decoded order review | Complete | Verified live |
+| Wallet order execution | Complete and enabled for bounded Shannon pilot | Verified successful |
+| Receipt and fill/IOC reconciliation | Complete | Verified full fill |
+| Reload recovery | Complete | Verified |
+| Finalized-position discovery | Complete | Verified claimable winner |
 | Reviewed claim and post-claim refresh | Complete behind flag | Missing real claim |
 | Rollover recommendation | Complete | Missing real lifecycle demonstration |
 | Public deployment | Complete | Verified |

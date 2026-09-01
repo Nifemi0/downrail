@@ -97,12 +97,11 @@ DreamDEX / Shannon
 - Responsive landing, application, and documentation routes.
 - Public Vercel deployment, public MIT repository, CI, and 57 tests.
 - Shannon-only production pilot deliberately enabled behind the one-leg, 2.00-unit execution boundary.
+- Real Shannon approval and order receipts, exact filled-order reconciliation, reload recovery, and a claimable finalized winning position.
 
 ## Evidence still required
 
-- Real order receipt and fill or proven unfilled IOC result.
-- Recovery after reload using that transaction.
-- Real finalized position and reviewed claim receipt.
+- Successful reviewed claim receipt.
 - Authoritative post-claim state and resulting rollover recommendation.
 - Public two-to-three-minute demo video.
 - Completed DoraHacks submission.
@@ -114,6 +113,7 @@ Do not add AI trading decisions, automatic rollover, more assets, mainnet execut
 ## Submission documents
 
 - [`HACKATHON_REVIEW.md`](./HACKATHON_REVIEW.md)
+- [`EVIDENCE.md`](./EVIDENCE.md)
 - [`SUBMISSION.md`](./SUBMISSION.md)
 - [`DEMO.md`](./DEMO.md)
 - [`FEEDBACK.md`](./FEEDBACK.md)
