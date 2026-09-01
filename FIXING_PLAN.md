@@ -71,7 +71,7 @@ Status: complete on September 1. See `EVIDENCE.md`.
 
 ## Phase 3 — prove settlement, claim, and rollover
 
-Status: ready for wallet-confirmed claim; the real winning position is finalized and claimable.
+Status: complete on September 1; both claim calls succeeded and the authoritative post-claim inbox is empty.
 
 - Track the pilot market until finalization.
 - Verify the user's outcome-token balance and payout vector on-chain.
@@ -121,7 +121,7 @@ Status: pending.
 
 ## Phase 6 — record the demo
 
-Status: blocked on Phase 3 claim and rollover proof.
+Status: ready; claim proof is complete, while the demo should avoid claiming a rollover card that the historical horizon no longer qualifies for.
 
 - Follow `DEMO.md` and target 2 minutes 30 seconds.
 - Record at 1080p with readable wallet and explorer details.
@@ -159,11 +159,11 @@ Until the submission is complete, do not spend time on:
 - [x] Wallet review, guarded sender, receipts, and reconciliation implemented.
 - [x] Settlement, reviewed claims, and rollover implemented.
 - [x] Public app, repository, license, and SDK feedback.
-- [x] 57 tests, typecheck, and lint passing.
+- [x] 58 tests, typecheck, and lint passing.
 - [x] Documentation synchronized with the current build.
 - [x] Production Shannon pilot enabled with the one-leg, 2.00-unit boundary.
 - [x] Real order, exact fill, reload recovery, and finalized claimability captured.
-- [ ] Real claim and post-claim evidence captured.
+- [x] Real claim and post-claim evidence captured.
 - [ ] Rollover demonstrated from real lifecycle state.
 - [ ] Judge-facing evidence surface complete.
 - [ ] Two-to-three-minute video published.

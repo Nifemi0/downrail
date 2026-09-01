@@ -52,7 +52,7 @@ The previously shared X post at `https://x.com/itsNikku876/status/20557012715130
 
 | Item | Status | Evidence or gap |
 | --- | --- | --- |
-| Working testnet prototype | Complete | Live reads plus a successful filled order, reload recovery, and finalized claimable position. |
+| Working testnet prototype | Complete | Live reads plus a successful filled order, reload recovery, finalized position, and successful claim. |
 | Public repository | Complete | https://github.com/Nifemi0/downrail; public, `main`, MIT. |
 | Public deployment | Complete | https://downrail.vercel.app |
 | Event Contract integration | Complete | SDK 0.28.1, live books, on-chain checks, orders, settlement primitives. |
@@ -61,7 +61,7 @@ The previously shared X post at `https://x.com/itsNikku876/status/20557012715130
 | Demo video | Missing | Public 2–3 minute link required. |
 | Shannon tiny pilot | Enabled | One IOC leg, at most 2.00 collateral units, Shannon only. |
 | Real order evidence | Complete | Successful approval/order receipts and exact indexed fill in `EVIDENCE.md`. |
-| Real claim evidence | Partial | Finalized winning position and decoded review verified; claim receipt remains pending. |
+| Real claim evidence | Complete | Successful approval/redemption receipts and authoritative post-claim empty state in `EVIDENCE.md`. |
 | DoraHacks form | Pending | Final submission not yet made. |
 
 ## Current competitive field
@@ -114,7 +114,7 @@ Required evidence bundle:
 - [x] Differentiation reviewed against current competitors.
 - [x] Production Shannon tiny pilot enabled with bounded execution.
 - [x] Real order lifecycle captured.
-- [ ] Real claim lifecycle captured.
+- [x] Real claim lifecycle captured.
 - [ ] Final video published.
 - [ ] Every submission link tested.
 - [ ] DoraHacks form compared against `SUBMISSION.md`.

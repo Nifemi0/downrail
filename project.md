@@ -95,14 +95,13 @@ DreamDEX / Shannon
 - Canonical reviewed redemption calls and claim journal.
 - Lifecycle-triggered manual rollover recommendations.
 - Responsive landing, application, and documentation routes.
-- Public Vercel deployment, public MIT repository, CI, and 57 tests.
+- Public Vercel deployment, public MIT repository, CI, and 58 tests.
 - Shannon-only production pilot deliberately enabled behind the one-leg, 2.00-unit execution boundary.
-- Real Shannon approval and order receipts, exact filled-order reconciliation, reload recovery, and a claimable finalized winning position.
+- Real Shannon order and claim receipts, exact filled-order reconciliation, reload recovery, a finalized winning position, and authoritative post-claim state.
 
 ## Evidence still required
 
-- Successful reviewed claim receipt.
-- Authoritative post-claim state and resulting rollover recommendation.
+- A visible rollover recommendation from a fresh pilot whose requested horizon and reserved future budget remain active after settlement.
 - Public two-to-three-minute demo video.
 - Completed DoraHacks submission.
 

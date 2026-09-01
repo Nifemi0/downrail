@@ -9,9 +9,9 @@ This guide keeps contributors and coding agents aligned with Downrail's product 
 - Status date: September 1, 2026.
 - Core product, order lifecycle, settlement discovery, reviewed claims, and manual rollover recommendations are implemented.
 - Vercel production and the public MIT repository are ready.
-- All 57 tests pass; typecheck, lint, recent builds, live health, and read-only DreamDEX diagnostics pass.
+- All 58 tests pass; typecheck, lint, recent builds, live health, and read-only DreamDEX diagnostics pass.
 - `NEXT_PUBLIC_EXECUTION_ENABLED=true` is set for Vercel production; the Shannon-only sender remains capped at one IOC leg and 2.00 collateral units.
-- Real order, fill, reload recovery, and finalized claimability are verified in `EVIDENCE.md`; the claim receipt, post-claim state, rollover proof, and required demo video remain incomplete.
+- Real order, fill, reload recovery, finalized claimability, successful claim receipts, and authoritative post-claim state are verified in `EVIDENCE.md`; current-horizon rollover proof and the required demo video remain incomplete.
 
 ## Active goal
 
@@ -19,12 +19,10 @@ Produce a judge-verifiable lifecycle, add concise evidence to the product and su
 
 ## Immediate priorities
 
-1. Confirm the dedicated wallet has Shannon gas and DreamDEX test collateral.
-2. Reverify the enabled production pilot and build a fresh one-leg, ≤2.00-unit review.
-3. Submit the prepared claim only after explicit wallet confirmation, then capture its receipt and post-claim state.
-4. Capture the resulting rollover recommendation.
-5. Add judge-facing explorer and implementation evidence.
-6. Record the demo and finish the DoraHacks form.
+1. Deploy and verify the claim-to-execution lifecycle synchronization patch.
+2. Capture a visible rollover recommendation with a fresh active-horizon pilot if time permits.
+3. Add a concise judge-facing evidence surface using the verified explorer links.
+4. Record the demo and finish the DoraHacks form.
 
 ## Source-of-truth order
 

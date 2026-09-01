@@ -31,14 +31,26 @@ The live reconciliation endpoint matched the exact order transaction to fill `47
 - Outcome held: `NO`, outcome index `1`
 - Winning balance: `1652000` raw units (`1.652000`)
 - Estimated claim payout: `1652000` raw TESDC (`1.652000`)
-- Claim state: claimable in the deployed portfolio inbox
+- Pre-claim state: claimable in the deployed portfolio inbox
 
-## Claim checkpoint
+## Verified claim
 
 A fresh unsigned review successfully decoded two bounded calls:
 
 1. `OUTCOME_APPROVAL` to `0xB52c5934113Af5c0Bb20eb3C72290C8215f755b9`, authorizing only the Shannon binary module.
 2. `REDEEM` to `0x3ecC694Cef705358864a646142ac17A90E29e388`, redeeming the full reviewed winning balance.
 
-The claim has not been sent yet. Add the claim transaction, successful receipt, authoritative post-claim balance, and rollover state here after explicit wallet confirmation.
+- Outcome-token operator approval: [`0xb164744d590b3007fedaa2a626e02598a07cf8dd2c18fb97f6e5fd89295ba827`](https://shannon-explorer.somnia.network/tx/0xb164744d590b3007fedaa2a626e02598a07cf8dd2c18fb97f6e5fd89295ba827)
+- Approval block: `477094542`
+- Approval timestamp: `2026-09-01T17:08:28Z`
+- Redemption: [`0x73b1d1f8ed2707d8869b92fb1a4b9e9546cc6295c89a856783e85de5b3df4a82`](https://shannon-explorer.somnia.network/tx/0x73b1d1f8ed2707d8869b92fb1a4b9e9546cc6295c89a856783e85de5b3df4a82)
+- Redemption block: `477094594`
+- Redemption timestamp: `2026-09-01T17:08:34Z`
+- Receipt status: both successful (`0x1`)
+- Deployed claim journal: `CLAIMED`
 
+The deployed settlement inbox was refreshed after the receipts and returned `positions: []` and `owedFallbacks: []` for the wallet. The previously claimable `1652000` raw NO balance is therefore no longer outstanding.
+
+## Rollover state
+
+The claim now promotes the matching submitted execution record to `CLAIMED` and immediately refreshes the planner's lifecycle state. A new manual rollover is recommended only when the original requested horizon still has time remaining and the plan reserved future budget. This historical pilot no longer displayed a valid rollover recommendation after its claim, so the evidence bundle does not invent one; a current-horizon pilot is still needed for that final visual proof.

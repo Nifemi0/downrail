@@ -1,6 +1,6 @@
 # Downrail — DoraHacks submission draft
 
-> Status: code-ready with real order-to-finalization evidence. Do not submit until the claim, post-claim rollover, and demo-video links are added.
+> Status: code-ready with real order-through-claim evidence. Do not submit until the current-horizon rollover visual and demo-video link are added.
 
 ## Project name
 
@@ -47,7 +47,7 @@ Downrail makes those decisions inspectable and keeps the spending boundary expli
 8. Submit calls sequentially after explicit acknowledgement, verify receipts, and reconcile fills and positions by stable market ID.
 9. Scan historical positions independently of the live-market list, identify claimability from finalized on-chain state, build a reviewed claim, and recommend the next protection window.
 
-The code for the complete lifecycle is present. Real order, claim, and rollover evidence is still required before those steps are described as live-proven.
+The code for the complete lifecycle is present. The order, fill, finalization, claim, and post-claim state are live-proven; a current-horizon rollover card still needs visual evidence.
 
 ## Why it is different
 
@@ -80,7 +80,7 @@ That distinction matters in the current field. Sluice Markets already focuses on
 - Quotes and reviews expire quickly and are bound to the connected account and Shannon chain.
 - The interface describes partial, scenario-dependent protection rather than guaranteed insurance.
 - Simulated values and unproven lifecycle behavior are never presented as live on-chain proof.
-- The Vercel deployment enables a Shannon-only tiny pilot capped at one IOC leg and 2.00 collateral units. A real approval and order succeeded, the order filled exactly, reload recovery works, and the resulting winning position is finalized and claimable; see `EVIDENCE.md`.
+- The Vercel deployment enables a Shannon-only tiny pilot capped at one IOC leg and 2.00 collateral units. A real order filled exactly, reload recovery worked, the winning position finalized, and the reviewed claim completed successfully; see `EVIDENCE.md`.
 
 ## Ecosystem impact
 
@@ -97,15 +97,14 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - Depth-aware, budget-safe planning with tick, lot, expiry, minimum-size, and liquidity guards is implemented.
 - Responsive three-page product interface, wallet/network controls, scenario review, portfolio settlement inbox, and exact decoded call review are deployed.
 - Bounded order execution, receipt checks, persistent recovery, transaction-keyed reconciliation, finalized-position discovery, reviewed claims, and manual rollover recommendation are implemented.
-- All 57 tests pass; typecheck and lint pass.
+- All 58 tests pass; typecheck and lint pass.
 - SDK and documentation feedback is complete.
-- The public evidence bundle records successful Shannon approval/order receipts, exact fill reconciliation, reload recovery, and finalized claimability.
+- The public evidence bundle records successful Shannon order and claim receipts, exact fill reconciliation, reload recovery, finalized claimability, and authoritative post-claim state.
 
 ## Still required before submission
 
-- Submit the reviewed claim for the verified finalized position only after explicit wallet confirmation.
-- Capture the claim receipt, authoritative post-claim state, and resulting rollover recommendation.
-- Add the final explorer links to this document and the demo.
+- Capture a current-horizon rollover recommendation if a fresh pilot reaches settlement while reserved horizon remains.
+- Add the verified lifecycle links to the final demo.
 - Record and publish a two-to-three-minute demo video.
 - Review the final DoraHacks form and submit before the displayed September 8, 2026 deadline.
 
@@ -118,7 +117,8 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - Approval receipt: [Shannon explorer](https://shannon-explorer.somnia.network/tx/0xeff56d4f403f3937b28e56251977075066748afc1e8cf684d05c34f420376e09)
 - Filled order receipt: [Shannon explorer](https://shannon-explorer.somnia.network/tx/0xff6d45404a3e257eab9a4e2b87cad2086f0c6bc3a43e3d2de1b1c84107ea1c85)
 - Reconciliation evidence: [`EVIDENCE.md`](./EVIDENCE.md)
-- Claim evidence: `TBD — Shannon explorer link`
+- Claim approval: [Shannon explorer](https://shannon-explorer.somnia.network/tx/0xb164744d590b3007fedaa2a626e02598a07cf8dd2c18fb97f6e5fd89295ba827)
+- Redemption: [Shannon explorer](https://shannon-explorer.somnia.network/tx/0x73b1d1f8ed2707d8869b92fb1a4b9e9546cc6295c89a856783e85de5b3df4a82)
 - SDK and documentation feedback: [`FEEDBACK.md`](./FEEDBACK.md)
 - Current readiness review: [`HACKATHON_REVIEW.md`](./HACKATHON_REVIEW.md)
 
@@ -127,7 +127,7 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 | Criterion | Weight | Downrail evidence | Remaining proof |
 | --- | ---: | --- | --- |
 | Innovation and Originality | 20% | Reframes Event Contracts as exposure-first, scenario-specific portfolio protection rather than another prediction or risk-sized wager. | Make the unhedged-versus-protected outcome the central demo visual. |
-| Technical Implementation | 25% | Live SDK/on-chain reads, deterministic depth-aware planning, exact approvals, decoded calls, successful order receipts, exact fill reconciliation, recovery, settlement scanning, claims, and rollover logic. | Add the claim receipt and rollover evidence. |
+| Technical Implementation | 25% | Live SDK/on-chain reads, deterministic depth-aware planning, exact approvals, decoded calls, successful order and claim receipts, exact fill reconciliation, recovery, settlement scanning, and rollover logic. | Add a current-horizon rollover visual. |
 | User Experience and Design | 20% | Plain-language exposure, horizon, spending cap, conditional payout, residual risk, and portfolio lifecycle across focused routes. | Validate the complete wallet flow with a fresh test user. |
 | Business and Ecosystem Impact | 20% | Creates recurring holder and treasury demand for DreamDEX windows and a reusable protection-planning layer. | Add one quantified example showing repeat Event Contract usage. |
 | Presentation and Demo | 15% | Focused 2:30 before/after portfolio-loss story and evidence plan. | Record, caption, publish, and link the final video. |
@@ -141,9 +141,10 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - [x] Public MIT-licensed GitHub repository.
 - [x] Judge-accessible Vercel deployment.
 - [x] SDK and documentation feedback report.
-- [x] 57 tests, typecheck, and lint passing.
+- [x] 58 tests, typecheck, and lint passing.
 - [x] Production Shannon pilot enabled with the one-leg, 2.00-unit boundary.
 - [x] Real testnet order, receipt, exact fill, and reload-recovery evidence.
-- [ ] Real finalized-position, claim, post-claim, and rollover evidence.
+- [x] Real finalized-position, claim, and post-claim evidence.
+- [ ] Current-horizon rollover recommendation captured.
 - [ ] Two-to-three-minute demo video.
 - [ ] DoraHacks form reviewed and submitted.

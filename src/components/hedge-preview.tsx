@@ -19,6 +19,7 @@ import {
   type DecodedReviewedCall,
 } from "@/features/execution/validate-reviewed-order";
 import {
+  EXECUTION_JOURNAL_UPDATED_EVENT,
   executionJournalId,
   readExecutionJournal,
   saveReviewedExecution,
@@ -239,10 +240,21 @@ export function HedgePreview() {
   const intentKey = [account, chainId, mode, asset, exposure, budget, dropPercent, horizonSeconds].join(":");
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
+    const refreshExecutionJournal = () => {
       setJournalRecords(readExecutionJournal(window.localStorage));
-    });
-    return () => window.cancelAnimationFrame(frame);
+    };
+    const frame = window.requestAnimationFrame(refreshExecutionJournal);
+    window.addEventListener(
+      EXECUTION_JOURNAL_UPDATED_EVENT,
+      refreshExecutionJournal,
+    );
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener(
+        EXECUTION_JOURNAL_UPDATED_EVENT,
+        refreshExecutionJournal,
+      );
+    };
   }, []);
 
   useEffect(() => {

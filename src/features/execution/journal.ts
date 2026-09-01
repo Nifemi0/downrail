@@ -5,6 +5,7 @@ import type { OrderReview } from "./review-schema";
 
 export const EXECUTION_JOURNAL_VERSION = 1 as const;
 export const EXECUTION_JOURNAL_KEY = "downrail.execution-journal.v1";
+export const EXECUTION_JOURNAL_UPDATED_EVENT = "downrail:execution-journal-updated";
 
 export const executionStatusSchema = z.enum([
   "REVIEWED",
@@ -156,4 +157,40 @@ export function updateExecutionJournal(
     next,
     ...records.filter((record) => record.id !== id),
   ]);
+}
+
+export function markClaimedExecutionForMarket(
+  storage: StorageLike,
+  account: string,
+  marketId: string,
+): ExecutionJournalRecord[] {
+  if (!isAddress(account)) throw new TypeError("account must be a valid address");
+  if (!isHash(marketId)) throw new TypeError("marketId must be a valid hash");
+
+  const normalizedAccount = account.toLowerCase();
+  const normalizedMarketId = marketId.toLowerCase();
+  const updatedAt = new Date().toISOString();
+  const records = readExecutionJournal(storage);
+  const next = records.map((record) => {
+    const hasSubmittedOrder = record.calls.some(
+      (call) => call.kind === "ORDER" && call.hash,
+    );
+    if (
+      record.account.toLowerCase() !== normalizedAccount
+      || record.marketId.toLowerCase() !== normalizedMarketId
+      || !hasSubmittedOrder
+    ) {
+      return record;
+    }
+
+    const claimed = {
+      ...record,
+      status: "CLAIMED" as const,
+      updatedAt,
+    };
+    delete claimed.lastError;
+    return executionJournalRecordSchema.parse(claimed);
+  });
+
+  return writeExecutionJournal(storage, next);
 }

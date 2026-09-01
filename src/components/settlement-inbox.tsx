@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 
 import { useWalletSession } from "@/components/wallet-session";
 import {
+  EXECUTION_JOURNAL_UPDATED_EVENT,
+  markClaimedExecutionForMarket,
+} from "@/features/execution/journal";
+import {
   claimReviewSchema,
   validateClaimReview,
   type ClaimReview,
@@ -93,6 +97,28 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
       controller.abort();
     };
   }, [account, chainId]);
+
+  useEffect(() => {
+    if (!account || !inbox) return;
+    const outstandingMarkets = new Set(
+      inbox.positions.map((position) => position.marketId.toLowerCase()),
+    );
+    const verifiedClaims = claimJournal.filter(
+      (record) => record.account.toLowerCase() === account.toLowerCase()
+        && record.status === "CLAIMED"
+        && !outstandingMarkets.has(record.marketId.toLowerCase()),
+    );
+    if (verifiedClaims.length === 0) return;
+
+    for (const claimed of verifiedClaims) {
+      markClaimedExecutionForMarket(
+        window.localStorage,
+        claimed.account,
+        claimed.marketId,
+      );
+    }
+    window.dispatchEvent(new Event(EXECUTION_JOURNAL_UPDATED_EVENT));
+  }, [account, claimJournal, inbox]);
 
   async function buildClaimReview(position: SettlementPosition) {
     if (!account) return;

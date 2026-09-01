@@ -4,6 +4,7 @@ import type { OrderReview } from "./review-schema";
 import {
   EXECUTION_JOURNAL_KEY,
   executionJournalId,
+  markClaimedExecutionForMarket,
   readExecutionJournal,
   saveReviewedExecution,
   updateExecutionJournal,
@@ -101,5 +102,32 @@ describe("execution journal", () => {
     const storage = new MemoryStorage();
     storage.setItem(EXECUTION_JOURNAL_KEY, "not-json");
     expect(readExecutionJournal(storage)).toEqual([]);
+  });
+
+  it("marks submitted executions for a claimed account and market", () => {
+    const storage = new MemoryStorage();
+    const submitted = review();
+    const reviewedOnly = {
+      ...review(),
+      fingerprint: `0x${"d".repeat(64)}` as `0x${string}`,
+    };
+    saveReviewedExecution(storage, reviewedOnly);
+    saveReviewedExecution(storage, submitted);
+    updateExecutionJournal(storage, executionJournalId(submitted), {
+      status: "ORDER_SUBMITTED",
+      callKind: "ORDER",
+      hash: `0x${"c".repeat(64)}`,
+    });
+
+    const records = markClaimedExecutionForMarket(
+      storage,
+      submitted.account,
+      submitted.legs[0].marketId,
+    );
+
+    expect(records.find((record) => record.id === executionJournalId(submitted))?.status)
+      .toBe("CLAIMED");
+    expect(records.find((record) => record.id === executionJournalId(reviewedOnly))?.status)
+      .toBe("REVIEWED");
   });
 });
