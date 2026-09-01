@@ -47,7 +47,7 @@ button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid rgb
 .hero-actions { display:flex; align-items:center; gap:23px; margin-top:30px; }
 .primary-action { display:inline-flex; align-items:center; gap:16px; background:var(--blue); color:white; font-size:.82rem; font-weight:700; padding:13px 16px; transition:background 160ms ease,transform 160ms ease; }
 .primary-action:hover { background:var(--blue-dark); transform:translateY(-2px); }
-.primary-action span,.text-action span { font-size:1rem; }
+.primary-action svg,.text-action svg { width:15px; height:15px; flex:0 0 auto; stroke-width:1.8; }
 .text-action { display:inline-flex; align-items:center; gap:9px; font-size:.8rem; font-weight:600; }
 
 .hero-visual { position:relative; min-height:405px; }
@@ -91,7 +91,8 @@ button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid rgb
 .horizon-control button+button { border-left:1px solid var(--line); }
 .horizon-control button.active { background:var(--ink); color:white; }
 .execution-lock { display:flex; align-items:center; gap:11px; margin-top:2px; padding:13px; border:1px solid var(--line); background:var(--chalk); }
-.execution-lock>span:first-child { color:var(--blue); font-size:1.35rem; }
+.execution-lock-icon { display:grid; place-items:center; color:var(--blue); }
+.execution-lock-icon svg { width:20px; height:20px; stroke-width:1.7; }
 .execution-lock>span:last-child>span { display:block; margin-top:2px; color:var(--muted); font-size:.63rem; }
 .execution-lock strong { display:block; font-size:.7rem; }
 .mode-switch { grid-column:1/-1; }
@@ -106,7 +107,7 @@ button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid rgb
 .demo-result-grid div { display:grid; gap:5px; }
 .demo-result-grid span { color:var(--muted); font-family:var(--font-geist-mono),monospace; font-size:.56rem; letter-spacing:.06em; text-transform:uppercase; }
 .demo-result-grid strong { font-size:.78rem; line-height:1.35; }
-.demo-switch { display:inline-block; margin:0 20px 18px; border:0; background:transparent; padding:0; cursor:pointer; }
+.demo-switch { display:inline-flex; margin:0 20px 18px; border:0; background:transparent; padding:0; cursor:pointer; }
 .testnet-faucet { display:grid; grid-template-columns:1fr auto; gap:14px 24px; align-items:end; margin-top:24px; padding:18px 20px; border:1px dashed var(--line); background:var(--paper); }
 .testnet-faucet .eyebrow { margin:0 0 7px; color:var(--blue); }
 .testnet-faucet h4 { margin:0; font-size:.9rem; }
@@ -157,6 +158,8 @@ button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid rgb
 .rollover-timeline>div>span { color:var(--blue); font-family:var(--font-geist-mono),monospace; font-size:.61rem; }
 .rollover-timeline p { display:grid; gap:3px; margin:0; }
 .rollover-timeline strong,.rollover-timeline b { font-family:var(--font-geist-mono),monospace; font-size:.67rem; }
+.rollover-timeline strong { display:inline-flex; align-items:center; gap:5px; }
+.rollover-timeline strong svg { width:12px; height:12px; color:var(--blue); stroke-width:1.8; }
 .rollover-timeline small { color:var(--muted); font-size:.6rem; }
 .plan-warning { margin:14px 0 0; padding:11px 12px; border-left:2px solid var(--red); background:rgba(240,90,71,.07); color:#7d473f; font-size:.64rem; line-height:1.5; }
 .verification-note { margin:12px 0 0; color:var(--muted); font-family:var(--font-geist-mono),monospace; font-size:.55rem; }
@@ -198,7 +201,8 @@ button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid rgb
 .execution-status strong { font-size:.7rem; }
 .execution-status p { margin:5px 0 0; color:var(--muted); font-size:.63rem; line-height:1.45; }
 .execution-status>div { display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:10px; }
-.execution-status a { color:var(--blue); font-family:var(--font-geist-mono),monospace; font-size:.58rem; }
+.execution-status a { display:inline-flex; align-items:center; gap:4px; color:var(--blue); font-family:var(--font-geist-mono),monospace; font-size:.58rem; }
+.execution-status a svg,.execution-journal a svg { width:12px; height:12px; stroke-width:1.8; }
 .reconciliation-summary { display:grid!important; grid-template-columns:repeat(3,1fr); gap:0!important; width:100%; margin:12px 0 0; border-top:1px solid rgba(49,92,255,.2); }
 .reconciliation-summary>div { display:grid; gap:4px; padding:10px 10px 0 0; }
 .reconciliation-summary dt { color:var(--muted); font-size:.55rem; text-transform:uppercase; }
@@ -210,7 +214,7 @@ button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid rgb
 .execution-journal>article>div:last-child { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px 14px; }
 .execution-journal strong { font-size:.7rem; text-transform:capitalize; }
 .execution-journal span { color:var(--muted); font-family:var(--font-geist-mono),monospace; font-size:.56rem; }
-.execution-journal a { color:var(--blue); font-family:var(--font-geist-mono),monospace; font-size:.58rem; }
+.execution-journal a { display:inline-flex; align-items:center; gap:4px; color:var(--blue); font-family:var(--font-geist-mono),monospace; font-size:.58rem; }
 .execution-journal button { min-height:30px; border:1px solid var(--line); background:transparent; color:var(--ink); padding:0 10px; cursor:pointer; font-family:var(--font-geist-mono),monospace; font-size:.56rem; }
 .execution-journal button:hover:not(:disabled),.execution-journal button:focus-visible { border-color:var(--blue); color:var(--blue); }
 .execution-journal button:disabled { color:var(--muted); cursor:wait; }
@@ -430,7 +434,7 @@ footer p { margin:0; }
 .docs-risk .eyebrow { color:var(--red); }
 .architecture-flow { display:flex; flex-wrap:wrap; align-items:center; gap:9px; margin-top:26px; padding:18px; border:1px solid var(--line); background:var(--paper); }
 .architecture-flow span { padding:8px 10px; border:1px solid var(--line); font-family:var(--font-geist-mono),monospace; font-size:.58rem; }
-.architecture-flow i { color:var(--blue); font-style:normal; }
+.architecture-flow svg { width:15px; height:15px; flex:0 0 auto; color:var(--blue); stroke-width:1.8; }
 .docs-section details { margin-top:13px; border:1px solid var(--line); background:var(--paper); padding:15px 17px; }
 .docs-section summary { cursor:pointer; font-size:.75rem; font-weight:650; }
 .docs-section details p { margin:10px 0 0; color:var(--muted); font-size:.69rem; line-height:1.55; }
@@ -475,5 +479,5 @@ footer p { margin:0; }
   .docs-definition-list dd+dt { margin-top:8px; }
   .docs-outcomes { grid-template-columns:1fr; }
   .architecture-flow { align-items:flex-start; flex-direction:column; }
-  .architecture-flow i { transform:rotate(90deg); }
+  .architecture-flow svg { transform:rotate(90deg); }
 }

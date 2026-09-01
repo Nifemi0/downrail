@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Docs",
@@ -44,7 +45,7 @@ export default function DocsPage() {
             <article><span>02</span><strong>Read both outcomes</strong><p>Compare current cost, conditional payout, and the combined portfolio scenario.</p></article>
             <article><span>03</span><strong>Review exact calls</strong><p>On testnet, inspect every call before your wallet asks for confirmation.</p></article>
           </div>
-          <Link className="primary-action docs-action" href="/app">Open the app <span aria-hidden="true">↗</span></Link>
+          <Link className="primary-action docs-action" href="/app">Open the app <ArrowUpRight aria-hidden="true" /></Link>
         </section>
 
         <section className="docs-section" id="demo">
@@ -97,7 +98,7 @@ export default function DocsPage() {
           <p className="eyebrow">Architecture / 09</p>
           <h2>Live discovery, bounded planning, wallet execution.</h2>
           <p>The app verifies DreamDEX candidates on Shannon, reads executable depth, builds a bounded plan, creates decoded unsigned calls, and reconciles confirmed transactions against indexed fills and live balances.</p>
-          <div className="architecture-flow" aria-label="Downrail architecture flow"><span>DreamDEX discovery</span><i>→</i><span>Planner validation</span><i>→</i><span>Unsigned review</span><i>→</i><span>Wallet confirmation</span><i>→</i><span>Settlement scan</span></div>
+          <div className="architecture-flow" aria-label="Downrail architecture flow"><span>DreamDEX discovery</span><ArrowRight aria-hidden="true" /><span>Planner validation</span><ArrowRight aria-hidden="true" /><span>Unsigned review</span><ArrowRight aria-hidden="true" /><span>Wallet confirmation</span><ArrowRight aria-hidden="true" /><span>Settlement scan</span></div>
         </section>
 
         <section className="docs-section" id="troubleshooting">
@@ -114,7 +115,7 @@ export default function DocsPage() {
           <details><summary>Is Downrail a prediction market?</summary><p>No. Downrail uses existing DreamDEX Event Contracts as building blocks for a portfolio-protection workflow.</p></details>
           <details><summary>Can Downrail access my funds?</summary><p>No. Your wallet signs every transaction and Downrail cannot sign on your behalf.</p></details>
           <details><summary>Does a plan guarantee my portfolio loss is covered?</summary><p>No. The payout is conditional on the selected market&apos;s exact result and may only offset part of the modeled loss.</p></details>
-          <Link className="primary-action docs-action" href="/app">Open Downrail <span aria-hidden="true">↗</span></Link>
+          <Link className="primary-action docs-action" href="/app">Open Downrail <ArrowUpRight aria-hidden="true" /></Link>
         </section>
       </article>
     </main>

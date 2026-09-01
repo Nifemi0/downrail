@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
 export default function Home() {
   return (
@@ -11,8 +12,8 @@ export default function Home() {
             <p className="hero-text">Downrail uses existing DreamDEX DOWN contracts to add a conditional payout alongside BTC or ETH you already own.</p>
             <p className="category-note"><span>Not insurance.</span> You choose the exposure, horizon, and maximum spend; every payout still depends on the selected contract&apos;s exact result.</p>
             <div className="hero-actions">
-              <Link className="primary-action" href="/app">Open Downrail <span aria-hidden="true">↗</span></Link>
-              <Link className="text-action" href="/docs">Learn how it works <span aria-hidden="true">↗</span></Link>
+              <Link className="primary-action" href="/app">Open Downrail <ArrowUpRight aria-hidden="true" /></Link>
+              <Link className="text-action" href="/docs">Learn how it works <ArrowUpRight aria-hidden="true" /></Link>
             </div>
           </div>
 
@@ -54,7 +55,7 @@ export default function Home() {
 
         <section className="landing-cta" aria-labelledby="landing-cta-title">
           <div><p className="eyebrow">Ready to explore?</p><h2 id="landing-cta-title">Build a live protection plan.</h2><p>Try the complete flow without a wallet, or connect to Somnia Shannon when you are ready.</p></div>
-          <Link className="primary-action" href="/app">Open the app <span aria-hidden="true">↗</span></Link>
+          <Link className="primary-action" href="/app">Open the app <ArrowUpRight aria-hidden="true" /></Link>
         </section>
       </div>
     </main>

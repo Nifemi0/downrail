@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
+import { ArrowRight, ArrowUpRight, FlaskConical, Network } from "lucide-react";
 import { encodeFunctionData } from "viem";
 
 import { useWalletSession } from "@/components/wallet-session";
@@ -646,7 +647,7 @@ export function HedgePreview() {
             </div>
           </fieldset>
 
-          <div className="execution-lock"><span aria-hidden="true">{mode === "demo" ? "◌" : "⌁"}</span><span><strong>{mode === "demo" ? "Demo mode · no wallet needed" : "Testnet execution"}</strong><span>{mode === "demo" ? "Explore a simulated review with live market data." : "Wallet, STT gas, and TESDC collateral are required."}</span></span></div>
+          <div className="execution-lock"><span className="execution-lock-icon" aria-hidden="true">{mode === "demo" ? <FlaskConical /> : <Network />}</span><span><strong>{mode === "demo" ? "Demo mode · no wallet needed" : "Testnet execution"}</strong><span>{mode === "demo" ? "Explore a simulated review with live market data." : "Wallet, STT gas, and TESDC collateral are required."}</span></span></div>
         </form>
 
         <div className="plan-output" aria-busy={loadState === "loading"} aria-live="polite">
@@ -702,7 +703,7 @@ export function HedgePreview() {
                   {plan.rolloverCheckpoints.map((checkpoint) => (
                     <div key={checkpoint.sequence}>
                       <span>{String(checkpoint.sequence).padStart(2, "0")}</span>
-                      <p><strong>{formatExpiry(checkpoint.startsAt)} → {formatExpiry(checkpoint.targetEndsAt)}</strong><small>Future market not selected yet</small></p>
+                      <p><strong>{formatExpiry(checkpoint.startsAt)} <ArrowRight aria-hidden="true" /> {formatExpiry(checkpoint.targetEndsAt)}</strong><small>Future market not selected yet</small></p>
                       <b>{formatUsd(checkpoint.estimatedBudgetRaw, quoteDecimals)} reserved</b>
                     </div>
                   ))}
@@ -759,7 +760,7 @@ export function HedgePreview() {
                     <div><span>Conditional net payout</span><strong>{demoReview.conditionalPayout}</strong></div>
                   </div>
                   <p className="preflight-expiry">Generated {new Date(demoReview.generatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}. Demo only — no wallet or transaction required.</p>
-                  <button className="text-action demo-switch" onClick={() => setMode("testnet")} type="button">Ready to use a funded wallet? Switch to Testnet ↗</button>
+                  <button className="text-action demo-switch" onClick={() => setMode("testnet")} type="button">Ready to use a funded wallet? Switch to Testnet <ArrowUpRight aria-hidden="true" /></button>
                 </div>
               )}
 
@@ -823,7 +824,7 @@ export function HedgePreview() {
                       {activeExecution.completed && (
                         <>
                           <div>{activeExecution.completed.map((item) => (
-                            <a href={`https://shannon-explorer.somnia.network/tx/${item.hash}`} key={item.hash} rel="noreferrer" target="_blank">{item.call.kind} · {shortId(item.hash)} ↗</a>
+                            <a href={`https://shannon-explorer.somnia.network/tx/${item.hash}`} key={item.hash} rel="noreferrer" target="_blank">{item.call.kind} · {shortId(item.hash)} <ArrowUpRight aria-hidden="true" /></a>
                           ))}</div>
                           {activeExecution.reconciliation && (
                             <dl className="reconciliation-summary">
@@ -857,7 +858,7 @@ export function HedgePreview() {
               <div>
                 {record.calls.flatMap((call) => call.hash ? [(
                   <a href={`https://shannon-explorer.somnia.network/tx/${call.hash}`} key={call.hash} rel="noreferrer" target="_blank">
-                    {call.kind} {shortId(call.hash)} ↗
+                    {call.kind} {shortId(call.hash)} <ArrowUpRight aria-hidden="true" />
                   </a>
                 )] : [])}
                 <button

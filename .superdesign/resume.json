@@ -31,9 +31,9 @@
       ],
       "fingerprints": {
         ".superdesign/design-system.md": "3c498597b9925888f17814e3f9bbfd45d121843931e680473c8200b0afdb231f",
-        "src/app/globals.css": "9bb9f5962881633ea4f589a05894efd148c11c5379f7560ff5060cd009fa7d4a",
+        "src/app/globals.css": "42d44d6f67fc4aaa290631d3335826ce90ec10f0acc4f66a04991dc0f3ef8db0",
         "src/app/layout.tsx": "b53bfa0af4034108439551d097ff188ebb824f2d2e7329c667cedf567c163437",
-        "src/app/page.tsx": "081b7b27a66725da295de0fa0b209646582248d9ebdb847145e7c0d76dd5a00d",
+        "src/app/page.tsx": "09c6abc88f6e4a2b2297bd0f2db957f08ddfdf8192ca0ca7626b1403cf2bd3a0",
         "src/components/site-header.tsx": "f1c1364a6a815e195b66d0061648bdd6e6371b9b8cacdca5c8fa1521f3c2c8d1",
         "src/components/site-footer.tsx": "da69149243a7b8c1d6a90d3b0f6fd1bdc4361e681766cef0c139f9a4e9af9e3e",
         "src/components/wallet-control.tsx": "769ca199f26a67af897c3247ca705838fb0d025e5ed47544c59ab4847986bcb4",
@@ -64,7 +64,7 @@
           "currentVersion": 4
         }
       },
-      "updatedAt": "2026-09-01T10:48:10.0737213Z"
+      "updatedAt": "2026-09-01T11:03:28.5777144Z"
     },
     "/app": {
       "targetKind": "new-ui",
@@ -99,10 +99,10 @@
       ],
       "fingerprints": {
         ".superdesign/design-system.md": "3c498597b9925888f17814e3f9bbfd45d121843931e680473c8200b0afdb231f",
-        "src/app/globals.css": "9bb9f5962881633ea4f589a05894efd148c11c5379f7560ff5060cd009fa7d4a",
+        "src/app/globals.css": "42d44d6f67fc4aaa290631d3335826ce90ec10f0acc4f66a04991dc0f3ef8db0",
         "src/app/layout.tsx": "b53bfa0af4034108439551d097ff188ebb824f2d2e7329c667cedf567c163437",
         "src/app/app/page.tsx": "4a7a1543f0ccaa356f273f0b7ab389950c18918f67e5e276e356c8457ffed35c",
-        "src/components/hedge-preview.tsx": "620264999e1faca626c5a3bb0afed159e93fcae02159be7fa62fea35cd092d72",
+        "src/components/hedge-preview.tsx": "8eeec351cd271a40b5beb311bafd9c41cebece7e46edd8e2d16c5cbf687b3448",
         "src/components/settlement-inbox.tsx": "5522cbc8ff73dc86f5e02defb61945bccd8463c80f28e87a7162ec308adbe54d",
         "src/components/site-header.tsx": "f1c1364a6a815e195b66d0061648bdd6e6371b9b8cacdca5c8fa1521f3c2c8d1",
         "src/components/site-footer.tsx": "da69149243a7b8c1d6a90d3b0f6fd1bdc4361e681766cef0c139f9a4e9af9e3e",
@@ -114,10 +114,10 @@
           "title": "Downrail — App Workspace",
           "visualDirection": "existing Downrail market and protection controls organized into a focused app workspace with a compact portfolio rail",
           "parentDraftId": "0765c1cd-d985-4813-bd57-26086fc1e551",
-          "currentVersion": 1
+          "currentVersion": 2
         }
       },
-      "updatedAt": "2026-09-01T10:48:10.0737213Z"
+      "updatedAt": "2026-09-01T11:03:28.5777144Z"
     },
     "/docs": {
       "targetKind": "new-ui",
@@ -150,9 +150,9 @@
       ],
       "fingerprints": {
         ".superdesign/design-system.md": "3c498597b9925888f17814e3f9bbfd45d121843931e680473c8200b0afdb231f",
-        "src/app/globals.css": "9bb9f5962881633ea4f589a05894efd148c11c5379f7560ff5060cd009fa7d4a",
+        "src/app/globals.css": "42d44d6f67fc4aaa290631d3335826ce90ec10f0acc4f66a04991dc0f3ef8db0",
         "src/app/layout.tsx": "b53bfa0af4034108439551d097ff188ebb824f2d2e7329c667cedf567c163437",
-        "src/app/docs/page.tsx": "2c59174503bd350998785a3d883490f4299607bee8fc904e80d37bf0ecdba6eb",
+        "src/app/docs/page.tsx": "cd20153ebc3a9ba5248c8de0ec60f09ee7dfa06227a570c204aa1d22b16037c0",
         "src/components/site-header.tsx": "f1c1364a6a815e195b66d0061648bdd6e6371b9b8cacdca5c8fa1521f3c2c8d1",
         "src/components/site-footer.tsx": "da69149243a7b8c1d6a90d3b0f6fd1bdc4361e681766cef0c139f9a4e9af9e3e",
         "src/components/wallet-control.tsx": "769ca199f26a67af897c3247ca705838fb0d025e5ed47544c59ab4847986bcb4",
@@ -163,10 +163,10 @@
           "title": "Downrail — Docs",
           "visualDirection": "editorial product guide using the existing Downrail typography, borders, green accents, and warm paper canvas",
           "parentDraftId": "0765c1cd-d985-4813-bd57-26086fc1e551",
-          "currentVersion": 1
+          "currentVersion": 2
         }
       },
-      "updatedAt": "2026-09-01T10:48:10.0737213Z"
+      "updatedAt": "2026-09-01T11:03:28.5777144Z"
     }
   }
 }
