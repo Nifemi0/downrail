@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
+import { encodeFunctionData } from "viem";
 
 import { useWalletSession } from "@/components/wallet-session";
 import {
@@ -35,6 +36,14 @@ const HORIZONS = [
 
 const EXECUTION_ENABLED =
   process.env.NEXT_PUBLIC_EXECUTION_ENABLED === "true";
+const TEST_COLLATERAL = "0x70a86D8842FB63C4Ad2b7cdddF530eBf1BB25d8E" as const;
+const TEST_COLLATERAL_FAUCET_ABI = [{
+  type: "function",
+  name: "faucet",
+  stateMutability: "nonpayable",
+  inputs: [{ name: "amount", type: "uint256" }],
+  outputs: [],
+}] as const;
 
 type LoadState = "loading" | "ready" | "error";
 type PlannerMode = "demo" | "testnet";
@@ -218,6 +227,8 @@ export function HedgePreview() {
   const [preflightPending, setPreflightPending] = useState(false);
   const [preflightError, setPreflightError] = useState<StoredPreflightError | null>(null);
   const [demoReview, setDemoReview] = useState<DemoReview | null>(null);
+  const [faucetPending, setFaucetPending] = useState(false);
+  const [faucetMessage, setFaucetMessage] = useState<string | null>(null);
   const [acknowledgedFingerprint, setAcknowledgedFingerprint] = useState<string | null>(null);
   const [execution, setExecution] = useState<ExecutionProgress | null>(null);
   const [executionPending, setExecutionPending] = useState(false);
@@ -339,6 +350,28 @@ export function HedgePreview() {
       conditionalPayout: formatUsd(plan.conditionalNetPayoutRaw, quoteDecimals),
       fingerprint: `demo-${asset.toLowerCase()}-${leg.marketId.slice(-8)}-${horizonSeconds}`,
     });
+  }
+
+  async function requestTestCollateral() {
+    if (!provider || !account || chainId !== "0xc488") return;
+    setFaucetPending(true);
+    setFaucetMessage(null);
+    try {
+      const data = encodeFunctionData({
+        abi: TEST_COLLATERAL_FAUCET_ABI,
+        functionName: "faucet",
+        args: [100n * 10n ** 6n],
+      });
+      const hash = await provider.request({
+        method: "eth_sendTransaction",
+        params: [{ from: account, to: TEST_COLLATERAL, data, value: "0x0" }],
+      });
+      setFaucetMessage(`Faucet request submitted: ${String(hash).slice(0, 10)}…`);
+    } catch (requestError) {
+      setFaucetMessage(requestError instanceof Error ? requestError.message : "The faucet request was cancelled.");
+    } finally {
+      setFaucetPending(false);
+    }
   }
 
   async function submitReviewedPilot() {
@@ -689,6 +722,18 @@ export function HedgePreview() {
                   <button onClick={buildDemoReview} type="button">{demoReview ? "Refresh demo review" : "Build demo review"}</button>
                 </div>
               ) : (
+              <>
+              <div className="testnet-faucet">
+                <div>
+                  <p className="eyebrow">Testnet setup</p>
+                  <h4>Need collateral? Request 100 TESDC.</h4>
+                  <p>{!account ? "Connect a wallet first." : chainId !== "0xc488" ? "Switch to Somnia Shannon first." : "The faucet call is testnet-only and requires your wallet to confirm a small STT gas payment."}</p>
+                </div>
+                <button disabled={!account || chainId !== "0xc488" || faucetPending} onClick={() => void requestTestCollateral()} type="button">
+                  {faucetPending ? "Waiting for wallet…" : "Request test collateral"}
+                </button>
+                {faucetMessage && <p className="faucet-message" role="status">{faucetMessage}</p>}
+              </div>
               <div className="order-review">
                 <div>
                   <p className="eyebrow">Testnet execution gate</p>
@@ -699,6 +744,7 @@ export function HedgePreview() {
                   {preflightPending ? "Building review…" : "Build unsigned review"}
                 </button>
               </div>
+              </>
               )}
 
               {mode === "demo" && demoReview && (

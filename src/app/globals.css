@@ -107,6 +107,13 @@ button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid rgb
 .demo-result-grid span { color:var(--muted); font-family:var(--font-geist-mono),monospace; font-size:.56rem; letter-spacing:.06em; text-transform:uppercase; }
 .demo-result-grid strong { font-size:.78rem; line-height:1.35; }
 .demo-switch { display:inline-block; margin:0 20px 18px; border:0; background:transparent; padding:0; cursor:pointer; }
+.testnet-faucet { display:grid; grid-template-columns:1fr auto; gap:14px 24px; align-items:end; margin-top:24px; padding:18px 20px; border:1px dashed var(--line); background:var(--paper); }
+.testnet-faucet .eyebrow { margin:0 0 7px; color:var(--blue); }
+.testnet-faucet h4 { margin:0; font-size:.9rem; }
+.testnet-faucet p:not(.eyebrow):not(.faucet-message) { max-width:520px; margin:7px 0 0; color:var(--muted); font-size:.63rem; line-height:1.5; }
+.testnet-faucet button { min-height:40px; border:1px solid var(--ink); background:var(--ink); color:white; padding:0 14px; cursor:pointer; font-family:var(--font-geist-mono),monospace; font-size:.59rem; }
+.testnet-faucet button:disabled { cursor:not-allowed; opacity:.45; }
+.faucet-message { grid-column:1/-1; margin:0; color:var(--blue); font-family:var(--font-geist-mono),monospace; font-size:.58rem; }
 .plan-output { min-width:0; min-height:570px; padding:30px; }
 .plan-message { display:grid; min-height:500px; place-content:center; justify-items:center; color:var(--muted); text-align:center; }
 .plan-message p { max-width:330px; line-height:1.55; }
@@ -308,6 +315,8 @@ footer p { margin:0; }
   .demo-review { align-items:stretch; flex-direction:column; }
   .demo-review button { width:100%; }
   .demo-result-grid { grid-template-columns:1fr; }
+  .testnet-faucet { align-items:stretch; grid-template-columns:1fr; }
+  .testnet-faucet button { width:100%; }
   .preflight-result dl { grid-template-columns:1fr; }
   .preflight-result dt { margin-top:4px; }
   .settlement-board>article { grid-template-columns:1fr; }
