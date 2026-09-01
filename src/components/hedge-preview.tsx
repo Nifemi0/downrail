@@ -579,23 +579,29 @@ export function HedgePreview() {
 
   return (
     <section className="planner-section" aria-labelledby="planner-title">
-      <div className="section-intro">
+      <div className="workspace-header">
         <div>
-          <p className="eyebrow">Protection planner / 02</p>
-          <h2 id="planner-title">Configure the guardrail.</h2>
+          <p className="eyebrow">Protection builder</p>
+          <h2 id="planner-title">Configure once. Understand every outcome.</h2>
         </div>
-        <p>Live, depth-aware estimates. No wallet signature and no transaction.</p>
+        <fieldset className="segmented-control mode-switch mode-toggle">
+          <legend>Experience</legend>
+          <div>
+            <button aria-pressed={mode === "demo"} className={mode === "demo" ? "active" : ""} onClick={() => setMode("demo")} type="button">Try demo</button>
+            <button aria-pressed={mode === "testnet"} className={mode === "testnet" ? "active" : ""} onClick={() => setMode("testnet")} type="button">Use testnet</button>
+          </div>
+        </fieldset>
       </div>
+
+      <ol className="workflow-steps" aria-label="Protection workflow">
+        <li className="active"><span>01</span><div><strong>Exposure</strong><small>What you hold</small></div></li>
+        <li><span>02</span><div><strong>Protection plan</strong><small>What the market offers</small></div></li>
+        <li><span>03</span><div><strong>Review &amp; execute</strong><small>You stay in control</small></div></li>
+      </ol>
 
       <div className="planner-frame">
         <form className="planner-controls" onSubmit={(event) => event.preventDefault()}>
-          <fieldset className="segmented-control mode-switch">
-            <legend>Experience</legend>
-            <div>
-              <button aria-pressed={mode === "demo"} className={mode === "demo" ? "active" : ""} onClick={() => setMode("demo")} type="button">Try demo</button>
-              <button aria-pressed={mode === "testnet"} className={mode === "testnet" ? "active" : ""} onClick={() => setMode("testnet")} type="button">Testnet</button>
-            </div>
-          </fieldset>
+          <div className="step-kicker"><span>01</span><div><strong>Your exposure</strong><small>Set the risk you want to offset.</small></div></div>
 
           <fieldset className="segmented-control">
             <legend>Asset held</legend>
@@ -650,6 +656,7 @@ export function HedgePreview() {
         </form>
 
         <div className="plan-output" aria-busy={loadState === "loading"} aria-live="polite">
+          <div className="step-kicker output-kicker"><span>02</span><div><strong>Your protection plan</strong><small>Built from current DreamDEX liquidity.</small></div></div>
           {loadState === "loading" ? (
             <div className="plan-message"><span className="loading-mark" /><p>Checking eligible windows, chain state, and executable depth…</p></div>
           ) : loadState === "error" ? (
@@ -712,184 +719,204 @@ export function HedgePreview() {
               {plan.warnings.length > 0 && <p className="plan-warning">{plan.warnings.join(" ")}</p>}
               <p className="verification-note">{snapshot.chainVerifiedCandidateCount} candidate windows verified on Shannon · refreshed {new Date(snapshot.generatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
 
-              {mode === "demo" ? (
-                <div className="demo-review">
-                  <div>
-                    <p className="eyebrow">Instant walkthrough</p>
-                    <h4>See the protection flow without funding a wallet.</h4>
-                    <p>We use the live market snapshot above to create a simulated review. Nothing is signed, submitted, or written on-chain.</p>
-                  </div>
-                  <button onClick={buildDemoReview} type="button">{demoReview ? "Refresh demo review" : "Build demo review"}</button>
+              <div className="execution-stage">
+                <div className="execution-stage-heading">
+                  <div className="step-kicker"><span>03</span><div><strong>Review &amp; execute</strong><small>Nothing moves without your confirmation.</small></div></div>
+                  <span>{mode === "demo" ? "No wallet required" : "Shannon testnet"}</span>
                 </div>
-              ) : (
-              <>
-              <div className="testnet-faucet">
-                <div>
-                  <p className="eyebrow">Testnet setup</p>
-                  <h4>Need collateral? Request 100 TESDC.</h4>
-                  <p>{!account ? "Connect a wallet first." : chainId !== "0xc488" ? "Switch to Somnia Shannon first." : "The faucet call is testnet-only and requires your wallet to confirm a small STT gas payment."}</p>
-                </div>
-                <button disabled={!account || chainId !== "0xc488" || faucetPending} onClick={() => void requestTestCollateral()} type="button">
-                  {faucetPending ? "Waiting for wallet…" : "Request test collateral"}
-                </button>
-                {faucetMessage && <p className="faucet-message" role="status">{faucetMessage}</p>}
-              </div>
-              <div className="order-review">
-                <div>
-                  <p className="eyebrow">Testnet execution gate</p>
-                  <h4>Inspect the exact order calls.</h4>
-                  <p>{!account ? "Connect a wallet to bind the review to your address." : chainId !== "0xc488" ? "Switch the connected wallet to Shannon first." : "This regenerates one closest-window pilot leg and encodes unsigned calls. Your wallet will not open."}</p>
-                </div>
-                <button disabled={!account || chainId !== "0xc488" || preflightPending || plan.legs.length === 0} onClick={() => void buildOrderReview()} type="button">
-                  {preflightPending ? "Building review…" : "Build unsigned review"}
-                </button>
-              </div>
-              </>
-              )}
 
-              {mode === "demo" && demoReview && (
-                <div className="preflight-result demo-result">
-                  <div className="preflight-heading">
-                    <div><span>Simulated review ready</span><strong>{demoReview.marketWindow} DOWN · live market snapshot</strong></div>
-                    <code>{shortId(demoReview.fingerprint)}</code>
-                  </div>
-                  <div className="demo-result-grid">
-                    <div><span>Market</span><strong>{demoReview.marketQuestion}</strong></div>
-                    <div><span>Simulated maximum cost</span><strong>{demoReview.maximumCost}</strong></div>
-                    <div><span>Conditional net payout</span><strong>{demoReview.conditionalPayout}</strong></div>
-                  </div>
-                  <p className="preflight-expiry">Generated {new Date(demoReview.generatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}. Demo only — no wallet or transaction required.</p>
-                  <button className="text-action demo-switch" onClick={() => setMode("testnet")} type="button">Ready to use a funded wallet? Switch to Testnet ↗</button>
-                </div>
-              )}
-
-              {mode === "testnet" && activePreflightError && <p className="preflight-error" role="alert">{activePreflightError}</p>}
-              {mode === "testnet" && activePreflight && (
-                <div className="preflight-result">
-                  <div className="preflight-heading">
-                    <div><span>Unsigned review ready</span><strong>{activePreflight.legs.reduce((total, leg) => total + leg.calls.length, 0)} calls · {activePreflight.legs.length} legs</strong></div>
-                    <code title={activePreflight.fingerprint}>{shortId(activePreflight.fingerprint)}</code>
-                  </div>
-                  {activePreflight.legs.flatMap((leg, legIndex) =>
-                    leg.calls.map((call, callIndex) => (
-                      <details key={`${leg.marketId}-${call.kind}-${callIndex}`}>
-                        <summary><span>{String(legIndex + 1).padStart(2, "0")}.{callIndex + 1} {call.kind}</span><code>{shortId(call.to)}</code></summary>
-                        <p>{call.description}</p>
-                        <p>{activePreflight.decodedCalls[callIndex]?.summary}</p>
-                        <dl><dt>Target</dt><dd><code>{call.to}</code></dd><dt>Value</dt><dd><code>{call.value} wei</code></dd><dt>Calldata</dt><dd><code>{call.data}</code></dd></dl>
-                      </details>
-                    )),
-                  )}
-                  <p className="preflight-expiry">Review expires {new Date(activePreflight.legs[0]?.validUntil ?? activePreflight.generatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}. No transaction was sent.</p>
-
-                  <div className="pilot-gate">
+                {mode === "demo" ? (
+                  <div className="demo-review">
                     <div>
-                      <span>Tiny Shannon pilot</span>
-                      <strong>{formatUsd(activePreflight.plan.totalMaximumCostRaw, activePreflight.quoteDecimals)} maximum collateral · one IOC leg</strong>
-                      {!pilotCostIsSafe && <p>Lower “Maximum spend” to $2.00 or less, then build a fresh review.</p>}
+                      <p className="eyebrow">Instant walkthrough</p>
+                      <h4>See the full flow without funding a wallet.</h4>
+                      <p>Downrail uses the live plan above to create a simulated review. Nothing is signed, submitted, or written on-chain.</p>
                     </div>
-                    <label>
-                      <input
-                        checked={reviewAcknowledged}
-                        disabled={!pilotCostIsSafe || executionPending}
-                        onChange={(event) => setAcknowledgedFingerprint(event.target.checked ? activePreflight.fingerprint : null)}
-                        type="checkbox"
-                      />
-                      <span>I reviewed this fingerprint and authorize these testnet calls.</span>
-                    </label>
-                    <button
-                      className="execute-pilot"
-                      disabled={!EXECUTION_ENABLED || !pilotCostIsSafe || !reviewAcknowledged || executionPending || !provider}
-                      onClick={() => void submitReviewedPilot()}
-                      type="button"
-                    >
-                      {!EXECUTION_ENABLED
-                        ? "Signing locked by production flag"
-                        : executionPending
-                          ? "Wallet flow active…"
-                          : "Submit reviewed pilot"}
-                    </button>
-                    <p className="pilot-warning">
-                      {EXECUTION_ENABLED
-                        ? "Shannon testnet only. This opens your wallet; each call still requires your confirmation, and Downrail cannot sign for you."
-                        : "Wallet submission is currently disabled. Testnet execution can be enabled for this deployment."}
-                    </p>
+                    <button onClick={buildDemoReview} type="button">{demoReview ? "Refresh demo review" : "Build demo review"}</button>
                   </div>
-
-                  {activeExecution && (
-                    <div className={`execution-status${activeExecution.error ? " error" : ""}`} role="status">
-                      <strong>{activeExecution.completed ? "Pilot confirmed" : activeExecution.error ? "Pilot stopped" : "Execution in progress"}</strong>
-                      <p>{activeExecution.message}</p>
-                      {activeExecution.completed && (
-                        <>
-                          <div>{activeExecution.completed.map((item) => (
-                            <a href={`https://shannon-explorer.somnia.network/tx/${item.hash}`} key={item.hash} rel="noreferrer" target="_blank">{item.call.kind} · {shortId(item.hash)} ↗</a>
-                          ))}</div>
-                          {activeExecution.reconciliation && (
-                            <dl className="reconciliation-summary">
-                              <div><dt>Indexed fills</dt><dd>{activeExecution.reconciliation.fills.length}</dd></div>
-                              <div><dt>NO balance</dt><dd>{formatRaw(activeExecution.reconciliation.positions.find((position) => position.outcome === "NO")?.balanceRaw ?? "0", activeExecution.reconciliation.positions[0]?.quoteDecimals ?? activePreflight.quoteDecimals, 3)}</dd></div>
-                              <div><dt>Resting orders</dt><dd>{activeExecution.reconciliation.openOrders.length}</dd></div>
-                            </dl>
-                          )}
-                        </>
-                      )}
+                ) : (
+                  <div className="testnet-setup">
+                    <div className="testnet-setup-copy">
+                      <p className="eyebrow">Testnet readiness</p>
+                      <h4>Fund, review, then confirm.</h4>
+                      <p>{!account ? "Connect your wallet from the header to begin." : chainId !== "0xc488" ? "Switch the connected wallet to Somnia Shannon." : "Your wallet is ready. Request TESDC only if your test collateral is low, then build the exact order review."}</p>
                     </div>
-                  )}
-                </div>
-              )}
+                    <div className="readiness-list" aria-label="Testnet readiness">
+                      <div className={account ? "ready" : ""}><span>01</span><p><strong>Wallet</strong><small>{account ? "Connected" : "Not connected"}</small></p></div>
+                      <div className={chainId === "0xc488" ? "ready" : ""}><span>02</span><p><strong>Network</strong><small>{chainId === "0xc488" ? "Shannon selected" : "Switch required"}</small></p></div>
+                      <div><span>03</span><p><strong>Collateral</strong><small>TESDC faucet available</small></p></div>
+                    </div>
+                    <div className="testnet-actions">
+                      <button className="faucet-action" disabled={!account || chainId !== "0xc488" || faucetPending} onClick={() => void requestTestCollateral()} type="button">
+                        {faucetPending ? "Waiting for wallet…" : "Request 100 TESDC"}
+                      </button>
+                      <button className="review-action" disabled={!account || chainId !== "0xc488" || preflightPending || plan.legs.length === 0} onClick={() => void buildOrderReview()} type="button">
+                        {preflightPending ? "Building review…" : "Build testnet review"}
+                      </button>
+                    </div>
+                    {faucetMessage && <p className="faucet-message" role="status">{faucetMessage}</p>}
+                  </div>
+                )}
+
+                {mode === "demo" && demoReview && (
+                  <div className="preflight-result demo-result">
+                    <div className="preflight-heading">
+                      <div><span>Simulated review ready</span><strong>{demoReview.marketWindow} DOWN · live market snapshot</strong></div>
+                      <code>{shortId(demoReview.fingerprint)}</code>
+                    </div>
+                    <div className="demo-result-grid">
+                      <div><span>Market</span><strong>{demoReview.marketQuestion}</strong></div>
+                      <div><span>Simulated maximum cost</span><strong>{demoReview.maximumCost}</strong></div>
+                      <div><span>Conditional net payout</span><strong>{demoReview.conditionalPayout}</strong></div>
+                    </div>
+                    <p className="preflight-expiry">Generated {new Date(demoReview.generatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}. Demo only — no wallet or transaction required.</p>
+                    <button className="text-action demo-switch" onClick={() => setMode("testnet")} type="button">Ready to use a funded wallet? Switch to Testnet ↗</button>
+                  </div>
+                )}
+
+                {mode === "testnet" && activePreflightError && <p className="preflight-error" role="alert">{activePreflightError}</p>}
+                {mode === "testnet" && activePreflight && (
+                  <div className="preflight-result">
+                    <div className="preflight-heading">
+                      <div><span>Testnet review ready</span><strong>{formatUsd(activePreflight.plan.totalMaximumCostRaw, activePreflight.quoteDecimals)} maximum collateral · one IOC leg</strong></div>
+                      <span className="review-ready">Wallet confirmation required</span>
+                    </div>
+
+                    <div className="pilot-gate">
+                      <div>
+                        <span>Tiny Shannon pilot</span>
+                        <strong>{activePreflight.legs.reduce((total, leg) => total + leg.calls.length, 0)} decoded calls · expires {new Date(activePreflight.legs[0]?.validUntil ?? activePreflight.generatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</strong>
+                        {!pilotCostIsSafe && <p>Lower “Maximum spend” to $2.00 or less, then build a fresh review.</p>}
+                      </div>
+                      <label>
+                        <input
+                          checked={reviewAcknowledged}
+                          disabled={!pilotCostIsSafe || executionPending}
+                          onChange={(event) => setAcknowledgedFingerprint(event.target.checked ? activePreflight.fingerprint : null)}
+                          type="checkbox"
+                        />
+                        <span>I reviewed this plan and authorize the displayed Shannon testnet calls.</span>
+                      </label>
+                      <button
+                        className="execute-pilot"
+                        disabled={!EXECUTION_ENABLED || !pilotCostIsSafe || !reviewAcknowledged || executionPending || !provider}
+                        onClick={() => void submitReviewedPilot()}
+                        type="button"
+                      >
+                        {!EXECUTION_ENABLED
+                          ? "Testnet submission unavailable"
+                          : executionPending
+                            ? "Wallet flow active…"
+                            : "Confirm in wallet"}
+                      </button>
+                      <p className="pilot-warning">
+                        {EXECUTION_ENABLED
+                          ? "Shannon testnet only. Your wallet asks you to confirm every call; Downrail never signs for you."
+                          : "Wallet submission is currently unavailable for this deployment."}
+                      </p>
+                    </div>
+
+                    <details className="advanced-details">
+                      <summary><span>Advanced transaction details</span><code>{shortId(activePreflight.fingerprint)}</code></summary>
+                      <div className="advanced-fingerprint"><span>Review fingerprint</span><code>{activePreflight.fingerprint}</code></div>
+                      {activePreflight.legs.flatMap((leg, legIndex) =>
+                        leg.calls.map((call, callIndex) => (
+                          <details className="call-details" key={`${leg.marketId}-${call.kind}-${callIndex}`}>
+                            <summary><span>{String(legIndex + 1).padStart(2, "0")}.{callIndex + 1} {call.kind}</span><code>{shortId(call.to)}</code></summary>
+                            <p>{call.description}</p>
+                            <p>{activePreflight.decodedCalls[callIndex]?.summary}</p>
+                            <dl><dt>Target</dt><dd><code>{call.to}</code></dd><dt>Value</dt><dd><code>{call.value} wei</code></dd><dt>Calldata</dt><dd><code>{call.data}</code></dd></dl>
+                          </details>
+                        )),
+                      )}
+                      <p className="preflight-expiry">Review expires {new Date(activePreflight.legs[0]?.validUntil ?? activePreflight.generatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}. No transaction was sent.</p>
+                    </details>
+
+                    {activeExecution && (
+                      <div className={`execution-status${activeExecution.error ? " error" : ""}`} role="status">
+                        <strong>{activeExecution.completed ? "Pilot confirmed" : activeExecution.error ? "Pilot stopped" : "Execution in progress"}</strong>
+                        <p>{activeExecution.message}</p>
+                        {activeExecution.completed && (
+                          <>
+                            <div>{activeExecution.completed.map((item) => (
+                              <a href={`https://shannon-explorer.somnia.network/tx/${item.hash}`} key={item.hash} rel="noreferrer" target="_blank">{item.call.kind} · {shortId(item.hash)} ↗</a>
+                            ))}</div>
+                            {activeExecution.reconciliation && (
+                              <dl className="reconciliation-summary">
+                                <div><dt>Indexed fills</dt><dd>{activeExecution.reconciliation.fills.length}</dd></div>
+                                <div><dt>NO balance</dt><dd>{formatRaw(activeExecution.reconciliation.positions.find((position) => position.outcome === "NO")?.balanceRaw ?? "0", activeExecution.reconciliation.positions[0]?.quoteDecimals ?? activePreflight.quoteDecimals, 3)}</dd></div>
+                                <div><dt>Resting orders</dt><dd>{activeExecution.reconciliation.openOrders.length}</dd></div>
+                              </dl>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </>
           ) : null}
         </div>
       </div>
-      {visibleJournalRecords.length > 0 && (
-        <section className="execution-journal" aria-labelledby="execution-journal-title">
-          <div className="legs-heading">
-            <h3 id="execution-journal-title">Recovered execution activity</h3>
-            <span>device-local pointers · chain remains authoritative</span>
-          </div>
-          {visibleJournalRecords.map((record) => (
-            <article key={record.id}>
-              <div>
-                <strong>{formatJournalStatus(record.status)}</strong>
-                <span>{shortId(record.marketId)} · updated {new Date(record.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
-              </div>
-              <div>
-                {record.calls.flatMap((call) => call.hash ? [(
-                  <a href={`https://shannon-explorer.somnia.network/tx/${call.hash}`} key={call.hash} rel="noreferrer" target="_blank">
-                    {call.kind} {shortId(call.hash)} ↗
-                  </a>
-                )] : [])}
-                <button
-                  disabled={recheckingJournalId === record.id}
-                  onClick={() => void recheckJournalRecord(record)}
-                  type="button"
-                >
-                  {recheckingJournalId === record.id ? "Rechecking…" : "Recheck on chain"}
-                </button>
-              </div>
-            </article>
-          ))}
-        </section>
-      )}
-      {rolloverRecommendations.length > 0 && (
-        <section className="rollover-queue" aria-labelledby="rollover-queue-title">
+      {(visibleJournalRecords.length > 0 || rolloverRecommendations.length > 0) && (
+        <details className="advanced-operations">
+          <summary>
+            <span>Activity &amp; rollover</span>
+            <small>{visibleJournalRecords.length} recent execution{visibleJournalRecords.length === 1 ? "" : "s"}{rolloverRecommendations.length > 0 ? ` · ${rolloverRecommendations.length} rollover ready` : ""}</small>
+          </summary>
           <div>
-            <p className="eyebrow">Manual rollover queue / 05</p>
-            <h3 id="rollover-queue-title">A fresh market review is ready.</h3>
-            <p>No automatic order is created. Refreshing reruns discovery, depth, and all planner checks.</p>
+            {visibleJournalRecords.length > 0 && (
+              <section className="execution-journal" aria-labelledby="execution-journal-title">
+                <div className="legs-heading">
+                  <h3 id="execution-journal-title">Recovered execution activity</h3>
+                  <span>device-local pointers · chain remains authoritative</span>
+                </div>
+                {visibleJournalRecords.map((record) => (
+                  <article key={record.id}>
+                    <div>
+                      <strong>{formatJournalStatus(record.status)}</strong>
+                      <span>{shortId(record.marketId)} · updated {new Date(record.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                    </div>
+                    <div>
+                      {record.calls.flatMap((call) => call.hash ? [(
+                        <a href={`https://shannon-explorer.somnia.network/tx/${call.hash}`} key={call.hash} rel="noreferrer" target="_blank">
+                          {call.kind} {shortId(call.hash)} ↗
+                        </a>
+                      )] : [])}
+                      <button
+                        disabled={recheckingJournalId === record.id}
+                        onClick={() => void recheckJournalRecord(record)}
+                        type="button"
+                      >
+                        {recheckingJournalId === record.id ? "Rechecking…" : "Recheck on chain"}
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </section>
+            )}
+            {rolloverRecommendations.length > 0 && (
+              <section className="rollover-queue" aria-labelledby="rollover-queue-title">
+                <div>
+                  <p className="eyebrow">Manual rollover queue</p>
+                  <h3 id="rollover-queue-title">A fresh market review is ready.</h3>
+                  <p>No automatic order is created. Refreshing reruns discovery, depth, and all planner checks.</p>
+                </div>
+                {rolloverRecommendations.map(({ record, recommendation }) => (
+                  <article key={recommendation.dedupeKey}>
+                    <span>{recommendation.trigger.toLowerCase().replaceAll("_", " ")}</span>
+                    <strong>{Math.ceil(recommendation.remainingHorizonSeconds / 60)} minutes remain</strong>
+                    <p>{formatUsd(recommendation.budgetRaw, record.rolloverContext?.quoteDecimals ?? 6)} reserved · prior market {shortId(record.marketId)}</p>
+                  </article>
+                ))}
+                <button onClick={() => setRefreshNonce((value) => value + 1)} type="button">
+                  Refresh recommendation
+                </button>
+              </section>
+            )}
           </div>
-          {rolloverRecommendations.map(({ record, recommendation }) => (
-            <article key={recommendation.dedupeKey}>
-              <span>{recommendation.trigger.toLowerCase().replaceAll("_", " ")}</span>
-              <strong>{Math.ceil(recommendation.remainingHorizonSeconds / 60)} minutes remain</strong>
-              <p>{formatUsd(recommendation.budgetRaw, record.rolloverContext?.quoteDecimals ?? 6)} reserved · prior market {shortId(record.marketId)}</p>
-            </article>
-          ))}
-          <button onClick={() => setRefreshNonce((value) => value + 1)} type="button">
-            Refresh recommendation
-          </button>
-        </section>
+        </details>
       )}
     </section>
   );
