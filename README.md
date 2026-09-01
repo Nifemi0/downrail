@@ -83,7 +83,7 @@ Verified Shannon lifecycle: [order approval](https://shannon-explorer.somnia.net
 - Every quote, market state, pool grid, and expiry is refreshed before the review is encoded.
 - DOWN prices are converted to the SDK's complementary YES-price representation deterministically.
 - ERC-20 approval calldata is rewritten from the SDK's unlimited default to the exact reviewed maximum cost.
-- Reviews expire after two minutes and are bound to the connected account, Shannon chain ID, and a tamper-evident fingerprint.
+- Order reviews expire after five minutes, claim reviews expire after two minutes, and both are bound to the connected account, Shannon chain ID, and a tamper-evident fingerprint.
 - Submission remains disabled until the user checks the exact-review acknowledgement. Each call still requires confirmation inside the wallet.
 - Calls are sent sequentially. A reverted or unconfirmed receipt stops the sequence.
 - Confirmed execution is persisted as public device-local pointers and reconciled by stable market ID plus exact order transaction against indexed fills, order history, positions, and resting orders.

@@ -5,7 +5,7 @@ import {
 } from "@somnia-chain/markets-sdk";
 import { encodeFunctionData, isAddress, type Address } from "viem";
 
-const PREFLIGHT_LIFETIME_SECONDS = 120;
+const PREFLIGHT_LIFETIME_SECONDS = 300;
 const ERC20_APPROVE_ABI = [
   {
     type: "function",

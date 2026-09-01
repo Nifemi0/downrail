@@ -30,13 +30,13 @@ describe("buildBuyNoOrderPreflight", () => {
     expect(result.params.side).toBe("BUY_NO");
   });
 
-  it("uses a two-minute immediate-or-cancel safety window", () => {
+  it("uses a five-minute immediate-or-cancel safety window", () => {
     const result = buildBuyNoOrderPreflight(leg(), 6, NOW);
 
     expect(result.params.orderType).toBe(ORDER_TYPE.MARKET);
-    expect(result.validUntilUnixSeconds).toBe(NOW + 120);
+    expect(result.validUntilUnixSeconds).toBe(NOW + 300);
     expect(result.params.expireTimestampNs).toBe(
-      BigInt(NOW + 120) * 1_000_000_000n,
+      BigInt(NOW + 300) * 1_000_000_000n,
     );
   });
 
