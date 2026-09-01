@@ -137,7 +137,7 @@ export async function POST(request: Request) {
         "No transaction was sent. These are unsigned review calls only.",
         "Approval is capped to the exact reviewed maximum collateral cost.",
         "Gas is separate and is resolved by the wallet at send time.",
-        "Wallet submission is disabled by the production safety flag; decoded-call validation is enforced locally before any send.",
+        "Shannon testnet submission is opt-in; decoded-call validation is enforced locally before every wallet confirmation.",
       ],
     });
 

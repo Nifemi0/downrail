@@ -805,7 +805,7 @@ export function HedgePreview() {
                       type="button"
                     >
                       {!EXECUTION_ENABLED
-                        ? "Signing locked by production flag"
+                        ? "Shannon pilot unavailable"
                         : executionPending
                           ? "Wallet flow active…"
                           : "Submit reviewed pilot"}
@@ -813,7 +813,7 @@ export function HedgePreview() {
                     <p className="pilot-warning">
                       {EXECUTION_ENABLED
                         ? "Shannon testnet only. This opens your wallet; each call still requires your confirmation, and Downrail cannot sign for you."
-                        : "Wallet submission is currently disabled. Testnet execution can be enabled for this deployment."}
+                        : "Unsigned Shannon reviews remain available in this deployment."}
                     </p>
                   </div>
 

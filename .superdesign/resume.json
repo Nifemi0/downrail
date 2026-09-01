@@ -102,8 +102,8 @@
         "src/app/globals.css": "1d7fde16d670b5862e772d5539afbacd89c7412e6d6cdda6b330629033107408",
         "src/app/layout.tsx": "b53bfa0af4034108439551d097ff188ebb824f2d2e7329c667cedf567c163437",
         "src/app/app/page.tsx": "60863eada6df18b220e55153d3e19a097d78030ff805dd185317040b75b9e5c2",
-        "src/components/hedge-preview.tsx": "d30d8eba4460286c578168dcc4a2f787351a6ae985bf750e4381430a3f2c0b6d",
-        "src/components/settlement-inbox.tsx": "deba7888e752b23b48b19b1912754d5b543d88b169f5485a5ba2490f52b4d086",
+        "src/components/hedge-preview.tsx": "d498674d4806033b006e12e391d2d03994ad1e73d31541d5022a188bbea803f2",
+        "src/components/settlement-inbox.tsx": "a1def673d9dde444f564700144144ea0e106fe4f1e110bac45c9476adaeed803",
         "src/components/site-header.tsx": "f1c1364a6a815e195b66d0061648bdd6e6371b9b8cacdca5c8fa1521f3c2c8d1",
         "src/components/site-footer.tsx": "da69149243a7b8c1d6a90d3b0f6fd1bdc4361e681766cef0c139f9a4e9af9e3e",
         "src/components/wallet-control.tsx": "769ca199f26a67af897c3247ca705838fb0d025e5ed47544c59ab4847986bcb4",
@@ -117,7 +117,7 @@
           "currentVersion": 3
         }
       },
-      "updatedAt": "2026-09-01T12:12:41.3150892Z"
+      "updatedAt": "2026-09-01T16:00:03.5621567Z"
     },
     "/docs": {
       "targetKind": "new-ui",

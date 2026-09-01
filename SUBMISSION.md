@@ -80,7 +80,7 @@ That distinction matters in the current field. Sluice Markets already focuses on
 - Quotes and reviews expire quickly and are bound to the connected account and Shannon chain.
 - The interface describes partial, scenario-dependent protection rather than guaranteed insurance.
 - Simulated values and unproven lifecycle behavior are never presented as live on-chain proof.
-- Public signing is currently disabled in the Vercel environment; enabling the Shannon-only pilot and capturing real receipts is the next release gate.
+- The Vercel deployment enables a Shannon-only tiny pilot capped at one IOC leg and 2.00 collateral units; real receipts are still required before submission.
 
 ## Ecosystem impact
 
@@ -142,7 +142,7 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - [x] Judge-accessible Vercel deployment.
 - [x] SDK and documentation feedback report.
 - [x] 57 tests, typecheck, and lint passing.
-- [ ] Production Shannon pilot enabled and reverified.
+- [x] Production Shannon pilot enabled with the one-leg, 2.00-unit boundary.
 - [ ] Real testnet order, receipt, and fill/IOC evidence.
 - [ ] Real finalized-position, claim, post-claim, and rollover evidence.
 - [ ] Two-to-three-minute demo video.

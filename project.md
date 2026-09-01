@@ -96,10 +96,10 @@ DreamDEX / Shannon
 - Lifecycle-triggered manual rollover recommendations.
 - Responsive landing, application, and documentation routes.
 - Public Vercel deployment, public MIT repository, CI, and 57 tests.
+- Shannon-only production pilot deliberately enabled behind the one-leg, 2.00-unit execution boundary.
 
 ## Evidence still required
 
-- Production Shannon signing deliberately enabled and reverified.
 - Real order receipt and fill or proven unfilled IOC result.
 - Recovery after reload using that transaction.
 - Real finalized position and reviewed claim receipt.

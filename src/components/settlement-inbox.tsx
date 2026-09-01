@@ -271,7 +271,7 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
               onClick={() => void submitClaim()}
               type="button"
             >
-              {!EXECUTION_ENABLED ? "Claim signing locked" : claimPending ? "Claim flow active…" : "Submit reviewed claim"}
+              {!EXECUTION_ENABLED ? "Shannon claim unavailable" : claimPending ? "Claim flow active…" : "Submit reviewed claim"}
             </button>
             <p>{claimMessage ?? `Review expires ${new Date(review.validUntil).toLocaleTimeString()}. No claim was sent.`}</p>
           </div>

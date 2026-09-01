@@ -8,7 +8,7 @@ Scope: product correctness, DreamDEX integration, transaction safety, lifecycle 
 
 ## Executive verdict
 
-Downrail is a strong, differentiated testnet product with a working live-data path and a substantially implemented order-to-settlement lifecycle. It is no longer merely a read-only planner. The remaining weakness is evidence: production signing is currently disabled, and no real order, fill or IOC cancellation, finalized claim, post-claim state, or rollover has been captured for judges.
+Downrail is a strong, differentiated testnet product with a working live-data path and a substantially implemented order-to-settlement lifecycle. It is no longer merely a read-only planner. The bounded Shannon production pilot is enabled; the remaining weakness is evidence because no real order, fill or IOC cancellation, finalized claim, post-claim state, or rollover has been captured for judges.
 
 The application is technically competitive today. It becomes submission-ready only after the implemented write paths are exercised with a dedicated Shannon wallet and the resulting receipts are linked in the demo and submission.
 
@@ -29,9 +29,9 @@ The application is technically competitive today. It becomes submission-ready on
 
 ## Current blockers
 
-### Submission blocker: public signing is disabled
+### Release gate passed: bounded public signing enabled
 
-`NEXT_PUBLIC_EXECUTION_ENABLED` is unset in the Vercel production environment, so the deployed Shannon app cannot send the reviewed pilot calls. This is the immediate functional release gate.
+`NEXT_PUBLIC_EXECUTION_ENABLED=true` is set in the Vercel production environment. The deployed sender remains restricted to Shannon chain `50312`, one IOC leg, an exact bounded approval, and no more than 2.00 collateral units.
 
 ### Evidence blocker: no real wallet lifecycle
 
@@ -79,7 +79,7 @@ The strongest one-sentence position is:
 | Deterministic budget-safe plan | Complete | Verified |
 | Scenario-specific residual-risk display | Complete | Verified |
 | Exact decoded order review | Complete | Verified unsigned |
-| Wallet order execution | Complete behind flag | Missing |
+| Wallet order execution | Complete and enabled for bounded Shannon pilot | Missing real transaction |
 | Receipt and fill/IOC reconciliation | Complete | Missing real transaction |
 | Reload recovery | Complete | Missing real transaction |
 | Finalized-position discovery | Complete | Missing funded position |

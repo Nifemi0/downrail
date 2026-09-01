@@ -59,7 +59,8 @@ The previously shared X post at `https://x.com/itsNikku876/status/20557012715130
 | SDK feedback | Complete | `FEEDBACK.md` |
 | Demo plan | Complete | `DEMO.md` |
 | Demo video | Missing | Public 2–3 minute link required. |
-| Real order evidence | Missing | Production signing is currently disabled. |
+| Shannon tiny pilot | Enabled | One IOC leg, at most 2.00 collateral units, Shannon only. |
+| Real order evidence | Missing | Pilot is enabled; a wallet-confirmed receipt and fill/IOC result are still required. |
 | Real claim evidence | Missing | Requires a funded finalized position. |
 | DoraHacks form | Pending | Final submission not yet made. |
 
@@ -111,6 +112,7 @@ Required evidence bundle:
 - [x] Public application and repository available.
 - [x] SDK feedback complete.
 - [x] Differentiation reviewed against current competitors.
+- [x] Production Shannon tiny pilot enabled with bounded execution.
 - [ ] Real order lifecycle captured.
 - [ ] Real claim lifecycle captured.
 - [ ] Final video published.

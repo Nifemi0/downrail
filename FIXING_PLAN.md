@@ -36,7 +36,7 @@ Status: complete on September 1.
 - Use one verified test baseline: 57 passing tests plus clean typecheck and lint.
 - Mark the public repository, MIT license, and Vercel deployment complete.
 - Distinguish implemented lifecycle code from real transaction evidence.
-- State truthfully that production signing is currently disabled.
+- State truthfully that the bounded production Shannon pilot is enabled but has no real receipt yet.
 
 ## Phase 2 — enable and prove the tiny Shannon order
 
@@ -48,7 +48,7 @@ Status: next.
 - Confirm enough STT exists for gas and enough DreamDEX test collateral exists for the order.
 - Keep the pilot cap at 2.00 collateral units and one IOC leg.
 - Generate and inspect a fresh decoded review immediately before sending.
-- Set `NEXT_PUBLIC_EXECUTION_ENABLED=true` for production and redeploy only when the wallet is ready.
+- Keep `NEXT_PUBLIC_EXECUTION_ENABLED=true` limited to production Shannon and reverify the deployed one-leg, 2.00-unit boundary.
 - Recheck the live deployment, planner, review expiry, account binding, exact approval, and order calldata.
 
 ### Required evidence
@@ -161,7 +161,7 @@ Until the submission is complete, do not spend time on:
 - [x] Public app, repository, license, and SDK feedback.
 - [x] 57 tests, typecheck, and lint passing.
 - [x] Documentation synchronized with the current build.
-- [ ] Production Shannon pilot enabled and reverified.
+- [x] Production Shannon pilot enabled with the one-leg, 2.00-unit boundary.
 - [ ] Real order and fill/IOC evidence captured.
 - [ ] Real claim and post-claim evidence captured.
 - [ ] Rollover demonstrated from real lifecycle state.

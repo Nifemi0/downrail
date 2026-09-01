@@ -129,7 +129,7 @@ export async function POST(request: Request) {
       mode: "UNSIGNED_CLAIM_REVIEW",
       fingerprint: createClaimFingerprint(commitment),
       warnings: [
-        "No transaction was sent. Claim signing is disabled by the production safety flag.",
+        "No transaction was sent. Shannon testnet claim submission is opt-in and requires explicit wallet confirmation.",
         "The review redeems the full live winning outcome balance to the connected account.",
       ],
     });

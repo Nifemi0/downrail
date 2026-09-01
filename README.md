@@ -4,7 +4,7 @@ Downrail turns DreamDEX BTC and ETH Event Contracts into transparent, short-dura
 
 The current build reads live DreamDEX inventory on Somnia Shannon, constructs one depth-aware current DOWN leg plus explicit future rollover checkpoints, connects injected wallets, and builds canonical decoded order and claim reviews. It includes a strict tiny-pilot sender, receipt verification, reload recovery, historical settlement discovery, reviewed claims, and lifecycle-triggered rollover recommendations. No private key is accepted or stored.
 
-The public Vercel environment currently leaves testnet signing disabled. Read-only planning and unsigned reviews are live; enabling the Shannon-only pilot and capturing real order/claim receipts is the next release gate.
+The public Vercel environment enables a Shannon-only tiny pilot capped at one IOC leg and 2.00 collateral units. Read-only planning and unsigned reviews remain available; capturing real order and claim receipts is the next release gate.
 
 Production deployment: https://downrail.vercel.app
 
@@ -95,7 +95,7 @@ Hackathon materials:
 3. Build the unsigned one-leg review.
 4. Inspect the fingerprint, approval target, exact allowance, order target, calldata, and expiry.
 5. Check the authorization acknowledgement only if the calls are acceptable.
-6. A maintainer must deliberately enable `NEXT_PUBLIC_EXECUTION_ENABLED=true`; it is false by default.
+6. Confirm the deployment exposes the deliberately enabled Shannon-only pilot; the repository default remains false.
 7. Submit and confirm each testnet call in the wallet only after a separate explicit live-test approval.
 8. Downrail verifies receipts, persists hashes, and reconciles the resulting fill or proven IOC cancellation; the activity can be rechecked after reload.
 
