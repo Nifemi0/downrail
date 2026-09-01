@@ -4,7 +4,7 @@ Downrail turns DreamDEX BTC and ETH Event Contracts into transparent, short-dura
 
 The current build reads live DreamDEX inventory on Somnia Shannon, constructs one depth-aware current DOWN leg plus explicit future rollover checkpoints, connects injected wallets, and builds canonical decoded order and claim reviews. It includes a strict tiny-pilot sender, receipt verification, reload recovery, historical settlement discovery, reviewed claims, and lifecycle-triggered rollover recommendations. No private key is accepted or stored.
 
-The public Vercel environment enables a Shannon-only tiny pilot capped at one IOC leg and 2.00 collateral units. A real pilot order was confirmed, fully filled, recovered after reload, finalized, and successfully claimed; the linked receipts and authoritative post-claim empty state are recorded in `EVIDENCE.md`.
+The public Vercel environment enables a Shannon-only tiny pilot capped at one IOC leg and 2.00 collateral units. Real testnet evidence now covers a filled order, reload recovery, finalization, a successful claim, a lifecycle-triggered reserve handoff, and a filled rollover leg; the linked receipts and authoritative states are recorded in `EVIDENCE.md`.
 
 Production deployment: https://downrail.vercel.app
 
@@ -41,8 +41,8 @@ Open http://localhost:3000. The diagnostic and planner perform no writes and req
 - Production health reports ready on Shannon chain `50312`.
 - The live diagnostic discovers BTC and ETH markets with populated depth across currently available 5m, 15m, 1h, 4h, and 24h windows.
 - The public repository is MIT licensed and available at https://github.com/Nifemi0/downrail.
-- All 58 tests pass; typecheck and lint pass.
-- Order execution, recovery, settlement discovery, and the reviewed claim are live-proven. A current-horizon rollover card still needs visual evidence.
+- All 60 tests pass; typecheck and lint pass.
+- Order execution, recovery, settlement discovery, the reviewed claim, and a current-horizon manual rollover are live-proven.
 - The required two-to-three-minute hackathon demo video is not yet published.
 
 ## Structure
@@ -71,10 +71,10 @@ Hackathon materials:
 - [`DEMO.md`](./DEMO.md) — timed two-to-three-minute recording runbook.
 - [`FEEDBACK.md`](./FEEDBACK.md) — DreamDEX SDK and documentation feedback from the implementation.
 - [`HACKATHON_REVIEW.md`](./HACKATHON_REVIEW.md) — official event snapshot, current competitors, positioning, and evidence cross-check.
-- [`EVIDENCE.md`](./EVIDENCE.md) — public Shannon order, fill, finalized-position, claim, and post-claim evidence.
+- [`EVIDENCE.md`](./EVIDENCE.md) — public Shannon order, fill, finalized-position, claim, post-claim, and rollover evidence.
 - [`FIXING_PLAN.md`](./FIXING_PLAN.md) — ordered path from the current build to a judge-verifiable submission.
 
-Verified Shannon lifecycle: [order approval](https://shannon-explorer.somnia.network/tx/0xeff56d4f403f3937b28e56251977075066748afc1e8cf684d05c34f420376e09) · [filled order](https://shannon-explorer.somnia.network/tx/0xff6d45404a3e257eab9a4e2b87cad2086f0c6bc3a43e3d2de1b1c84107ea1c85) · [claim approval](https://shannon-explorer.somnia.network/tx/0xb164744d590b3007fedaa2a626e02598a07cf8dd2c18fb97f6e5fd89295ba827) · [redemption](https://shannon-explorer.somnia.network/tx/0x73b1d1f8ed2707d8869b92fb1a4b9e9546cc6295c89a856783e85de5b3df4a82)
+Verified Shannon lifecycle: [order approval](https://shannon-explorer.somnia.network/tx/0xeff56d4f403f3937b28e56251977075066748afc1e8cf684d05c34f420376e09) · [filled order](https://shannon-explorer.somnia.network/tx/0xff6d45404a3e257eab9a4e2b87cad2086f0c6bc3a43e3d2de1b1c84107ea1c85) · [claim approval](https://shannon-explorer.somnia.network/tx/0xb164744d590b3007fedaa2a626e02598a07cf8dd2c18fb97f6e5fd89295ba827) · [redemption](https://shannon-explorer.somnia.network/tx/0x73b1d1f8ed2707d8869b92fb1a4b9e9546cc6295c89a856783e85de5b3df4a82) · [first horizon leg](https://shannon-explorer.somnia.network/tx/0xfa5f0fae7e729561f087fb2aea08a7d2fa40eeb5e3d88996cfacd2ae9158b0ec) · [filled rollover leg](https://shannon-explorer.somnia.network/tx/0xe02d355b2990c4e2624c42a3fba5a584b0fe973a5a22179d4d821f593a68c35d)
 
 ## Execution safety boundary
 
@@ -104,4 +104,4 @@ Verified Shannon lifecycle: [order approval](https://shannon-explorer.somnia.net
 
 Do not use a mainnet wallet, seed phrase, or private key with this project.
 
-The first real pilot is documented in [`EVIDENCE.md`](./EVIDENCE.md), including successful order and claim receipts, an exact indexed fill, reload recovery, the finalized winning position, and the authoritative post-claim empty state.
+The live testnet lifecycle is documented in [`EVIDENCE.md`](./EVIDENCE.md), including successful order and claim receipts, exact indexed fills, reload recovery, the finalized winning position, the authoritative post-claim empty state, and the reserve-backed manual rollover into a new market.

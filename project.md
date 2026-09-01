@@ -95,13 +95,12 @@ DreamDEX / Shannon
 - Canonical reviewed redemption calls and claim journal.
 - Lifecycle-triggered manual rollover recommendations.
 - Responsive landing, application, and documentation routes.
-- Public Vercel deployment, public MIT repository, CI, and 58 tests.
+- Public Vercel deployment, public MIT repository, CI, and 60 tests.
 - Shannon-only production pilot deliberately enabled behind the one-leg, 2.00-unit execution boundary.
-- Real Shannon order and claim receipts, exact filled-order reconciliation, reload recovery, a finalized winning position, and authoritative post-claim state.
+- Real Shannon order and claim receipts, exact filled-order reconciliation, reload recovery, a finalized winning position, authoritative post-claim state, and a reserve-backed rollover into a fresh ETH market.
 
-## Evidence still required
+## Submission work still required
 
-- A visible rollover recommendation from a fresh pilot whose requested horizon and reserved future budget remain active after settlement.
 - Public two-to-three-minute demo video.
 - Completed DoraHacks submission.
 

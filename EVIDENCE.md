@@ -51,6 +51,35 @@ A fresh unsigned review successfully decoded two bounded calls:
 
 The deployed settlement inbox was refreshed after the receipts and returned `positions: []` and `owedFallbacks: []` for the wallet. The previously claimable `1652000` raw NO balance is therefore no longer outstanding.
 
-## Rollover state
+## Verified current-horizon rollover
 
-The claim now promotes the matching submitted execution record to `CLAIMED` and immediately refreshes the planner's lifecycle state. A new manual rollover is recommended only when the original requested horizon still has time remaining and the plan reserved future budget. This historical pilot no longer displayed a valid rollover recommendation after its claim, so the evidence bundle does not invent one; a current-horizon pilot is still needed for that final visual proof.
+A separate ETH plan was created specifically to prove a real rollover while the requested horizon still extended beyond the first market. The plan used a `1.50` TESDC total budget: `0.75` for the current leg and `0.75` reserved for a fresh review.
+
+### First horizon leg
+
+- Market ID: `0x0000000000000000000000000000000000000000000000000000000000010533`
+- Market expiry: `2026-09-01T18:00:00Z`
+- Filled order: [`0xfa5f0fae7e729561f087fb2aea08a7d2fa40eeb5e3d88996cfacd2ae9158b0ec`](https://shannon-explorer.somnia.network/tx/0xfa5f0fae7e729561f087fb2aea08a7d2fa40eeb5e3d88996cfacd2ae9158b0ec)
+- Order state: `Filled`; `795000 / 795000` raw quantity, no resting quantity
+- Indexed fill: `477118254_6`
+- Fill: `795000` raw quantity at `144000` raw price
+- Quote quantity: `114480` raw TESDC
+- Resulting position: `795000` raw `NO`
+
+Five minutes before expiry, the deployed lifecycle queue produced one deduplicated `near expiry` recommendation and preserved the exact `0.750000` TESDC reserve. `Load reserved rollover` restored ETH, testnet mode, the reserve amount, and the closest supported remaining horizon before running fresh market discovery.
+
+### Fresh rollover leg
+
+- New market ID: `0x00000000000000000000000000000000000000000000000000000000000105e5`
+- New market expiry: `2026-09-01T19:00:00Z`
+- Exact collateral approval: [`0x05c6ea8134d00333c6a8c602a0464c22e1931f9140d2b35d971f77d96247ea16`](https://shannon-explorer.somnia.network/tx/0x05c6ea8134d00333c6a8c602a0464c22e1931f9140d2b35d971f77d96247ea16)
+- Stale-quote IOC: [`0xf05777f3794cf8d2cc4aa83891a45902b721fe1fbe8b4c46b3724bbd3054d2eb`](https://shannon-explorer.somnia.network/tx/0xf05777f3794cf8d2cc4aa83891a45902b721fe1fbe8b4c46b3724bbd3054d2eb) reverted with `ImmediateOrCancelNoFill`; the bounded order did not accept a worse fill
+- Refreshed filled order: [`0xe02d355b2990c4e2624c42a3fba5a584b0fe973a5a22179d4d821f593a68c35d`](https://shannon-explorer.somnia.network/tx/0xe02d355b2990c4e2624c42a3fba5a584b0fe973a5a22179d4d821f593a68c35d)
+- Order state: `Filled`; `559000 / 559000` raw quantity, no resting quantity
+- Indexed fill: `477130634_5`
+- Fill: `559000` raw quantity at `330000` raw price
+- Quote quantity: `184470` raw TESDC
+- Resulting position: `559000` raw `NO`
+- Open orders after reconciliation: none
+
+This proves the intended manual rollover boundary end to end: lifecycle trigger, preserved reserve, fresh market discovery, a new decoded review, explicit wallet confirmation, stop-on-revert protection, refreshed retry, successful receipt, exact indexed fill, and a new on-chain position. Downrail did not create an automatic or custodial order.

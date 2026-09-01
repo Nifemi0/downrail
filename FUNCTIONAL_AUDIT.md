@@ -8,9 +8,9 @@ Scope: product correctness, DreamDEX integration, transaction safety, lifecycle 
 
 ## Executive verdict
 
-Downrail is a strong, differentiated testnet product with a working live-data path and a proven order-through-claim lifecycle. The bounded Shannon pilot produced successful order and claim receipts, an exact full fill, reload recovery, a finalized winning position, and an authoritative post-claim empty state. The remaining evidence gap is a current-horizon rollover visual and the demo video.
+Downrail is a strong, differentiated testnet product with a working live-data path and a proven order-through-claim-and-rollover lifecycle. The bounded Shannon pilots produced successful order and claim receipts, exact full fills, reload recovery, a finalized winning position, an authoritative post-claim empty state, and a reserve-backed rollover into a fresh market. The remaining submission gap is the demo video.
 
-The application is technically competitive today. It becomes submission-ready only after the implemented write paths are exercised with a dedicated Shannon wallet and the resulting receipts are linked in the demo and submission.
+The application is technically competitive and its write paths are exercised with a dedicated Shannon wallet. Submission readiness now depends on presenting the verified receipts clearly in the required public demo and final form.
 
 ## Verified baseline
 
@@ -24,7 +24,7 @@ The application is technically competitive today. It becomes submission-ready on
 - Execution recovery persists public transaction pointers and reconciles fills, positions, resting orders, and legitimate IOC cancellation by stable market ID and transaction hash.
 - Settlement discovery scans historical positions independently of the current live-market list and checks ERC-6909 balances plus finalized payout vectors.
 - Reviewed claim calls, claim journaling, post-claim refresh, and lifecycle-triggered manual rollover recommendations are implemented.
-- All 58 tests pass; typecheck and lint pass.
+- All 60 tests pass; typecheck and lint pass.
 - The repository includes a submission draft, 2:30 demo runbook, SDK feedback report, and this current rules/readiness review.
 
 ## Current blockers
@@ -33,9 +33,9 @@ The application is technically competitive today. It becomes submission-ready on
 
 `NEXT_PUBLIC_EXECUTION_ENABLED=true` is set in the Vercel production environment. The deployed sender remains restricted to Shannon chain `50312`, one IOC leg, an exact bounded approval, and no more than 2.00 collateral units.
 
-### Evidence blocker: current-horizon rollover is not visually proven
+### Current-horizon rollover is live-proven
 
-`EVIDENCE.md` now proves reviewed order execution, successful order and claim receipts, a full indexed fill, reload recovery, finalized claimability, and the post-claim authoritative state. The historical pilot no longer qualified for a new recommendation after claim, so a fresh active-horizon pilot is needed only for the final rollover visual.
+`EVIDENCE.md` proves reviewed order execution, successful order and claim receipts, exact indexed fills, reload recovery, finalized claimability, post-claim authoritative state, a deduplicated near-expiry recommendation, exact reserve loading, and a filled follow-on order on a fresh ETH market. The bounded IOC also rejected one stale quote before the refreshed retry filled, demonstrating the stop-on-revert boundary.
 
 ### Submission blocker: no demo video
 
@@ -45,7 +45,7 @@ The official event requires a two-to-three-minute demo video. `DEMO.md` is ready
 
 | Criterion | Weight | Current strength | Risk before submission |
 | --- | ---: | --- | --- |
-| Technical Implementation | 25% | Strong implementation breadth, safety boundaries, live reads, 58 tests, and real order-through-claim evidence. | A current-horizon rollover visual remains. |
+| Technical Implementation | 25% | Strong implementation breadth, safety boundaries, live reads, 60 tests, and real order-through-claim-and-rollover evidence. | Keep the explorer-backed lifecycle concise in the demo. |
 | Innovation and Originality | 20% | Exposure-first portfolio protection is distinct from AI signals and simple betting interfaces. | Sluice overlaps on safe budget sizing; Runs and Let It Ride overlap on rollover. |
 | User Experience and Design | 20% | Focused landing, app, and docs routes with plain-language planning, recovery, and a verified claim-to-empty-state flow. | Run one fresh-user demo rehearsal before recording. |
 | Business and Ecosystem Impact | 20% | Credible recurring-demand story for holders, treasuries, wallets, and future APIs. | The submission needs one quantified recurring-volume example. |
@@ -75,7 +75,7 @@ The strongest one-sentence position is:
 | Reload recovery | Complete | Verified |
 | Finalized-position discovery | Complete | Verified claimable winner |
 | Reviewed claim and post-claim refresh | Complete behind flag | Successful claim and authoritative empty state verified |
-| Rollover recommendation | Complete | Current-horizon visual still missing |
+| Rollover recommendation | Complete | Near-expiry trigger, reserve handoff, fresh review, and filled follow-on leg verified |
 | Public deployment | Complete | Verified |
 | Public repository and license | Complete | Verified |
 | Demo video | Planned | Missing |

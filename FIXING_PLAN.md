@@ -33,7 +33,7 @@ Status: complete on September 1.
 
 - Centralize the official rules, rubric, resources, competitors, and readiness status in `HACKATHON_REVIEW.md`.
 - Update the README, project specification, agent guide, submission draft, demo runbook, SDK feedback, audit, and this plan.
-- Use one verified test baseline: 57 passing tests plus clean typecheck and lint.
+- Use one verified test baseline: 60 passing tests plus clean typecheck and lint.
 - Mark the public repository, MIT license, and Vercel deployment complete.
 - Distinguish implemented lifecycle code from real transaction evidence.
 - State truthfully that the bounded Shannon order, exact fill, reload recovery, and finalized claimability are live-proven.
@@ -71,7 +71,7 @@ Status: complete on September 1. See `EVIDENCE.md`.
 
 ## Phase 3 — prove settlement, claim, and rollover
 
-Status: complete on September 1; both claim calls succeeded and the authoritative post-claim inbox is empty.
+Status: complete on September 1; both claim calls succeeded, the authoritative post-claim inbox is empty, and a reserved rollover produced a filled follow-on position.
 
 - Track the pilot market until finalization.
 - Verify the user's outcome-token balance and payout vector on-chain.
@@ -84,7 +84,7 @@ Status: complete on September 1; both claim calls succeeded and the authoritativ
 
 ## Phase 4 — judge-facing product upgrades
 
-Status: in progress; the first real receipt and finalized position are now available.
+Status: in progress; real order, claim, and rollover receipts are now available for the judge-facing evidence surface.
 
 ### Make the differentiation obvious
 
@@ -121,7 +121,7 @@ Status: pending.
 
 ## Phase 6 — record the demo
 
-Status: ready; claim proof is complete, while the demo should avoid claiming a rollover card that the historical horizon no longer qualifies for.
+Status: ready; claim and current-horizon rollover proof are complete. The final demo should use the recorded explorer-backed lifecycle if live inventory moves during judging.
 
 - Follow `DEMO.md` and target 2 minutes 30 seconds.
 - Record at 1080p with readable wallet and explorer details.
@@ -159,12 +159,12 @@ Until the submission is complete, do not spend time on:
 - [x] Wallet review, guarded sender, receipts, and reconciliation implemented.
 - [x] Settlement, reviewed claims, and rollover implemented.
 - [x] Public app, repository, license, and SDK feedback.
-- [x] 58 tests, typecheck, and lint passing.
+- [x] 60 tests, typecheck, and lint passing.
 - [x] Documentation synchronized with the current build.
 - [x] Production Shannon pilot enabled with the one-leg, 2.00-unit boundary.
 - [x] Real order, exact fill, reload recovery, and finalized claimability captured.
 - [x] Real claim and post-claim evidence captured.
-- [ ] Rollover demonstrated from real lifecycle state.
+- [x] Rollover demonstrated from real lifecycle state, preserved reserve, fresh market review, and filled follow-on order.
 - [ ] Judge-facing evidence surface complete.
 - [ ] Two-to-three-minute video published.
 - [ ] DoraHacks submission completed.
