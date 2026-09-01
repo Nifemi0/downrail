@@ -184,10 +184,10 @@ export function SettlementInbox() {
     <section className="settlement-section" aria-labelledby="settlement-title">
       <div className="section-intro">
         <div>
-          <p className="eyebrow">Portfolio</p>
-          <h2 id="settlement-title">Positions, outcomes, and claims.</h2>
+          <p className="eyebrow">Settlement inbox / 04</p>
+          <h2 id="settlement-title">Find what the chain owes you.</h2>
         </div>
-        <p>Historical positions are checked independently of today&apos;s market list. Claims unlock only after finalization and your explicit wallet confirmation.</p>
+        <p>Historical positions are checked independently of today&apos;s live market list. Claim signing remains locked.</p>
       </div>
 
       {!account ? (

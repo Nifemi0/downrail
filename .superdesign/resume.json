@@ -23,17 +23,13 @@
         ".superdesign/design-system.md",
         "src/app/globals.css",
         "src/app/page.tsx",
-        "src/components/hedge-preview.tsx",
-        "src/components/wallet-control.tsx",
-        "src/components/settlement-inbox.tsx"
+        "src/components/hedge-preview.tsx"
       ],
       "fingerprints": {
         ".superdesign/design-system.md": "3c498597b9925888f17814e3f9bbfd45d121843931e680473c8200b0afdb231f",
-        "src/app/globals.css": "ce9bca6ebc3bce3fea3e31fdcbdee7f60e66e36dee89eeb17e578e2766dfdc66",
-        "src/app/page.tsx": "f6c75af299809583219b58425c7fa387e5c53bb00427f1c009d867f80d972f1d",
-        "src/components/hedge-preview.tsx": "31313a8e41aae94abf5e6b4df3a5ab3ce47f036e03837d191f068e417fe7ddb5",
-        "src/components/wallet-control.tsx": "769ca199f26a67af897c3247ca705838fb0d025e5ed47544c59ab4847986bcb4",
-        "src/components/settlement-inbox.tsx": "6ba5f0ad3c80968a85c7a4ea1ed0c8bb4a7494590366cdea7cfd4f11dbe49378"
+        "src/app/globals.css": "1203a72f62816768b3075b1b94392cbf7e9e800b55eeb1125e742029b04f9e41",
+        "src/app/page.tsx": "46e0b9fcaf4a6480be49d3733fe66f0b9d2b80ba3e8dafaaedb6afb1973e3da7",
+        "src/components/hedge-preview.tsx": "43a86da5981f18dfd1eb1ea033dbfbc8afc8457c5831a32ff1e3a31ebb4f923a"
       },
       "drafts": {
         "b2371ffc-f2a1-4aba-9d79-c2449cc39b06": {
@@ -54,13 +50,13 @@
           "currentVersion": 1
         },
         "0765c1cd-d985-4813-bd57-26086fc1e551": {
-          "title": "Downrail — Protection Workspace",
-          "visualDirection": "streamlined three-step consumer protection workspace with consolidated testnet setup and secondary portfolio and market detail",
+          "title": "Downrail — Downside Protection",
+          "visualDirection": "warm editorial protection interface using the Downrail identity and intercepted-loss rail visual",
           "parentDraftId": "b2371ffc-f2a1-4aba-9d79-c2449cc39b06",
-          "currentVersion": 3
+          "currentVersion": 2
         }
       },
-      "updatedAt": "2026-09-01T10:45:54.0237084+01:00"
+      "updatedAt": "2026-08-27T16:52:00.000Z"
     }
   }
 }
