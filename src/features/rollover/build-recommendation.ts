@@ -14,6 +14,14 @@ const IMMEDIATE_TRIGGERS = new Set<ExecutionStatus>([
   "CLAIMED",
   "FAILED",
 ]);
+const ACTIVE_POSITION_STATUSES = new Set<ExecutionStatus>([
+  "ORDER_SUBMITTED",
+  "ORDER_CONFIRMED",
+  "INDEXING_PENDING",
+  "FILLED",
+  "PARTIALLY_FILLED",
+  "RESTING",
+]);
 
 export type ManualRolloverRecommendation = {
   dedupeKey: string;
@@ -35,7 +43,8 @@ export function buildManualRolloverRecommendation(input: {
   if (remaining < MINIMUM_WINDOW_SECONDS || BigInt(input.futureBudgetReserveRaw) <= 0n) {
     return null;
   }
-  const nearExpiry = input.marketExpiryUnixSeconds - input.nowUnixSeconds <= NEAR_EXPIRY_SECONDS;
+  const nearExpiry = ACTIVE_POSITION_STATUSES.has(input.status)
+    && input.marketExpiryUnixSeconds - input.nowUnixSeconds <= NEAR_EXPIRY_SECONDS;
   if (!nearExpiry && !IMMEDIATE_TRIGGERS.has(input.status)) return null;
   const unprotected = input.status === "CANCELLED_IOC"
     || input.status === "PARTIALLY_FILLED"

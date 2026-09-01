@@ -194,6 +194,14 @@ function formatWindow(seconds: number) {
   return `${Math.round(seconds / 60)}m`;
 }
 
+function closestSupportedHorizon(seconds: number) {
+  return HORIZONS.reduce((closest, horizon) =>
+    Math.abs(horizon.seconds - seconds) < Math.abs(closest.seconds - seconds)
+      ? horizon
+      : closest,
+  ).seconds;
+}
+
 function formatExpiry(unixSeconds: number) {
   return new Intl.DateTimeFormat("en", {
     hour: "2-digit",
@@ -588,7 +596,25 @@ export function HedgePreview() {
       futureBudgetReserveRaw: record.rolloverContext.futureBudgetReserveRaw,
     });
     return recommendation ? [{ record, recommendation }] : [];
-  });
+  }).filter(({ recommendation }, index, recommendations) =>
+    recommendations.findIndex((candidate) =>
+      candidate.recommendation.dedupeKey === recommendation.dedupeKey) === index,
+  );
+
+  function loadReservedRollover() {
+    const next = rolloverRecommendations[0];
+    const context = next?.record.rolloverContext;
+    if (!next || !context) return;
+    setMode("testnet");
+    setAsset(context.asset);
+    setBudget(formatRaw(next.recommendation.budgetRaw, context.quoteDecimals, context.quoteDecimals));
+    setHorizonSeconds(closestSupportedHorizon(next.recommendation.remainingHorizonSeconds));
+    setAcknowledgedFingerprint(null);
+    setPreflight(null);
+    setPreflightError(null);
+    setExecution(null);
+    setRefreshNonce((value) => value + 1);
+  }
 
   return (
     <section className="planner-section" aria-labelledby="planner-title">
@@ -899,8 +925,8 @@ export function HedgePreview() {
               <p>{formatUsd(recommendation.budgetRaw, record.rolloverContext?.quoteDecimals ?? 6)} reserved · prior market {shortId(record.marketId)}</p>
             </article>
           ))}
-          <button onClick={() => setRefreshNonce((value) => value + 1)} type="button">
-            Refresh recommendation
+          <button onClick={loadReservedRollover} type="button">
+            Load reserved rollover
           </button>
         </section>
       )}

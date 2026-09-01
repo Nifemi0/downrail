@@ -23,6 +23,14 @@ describe("buildManualRolloverRecommendation", () => {
     })?.trigger).toBe("NEAR_EXPIRY");
   });
 
+  it("does not treat an unsigned review as an active expiring position", () => {
+    expect(buildManualRolloverRecommendation({
+      ...base,
+      status: "REVIEWED",
+      marketExpiryUnixSeconds: base.nowUnixSeconds + 299,
+    })).toBeNull();
+  });
+
   it.each(["CANCELLED_IOC", "PARTIALLY_FILLED", "FAILED"] as const)(
     "recommends immediately when %s leaves the user unprotected",
     (status) => {
