@@ -31,14 +31,14 @@ export default function DocsPage() {
 
       <article className="docs-article">
         <header className="docs-hero" id="overview">
-          <p className="eyebrow">Downrail docs / 01</p>
+          <p className="eyebrow">Downrail docs</p>
           <h1>Learn how to guard the downside.</h1>
           <p>Downrail builds budget-capped, scenario-dependent protection plans using existing DreamDEX DOWN contracts on Somnia Shannon.</p>
           <div className="docs-callout"><strong>Downrail is not insurance.</strong><span>A payout depends on the exact Event Contract outcome, available liquidity, and the order confirmed in your wallet.</span></div>
         </header>
 
         <section className="docs-section" id="quick-start">
-          <p className="eyebrow">Quick start / 02</p>
+          <p className="eyebrow">Quick start</p>
           <h2>From exposure to review in three steps.</h2>
           <div className="docs-steps">
             <article><span>01</span><strong>Define exposure</strong><p>Choose BTC or ETH, enter the portfolio value, loss scenario, budget, and protection horizon.</p></article>
@@ -49,13 +49,13 @@ export default function DocsPage() {
         </section>
 
         <section className="docs-section" id="demo">
-          <p className="eyebrow">Demo mode / 03</p>
+          <p className="eyebrow">Demo mode</p>
           <h2>Start without a wallet.</h2>
           <p>Demo mode uses the live market snapshot to build a simulated review. It never opens a wallet or sends a transaction. Use it to understand the plan before touching testnet funds.</p>
         </section>
 
         <section className="docs-section" id="testnet">
-          <p className="eyebrow">Shannon testnet / 04</p>
+          <p className="eyebrow">Shannon testnet</p>
           <h2>What you need for a test order.</h2>
           <dl className="docs-definition-list">
             <dt>Wallet</dt><dd>An EIP-6963 compatible browser wallet.</dd>
@@ -66,7 +66,7 @@ export default function DocsPage() {
         </section>
 
         <section className="docs-section" id="mechanics">
-          <p className="eyebrow">Mechanics / 05</p>
+          <p className="eyebrow">Mechanics</p>
           <h2>DOWN contracts create a separate conditional payout.</h2>
           <p>Downrail does not sell or custody the asset you already own. It estimates how many DOWN outcome units fit inside your maximum spend and shows the combined scenario if that contract resolves YES or NO.</p>
           <div className="docs-outcomes">
@@ -76,33 +76,33 @@ export default function DocsPage() {
         </section>
 
         <section className="docs-section" id="execution">
-          <p className="eyebrow">Execution / 06</p>
+          <p className="eyebrow">Execution</p>
           <h2>Downrail cannot sign for you.</h2>
           <p>A testnet review binds the account, market, limit price, quantity, maximum cost, and expiry into a fingerprint. You acknowledge that review, then your wallet confirms each call.</p>
           <ol className="docs-checklist"><li>Connect the intended wallet.</li><li>Switch to Somnia Shannon.</li><li>Request TESDC if your test collateral is low.</li><li>Build and read the unsigned review.</li><li>Confirm the tiny pilot in your wallet.</li></ol>
         </section>
 
         <section className="docs-section" id="settlement">
-          <p className="eyebrow">Settlement / 07</p>
+          <p className="eyebrow">Settlement</p>
           <h2>Positions remain visible until finalized.</h2>
           <p>The portfolio sidebar reads the connected account&apos;s outcome balances. When a market is finalized and a position becomes claimable, Downrail can build an unsigned claim review for wallet confirmation.</p>
         </section>
 
         <section className="docs-section docs-risk" id="risks">
-          <p className="eyebrow">Risks / 08</p>
+          <p className="eyebrow">Risks</p>
           <h2>Know what the plan cannot guarantee.</h2>
           <ul><li>Market liquidity and prices can change before confirmation.</li><li>A contract&apos;s exact resolution rule may not match your portfolio loss.</li><li>Future rollover markets are never selected automatically.</li><li>Testnet assets have no real monetary value.</li></ul>
         </section>
 
         <section className="docs-section" id="architecture">
-          <p className="eyebrow">Architecture / 09</p>
+          <p className="eyebrow">Architecture</p>
           <h2>Live discovery, bounded planning, wallet execution.</h2>
           <p>The app verifies DreamDEX candidates on Shannon, reads executable depth, builds a bounded plan, creates decoded unsigned calls, and reconciles confirmed transactions against indexed fills and live balances.</p>
           <div className="architecture-flow" aria-label="Downrail architecture flow"><span>DreamDEX discovery</span><ArrowRight aria-hidden="true" /><span>Planner validation</span><ArrowRight aria-hidden="true" /><span>Unsigned review</span><ArrowRight aria-hidden="true" /><span>Wallet confirmation</span><ArrowRight aria-hidden="true" /><span>Settlement scan</span></div>
         </section>
 
         <section className="docs-section" id="troubleshooting">
-          <p className="eyebrow">Troubleshooting / 10</p>
+          <p className="eyebrow">Troubleshooting</p>
           <h2>Common setup problems.</h2>
           <details><summary>The wallet will not switch networks</summary><p>Add Somnia Shannon manually with chain ID 50312 and RPC <code>https://dream-rpc.somnia.network</code>.</p></details>
           <details><summary>The order review is disabled</summary><p>Connect a wallet, switch to Shannon, keep the pilot budget within the displayed safety cap, and ensure a live executable window exists.</p></details>
@@ -110,7 +110,7 @@ export default function DocsPage() {
         </section>
 
         <section className="docs-section" id="faq">
-          <p className="eyebrow">FAQ / 11</p>
+          <p className="eyebrow">FAQ</p>
           <h2>Frequently asked questions.</h2>
           <details><summary>Is Downrail a prediction market?</summary><p>No. Downrail uses existing DreamDEX Event Contracts as building blocks for a portfolio-protection workflow.</p></details>
           <details><summary>Can Downrail access my funds?</summary><p>No. Your wallet signs every transaction and Downrail cannot sign on your behalf.</p></details>

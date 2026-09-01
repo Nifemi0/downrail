@@ -48,6 +48,8 @@ HedgeFlow helps a BTC or ETH holder understand and configure short-duration down
 - Tables use 40–44px rows, sticky/clear headers, right-aligned numeric columns, and no excessive padding.
 
 ## Content constraints
+- Never append decorative slash-number markers such as “/ 01” to section labels. Use plain descriptive eyebrow text; reserve numbers for genuinely ordered steps or data.
+- Let the coral loss plane sit directly on the warm canvas in the landing hero; do not place a white or neutral backing card behind it.
 - Call the instrument “DOWN contract” or “downside protection”, not insurance.
 - Always show budget, estimated cost, payout if DOWN wins, scenario loss, residual loss/coverage, contract expiry, and live quote freshness.
 - Label top-of-book estimates as indicative and disclose missing depth/slippage/fees.

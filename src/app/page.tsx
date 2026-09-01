@@ -7,7 +7,7 @@ export default function Home() {
       <div className="page-shell landing-shell">
         <header className="hero landing-hero">
           <div className="hero-copy">
-            <p className="eyebrow">Portfolio protection / 01</p>
+            <p className="eyebrow">Portfolio protection</p>
             <h1>Keep the upside.<span>Guard the downside.</span></h1>
             <p className="hero-text">Downrail uses existing DreamDEX DOWN contracts to add a conditional payout alongside BTC or ETH you already own.</p>
             <p className="category-note"><span>Not insurance.</span> You choose the exposure, horizon, and maximum spend; every payout still depends on the selected contract&apos;s exact result.</p>
@@ -19,7 +19,6 @@ export default function Home() {
 
           <div className="hero-visual" aria-label="Illustration comparing a one hundred dollar portfolio loss with a separate conditional DOWN contract payout">
             <span className="visual-caption">Illustrative mechanics · not guaranteed coverage</span>
-            <div className="visual-frame" />
             <div className="loss-plane">
               <span>Portfolio exposure</span><b>−$100</b>
               <strong>UNHEDGED<br />LOSS</strong>
@@ -34,7 +33,7 @@ export default function Home() {
 
         <section className="landing-process" aria-labelledby="process-title">
           <div className="section-intro">
-            <div><p className="eyebrow">How it works / 02</p><h2 id="process-title">From exposure to review in three steps.</h2></div>
+            <div><p className="eyebrow">How it works</p><h2 id="process-title">From exposure to review in three steps.</h2></div>
             <p>The landing page explains the product. The app handles every live market and wallet interaction.</p>
           </div>
           <div className="trust-strip landing-steps">
@@ -45,7 +44,7 @@ export default function Home() {
         </section>
 
         <section className="landing-principles" aria-labelledby="principles-title">
-          <div><p className="eyebrow">Built for clarity / 03</p><h2 id="principles-title">A protection workflow—not a prediction terminal.</h2></div>
+          <div><p className="eyebrow">Built for clarity</p><h2 id="principles-title">A protection workflow—not a prediction terminal.</h2></div>
           <div className="principle-list">
             <article><strong>Budget bounded</strong><p>The proposed maximum cost cannot exceed the spend you enter.</p></article>
             <article><strong>Depth aware</strong><p>Plans consume live resting liquidity instead of assuming an infinite top quote.</p></article>

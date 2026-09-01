@@ -582,7 +582,7 @@ export function HedgePreview() {
     <section className="planner-section" aria-labelledby="planner-title">
       <div className="section-intro">
         <div>
-          <p className="eyebrow">Protection planner / 02</p>
+          <p className="eyebrow">Protection planner</p>
           <h2 id="planner-title">Configure the guardrail.</h2>
         </div>
         <p>Live, depth-aware estimates. No wallet signature and no transaction.</p>
@@ -876,7 +876,7 @@ export function HedgePreview() {
       {rolloverRecommendations.length > 0 && (
         <section className="rollover-queue" aria-labelledby="rollover-queue-title">
           <div>
-            <p className="eyebrow">Manual rollover queue / 05</p>
+            <p className="eyebrow">Manual rollover queue</p>
             <h3 id="rollover-queue-title">A fresh market review is ready.</h3>
             <p>No automatic order is created. Refreshing reruns discovery, depth, and all planner checks.</p>
           </div>

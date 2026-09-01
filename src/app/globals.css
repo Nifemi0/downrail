@@ -52,7 +52,6 @@ button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid rgb
 
 .hero-visual { position:relative; min-height:405px; }
 .visual-caption { position:absolute; top:0; right:0; color:var(--muted); font-family:var(--font-geist-mono),monospace; font-size:.61rem; letter-spacing:.1em; text-transform:uppercase; }
-.visual-frame { position:absolute; top:62px; left:1%; width:91%; height:275px; border:1px solid var(--line); background:var(--paper); }
 .loss-plane { position:absolute; top:82px; left:8%; width:72%; height:237px; transform:rotate(-3deg); border:1px solid var(--red); background:var(--red); color:white; box-shadow:11px 11px 0 rgba(18,19,23,.07); }
 .loss-plane>span,.loss-plane>b { position:absolute; top:20px; font-family:var(--font-geist-mono),monospace; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; }
 .loss-plane>span { left:20px; }
@@ -296,7 +295,6 @@ footer p { margin:0; }
   .hero-actions,.section-intro,footer { align-items:flex-start; flex-direction:column; }
   .section-intro>p { text-align:left; }
   .hero-visual { min-height:345px; }
-  .visual-frame { top:49px; height:228px; }
   .loss-plane { top:67px; height:197px; }
   .loss-plane>strong { font-size:1.55rem; }
   .protection-plane { bottom:47px; height:112px; }

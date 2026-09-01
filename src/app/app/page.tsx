@@ -36,7 +36,7 @@ export default async function AppPage() {
         <div className="app-main">
           <section id="markets" className="app-market-section" aria-labelledby="markets-title">
             <div className="section-intro compact-intro">
-              <div><p className="eyebrow">Live inventory / 01</p><h2 id="markets-title">Protection windows.</h2></div>
+              <div><p className="eyebrow">Live inventory</p><h2 id="markets-title">Protection windows.</h2></div>
               <p>{snapshot.markets.length} verified · snapshot {new Date(snapshot.generatedAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZoneName: "short" })}</p>
             </div>
             {snapshot.error ? (

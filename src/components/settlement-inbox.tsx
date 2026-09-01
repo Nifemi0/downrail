@@ -187,7 +187,7 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
       ) : (
         <div className="section-intro">
           <div>
-            <p className="eyebrow">Settlement inbox / 04</p>
+            <p className="eyebrow">Settlement inbox</p>
             <h2 id="settlement-title">Find what the chain owes you.</h2>
           </div>
           <p>Historical positions are checked independently of today&apos;s live market list. Claims require finalization and explicit wallet confirmation.</p>
