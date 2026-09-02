@@ -10,7 +10,7 @@ This guide keeps contributors and coding agents aligned with Downrail's product 
 - Core product, order lifecycle, settlement discovery, reviewed claims, and manual rollover recommendations are implemented.
 - Vercel production and the public MIT repository are ready.
 - All 60 tests pass; typecheck, lint, recent builds, live health, and read-only DreamDEX diagnostics pass.
-- `NEXT_PUBLIC_EXECUTION_ENABLED=true` is set for Vercel production; the Shannon-only sender remains capped at one IOC leg and 2.00 collateral units.
+- `NEXT_PUBLIC_EXECUTION_ENABLED=true` is set for Vercel production; the Shannon-only sender remains capped at one IOC leg and 10.00 collateral units.
 - Real order, fill, reload recovery, finalized claimability, successful claim receipts, authoritative post-claim state, and a reserve-backed fresh-market rollover are verified in `EVIDENCE.md`; the required demo video remains incomplete.
 
 ## Active goal
@@ -37,7 +37,7 @@ Produce a judge-verifiable lifecycle, add concise evidence to the product and su
 - Never accept, store, print, upload, or commit a private key or seed phrase.
 - Keep all financial values as integer or `bigint` protocol units until display formatting.
 - Recheck chain, account, on-chain Trading state, balance, gas, expiry, and decoded calldata before every send.
-- Keep the tiny pilot to one IOC leg and no more than 2.00 collateral units.
+- Keep the tiny pilot to one IOC leg and no more than 10.00 collateral units.
 - Never send an unlimited token approval.
 - Stop a dependent transaction sequence after a rejection, timeout, revert, account change, or chain change.
 - Do not call a write path verified until its receipt and authoritative post-transaction state agree.

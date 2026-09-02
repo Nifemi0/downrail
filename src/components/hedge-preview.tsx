@@ -825,7 +825,7 @@ export function HedgePreview() {
                     <div>
                       <span>Tiny Shannon pilot</span>
                       <strong>{formatUsd(activePreflight.plan.totalMaximumCostRaw, activePreflight.quoteDecimals)} maximum collateral · one IOC leg</strong>
-                      {!pilotCostIsSafe && <p>Lower “Maximum spend” to $2.00 or less, then build a fresh review.</p>}
+                      {!pilotCostIsSafe && <p>Lower “Maximum spend” to $10.00 or less, then build a fresh review.</p>}
                     </div>
                     <label>
                       <input

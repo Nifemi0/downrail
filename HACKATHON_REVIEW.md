@@ -59,7 +59,7 @@ The previously shared X post at `https://x.com/itsNikku876/status/20557012715130
 | SDK feedback | Complete | `FEEDBACK.md` |
 | Demo plan | Complete | `DEMO.md` |
 | Demo video | Missing | Public 2–3 minute link required. |
-| Shannon tiny pilot | Enabled | One IOC leg, at most 2.00 collateral units, Shannon only. |
+| Shannon tiny pilot | Enabled | One IOC leg, at most 10.00 collateral units, Shannon only. |
 | Real order evidence | Complete | Successful approval/order receipts and exact indexed fill in `EVIDENCE.md`. |
 | Real claim evidence | Complete | Successful approval/redemption receipts and authoritative post-claim empty state in `EVIDENCE.md`. |
 | Real rollover evidence | Complete | Near-expiry lifecycle trigger, exact reserve loading, fresh review, bounded stale-quote rejection, and a filled follow-on position in `EVIDENCE.md`. |

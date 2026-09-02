@@ -36,10 +36,10 @@ const TOKEN = "0x3333333333333333333333333333333333333333";
 const MARKET = `0x${"4".repeat(64)}` as `0x${string}`;
 const HASH_A = `0x${"a".repeat(64)}`;
 const HASH_B = `0x${"b".repeat(64)}`;
-const MAXIMUM_COST = 2_000_000n;
+const MAXIMUM_COST = 10_000_000n;
 const DOWN_PRICE = 250_000n;
 const YES_PRICE = 750_000n;
-const QUANTITY = 8_000_000n;
+const QUANTITY = 40_000_000n;
 
 function fundingResponse(
   method: string,
@@ -147,16 +147,16 @@ function buildReview(
 }
 
 describe("assertTinyPilot", () => {
-  it("accepts a fingerprint-bound decoded review at the two-unit cap", () => {
+  it("accepts a fingerprint-bound decoded review at the ten-unit cap", () => {
     expect(() => assertTinyPilot(buildReview(), ACCOUNT)).not.toThrow();
   });
 
   it("rejects a plan above the pilot cap", () => {
     const review = buildReview((commitment) => ({
       ...commitment,
-      plan: { ...commitment.plan, totalMaximumCostRaw: "2000001" },
+      plan: { ...commitment.plan, totalMaximumCostRaw: "10000001" },
     }));
-    expect(() => assertTinyPilot(review, ACCOUNT)).toThrow("capped at 2.00");
+    expect(() => assertTinyPilot(review, ACCOUNT)).toThrow("capped at 10.00");
   });
 
   it("rejects a stale review", () => {

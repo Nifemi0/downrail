@@ -38,7 +38,7 @@ Target length: 2 minutes 30 seconds. The public app and repository are ready. Re
 
 ### 1:02–1:25 — Prove execution safety
 
-**Screen:** Connect the dedicated wallet, reduce the live pilot to `2.00` or less, generate the exact review, and expand the calls.
+**Screen:** Connect the dedicated wallet, reduce the live pilot to `10.00` or less, generate the exact review, and expand the calls.
 
 **Voiceover:**
 
@@ -77,7 +77,7 @@ Target length: 2 minutes 30 seconds. The public app and repository are ready. Re
 - [x] Live diagnostics return usable BTC and ETH market depth.
 - [ ] Dedicated wallet has enough Shannon gas and collateral.
 - [ ] Production Shannon signing is deliberately enabled and the deployment is reverified.
-- [ ] Tiny pilot review is at or below 2.00 collateral units.
+- [ ] Tiny pilot review is at or below 10.00 collateral units.
 - [ ] Approval amount and order fingerprint have been inspected.
 - [ ] At least one known-good transaction receipt is bookmarked.
 - [ ] Fill or legitimate IOC result is visible.

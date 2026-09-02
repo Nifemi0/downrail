@@ -46,9 +46,9 @@ Status: complete on September 1. See `EVIDENCE.md`.
 
 - Confirm the dedicated wallet is on Shannon chain `50312`.
 - Confirm enough STT exists for gas and enough DreamDEX test collateral exists for the order.
-- Keep the pilot cap at 2.00 collateral units and one IOC leg.
+- Keep the pilot cap at 10.00 collateral units and one IOC leg.
 - Generate and inspect a fresh decoded review immediately before sending.
-- Keep `NEXT_PUBLIC_EXECUTION_ENABLED=true` limited to production Shannon and reverify the deployed one-leg, 2.00-unit boundary.
+- Keep `NEXT_PUBLIC_EXECUTION_ENABLED=true` limited to production Shannon and reverify the deployed one-leg, 10.00-unit boundary.
 - Recheck the live deployment, planner, review expiry, account binding, exact approval, and order calldata.
 
 ### Required evidence
@@ -66,7 +66,7 @@ Status: complete on September 1. See `EVIDENCE.md`.
 - Review expired or fingerprint changed.
 - Market no longer Trading.
 - Insufficient gas or collateral.
-- Maximum cost above 2.00.
+- Maximum cost above 10.00.
 - Simulation failure, reverted receipt, or unexpected calldata.
 
 ## Phase 3 — prove settlement, claim, and rollover
@@ -161,7 +161,7 @@ Until the submission is complete, do not spend time on:
 - [x] Public app, repository, license, and SDK feedback.
 - [x] 60 tests, typecheck, and lint passing.
 - [x] Documentation synchronized with the current build.
-- [x] Production Shannon pilot enabled with the one-leg, 2.00-unit boundary.
+- [x] Production Shannon pilot enabled with the one-leg, 10.00-unit boundary.
 - [x] Real order, exact fill, reload recovery, and finalized claimability captured.
 - [x] Real claim and post-claim evidence captured.
 - [x] Rollover demonstrated from real lifecycle state, preserved reserve, fresh market review, and filled follow-on order.

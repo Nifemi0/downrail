@@ -31,7 +31,7 @@ The application is technically competitive and its write paths are exercised wit
 
 ### Release gate passed: bounded public signing enabled
 
-`NEXT_PUBLIC_EXECUTION_ENABLED=true` is set in the Vercel production environment. The deployed sender remains restricted to Shannon chain `50312`, one IOC leg, an exact bounded approval, and no more than 2.00 collateral units.
+`NEXT_PUBLIC_EXECUTION_ENABLED=true` is set in the Vercel production environment. The deployed sender remains restricted to Shannon chain `50312`, one IOC leg, an exact bounded approval, and no more than 10.00 collateral units.
 
 ### Current-horizon rollover is live-proven
 

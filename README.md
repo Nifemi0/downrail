@@ -4,7 +4,7 @@ Downrail turns DreamDEX BTC and ETH Event Contracts into transparent, short-dura
 
 The current build reads live DreamDEX inventory on Somnia Shannon, constructs one depth-aware current DOWN leg plus explicit future rollover checkpoints, connects injected wallets, and builds canonical decoded order and claim reviews. It includes a strict tiny-pilot sender, receipt verification, reload recovery, historical settlement discovery, reviewed claims, and lifecycle-triggered rollover recommendations. No private key is accepted or stored.
 
-The public Vercel environment enables a Shannon-only tiny pilot capped at one IOC leg and 2.00 collateral units. Real testnet evidence now covers a filled order, reload recovery, finalization, a successful claim, a lifecycle-triggered reserve handoff, and a filled rollover leg; the linked receipts and authoritative states are recorded in `EVIDENCE.md`.
+The public Vercel environment enables a Shannon-only tiny pilot capped at one IOC leg and 10.00 collateral units. Real testnet evidence now covers a filled order, reload recovery, finalization, a successful claim, a lifecycle-triggered reserve handoff, and a filled rollover leg; the linked receipts and authoritative states are recorded in `EVIDENCE.md`.
 
 Production deployment: https://downrail.vercel.app
 
@@ -79,7 +79,7 @@ Verified Shannon lifecycle: [order approval](https://shannon-explorer.somnia.net
 ## Execution safety boundary
 
 - Planning and unsigned review never open the wallet or send a transaction.
-- The first live pilot is limited to one IOC protection leg and at most 2.00 collateral units.
+- The first live pilot is limited to one IOC protection leg and at most 10.00 collateral units.
 - Every quote, market state, pool grid, and expiry is refreshed before the review is encoded.
 - DOWN prices are converted to the SDK's complementary YES-price representation deterministically.
 - ERC-20 approval calldata is rewritten from the SDK's unlimited default to the exact reviewed maximum cost.
@@ -94,7 +94,7 @@ Verified Shannon lifecycle: [order approval](https://shannon-explorer.somnia.net
 ## Tiny testnet pilot
 
 1. Connect a funded Shannon testnet wallet.
-2. Set **Maximum spend** to `2.00` or less.
+2. Set **Maximum spend** to `10.00` or less.
 3. Build the unsigned one-leg review.
 4. Inspect the fingerprint, approval target, exact allowance, order target, calldata, and expiry.
 5. Check the authorization acknowledgement only if the calls are acceptable.

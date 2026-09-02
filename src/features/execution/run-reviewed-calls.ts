@@ -16,7 +16,7 @@ import {
 } from "./review-schema";
 import { validateReviewedOrder } from "./validate-reviewed-order";
 
-export const PILOT_MAXIMUM_COST_RAW = 2_000_000n;
+export const PILOT_MAXIMUM_COST_RAW = 10_000_000n;
 export { SHANNON_CHAIN_ID };
 export type ReviewedPilot = OrderReview;
 export type { ReviewedCall };
@@ -77,7 +77,7 @@ export function assertTinyPilot(
   }
   const maximumCostRaw = BigInt(review.plan.totalMaximumCostRaw);
   if (maximumCostRaw <= 0n || maximumCostRaw > PILOT_MAXIMUM_COST_RAW) {
-    throw new RangeError("the first pilot is capped at 2.00 collateral units");
+    throw new RangeError("the first pilot is capped at 10.00 collateral units");
   }
   const generatedAt = Date.parse(review.generatedAt);
   if (generatedAt > now + 30_000) {

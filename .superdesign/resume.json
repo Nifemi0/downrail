@@ -31,9 +31,9 @@
       ],
       "fingerprints": {
         ".superdesign/design-system.md": "f5bc0e80c5c3fcc4e31de06ad4a2537c7e67fa52a0387842fe17708b00874ae1",
-        "src/app/globals.css": "1d7fde16d670b5862e772d5539afbacd89c7412e6d6cdda6b330629033107408",
+        "src/app/globals.css": "3afafd56bebcede24ac1406b3a12d6a23690e14df74a181e565f5ebec974cb39",
         "src/app/layout.tsx": "b53bfa0af4034108439551d097ff188ebb824f2d2e7329c667cedf567c163437",
-        "src/app/page.tsx": "f293828b331e93adf9aded9465d864c5e4438d7e1a05342f5783f0669b1bccef",
+        "src/app/page.tsx": "0c4c6f6b423f9f93f1ffdf9e026b0333b4e8e779e683288baff67b5450510e7c",
         "src/components/site-header.tsx": "f1c1364a6a815e195b66d0061648bdd6e6371b9b8cacdca5c8fa1521f3c2c8d1",
         "src/components/site-footer.tsx": "da69149243a7b8c1d6a90d3b0f6fd1bdc4361e681766cef0c139f9a4e9af9e3e",
         "src/components/wallet-control.tsx": "769ca199f26a67af897c3247ca705838fb0d025e5ed47544c59ab4847986bcb4",
@@ -64,7 +64,7 @@
           "currentVersion": 5
         }
       },
-      "updatedAt": "2026-09-01T12:12:41.3150892Z"
+      "updatedAt": "2026-09-01T23:53:02.6030267Z"
     },
     "/app": {
       "targetKind": "new-ui",
@@ -99,10 +99,10 @@
       ],
       "fingerprints": {
         ".superdesign/design-system.md": "f5bc0e80c5c3fcc4e31de06ad4a2537c7e67fa52a0387842fe17708b00874ae1",
-        "src/app/globals.css": "1d7fde16d670b5862e772d5539afbacd89c7412e6d6cdda6b330629033107408",
+        "src/app/globals.css": "3afafd56bebcede24ac1406b3a12d6a23690e14df74a181e565f5ebec974cb39",
         "src/app/layout.tsx": "b53bfa0af4034108439551d097ff188ebb824f2d2e7329c667cedf567c163437",
         "src/app/app/page.tsx": "60863eada6df18b220e55153d3e19a097d78030ff805dd185317040b75b9e5c2",
-        "src/components/hedge-preview.tsx": "720f3963c58204c499c441058e17ca1d82c0d7b56edb9dc7569d01a5a462b515",
+        "src/components/hedge-preview.tsx": "9c129c4d9f9a21ea8acda7abf8d11fe214fcaa2e2d727f95071fb6da7b25e9ec",
         "src/components/settlement-inbox.tsx": "ff659be399f9a642119d927c8677a4ef3e9a28c022337c2ed470738ccbf5d962",
         "src/components/site-header.tsx": "f1c1364a6a815e195b66d0061648bdd6e6371b9b8cacdca5c8fa1521f3c2c8d1",
         "src/components/site-footer.tsx": "da69149243a7b8c1d6a90d3b0f6fd1bdc4361e681766cef0c139f9a4e9af9e3e",
@@ -117,7 +117,7 @@
           "currentVersion": 3
         }
       },
-      "updatedAt": "2026-09-01T17:59:19.8885812Z"
+      "updatedAt": "2026-09-01T23:53:02.6030267Z"
     },
     "/docs": {
       "targetKind": "new-ui",
@@ -150,7 +150,7 @@
       ],
       "fingerprints": {
         ".superdesign/design-system.md": "f5bc0e80c5c3fcc4e31de06ad4a2537c7e67fa52a0387842fe17708b00874ae1",
-        "src/app/globals.css": "1d7fde16d670b5862e772d5539afbacd89c7412e6d6cdda6b330629033107408",
+        "src/app/globals.css": "3afafd56bebcede24ac1406b3a12d6a23690e14df74a181e565f5ebec974cb39",
         "src/app/layout.tsx": "b53bfa0af4034108439551d097ff188ebb824f2d2e7329c667cedf567c163437",
         "src/app/docs/page.tsx": "8413773abcd815765db3005eaa1804231a113bc5cb8be57360d6129e2b7b794f",
         "src/components/site-header.tsx": "f1c1364a6a815e195b66d0061648bdd6e6371b9b8cacdca5c8fa1521f3c2c8d1",
@@ -166,7 +166,7 @@
           "currentVersion": 3
         }
       },
-      "updatedAt": "2026-09-01T12:12:41.3150892Z"
+      "updatedAt": "2026-09-01T23:53:02.6030267Z"
     }
   }
 }

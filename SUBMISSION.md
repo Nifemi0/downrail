@@ -63,7 +63,7 @@ That distinction matters in the current field. Sluice Markets already focuses on
 - Deterministic `bigint` calculations for prices, quantities, costs, payouts, ticks, and lots.
 - Live indexer discovery followed by on-chain status and pool-parameter verification.
 - Native EIP-6963 wallet discovery with EIP-1193 transaction requests.
-- One-leg tiny-pilot sender capped at `2.00` collateral units.
+- One-leg tiny-pilot sender capped at `10.00` collateral units.
 - Exact ERC-20 allowance rewriting instead of unlimited approval.
 - Sequential receipt validation, timeout handling, stop-on-revert behavior, and device-local recovery pointers.
 - Fill, position, and resting-order reconciliation keyed by market ID rather than reusable pool address.
@@ -75,12 +75,12 @@ That distinction matters in the current field. Sluice Markets already focuses on
 - Downrail never asks for or stores a private key or seed phrase.
 - Planning and unsigned review do not open the wallet.
 - Every proposed call is decoded and visible before signing.
-- The tiny pilot is restricted to one IOC leg and at most 2.00 collateral units.
+- The tiny pilot is restricted to one IOC leg and at most 10.00 collateral units.
 - Every wallet call requires confirmation from the user.
 - Quotes and reviews expire quickly and are bound to the connected account and Shannon chain.
 - The interface describes partial, scenario-dependent protection rather than guaranteed insurance.
 - Simulated values and unproven lifecycle behavior are never presented as live on-chain proof.
-- The Vercel deployment enables a Shannon-only tiny pilot capped at one IOC leg and 2.00 collateral units. A real order filled exactly, reload recovery worked, the winning position finalized, and the reviewed claim completed successfully; see `EVIDENCE.md`.
+- The Vercel deployment enables a Shannon-only tiny pilot capped at one IOC leg and 10.00 collateral units. A real order filled exactly, reload recovery worked, the winning position finalized, and the reviewed claim completed successfully; see `EVIDENCE.md`.
 
 ## Ecosystem impact
 
@@ -143,7 +143,7 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - [x] Judge-accessible Vercel deployment.
 - [x] SDK and documentation feedback report.
 - [x] 60 tests, typecheck, and lint passing.
-- [x] Production Shannon pilot enabled with the one-leg, 2.00-unit boundary.
+- [x] Production Shannon pilot enabled with the one-leg, 10.00-unit boundary.
 - [x] Real testnet order, receipt, exact fill, and reload-recovery evidence.
 - [x] Real finalized-position, claim, and post-claim evidence.
 - [x] Current-horizon rollover recommendation and filled fresh leg captured.

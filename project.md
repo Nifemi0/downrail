@@ -96,7 +96,7 @@ DreamDEX / Shannon
 - Lifecycle-triggered manual rollover recommendations.
 - Responsive landing, application, and documentation routes.
 - Public Vercel deployment, public MIT repository, CI, and 60 tests.
-- Shannon-only production pilot deliberately enabled behind the one-leg, 2.00-unit execution boundary.
+- Shannon-only production pilot deliberately enabled behind the one-leg, 10.00-unit execution boundary.
 - Real Shannon order and claim receipts, exact filled-order reconciliation, reload recovery, a finalized winning position, authoritative post-claim state, and a reserve-backed rollover into a fresh ETH market.
 
 ## Submission work still required
