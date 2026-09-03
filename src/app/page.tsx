@@ -54,12 +54,12 @@ export default function Home() {
               <h3>&ldquo;I want to keep my ETH, but I don&apos;t want one bad day to erase my gains.&rdquo;</h3>
               <dl className="story-facts">
                 <div><dt>ETH exposure</dt><dd>$1,000</dd></div>
-                <div><dt>Maximum spend</dt><dd>$20</dd></div>
+                <div><dt>Maximum spend</dt><dd>$10</dd></div>
                 <div><dt>Protection window</dt><dd>24 hours</dd></div>
               </dl>
             </article>
             <div className="story-journey" aria-label="Maya's protection journey">
-              <article className="story-step"><span className="story-icon"><ShieldCheck aria-hidden="true" /></span><div><strong>She sets the boundary</strong><p>Downrail checks live DOWN liquidity and shows exactly what the $20 limit can buy.</p></div></article>
+              <article className="story-step"><span className="story-icon"><ShieldCheck aria-hidden="true" /></span><div><strong>She sets the boundary</strong><p>Downrail checks live DOWN liquidity and shows exactly what the $10 limit can buy.</p></div></article>
               <ArrowRight aria-hidden="true" />
               <article className="story-step"><span className="story-icon"><ArrowDownRight aria-hidden="true" /></span><div><strong>She reviews the tradeoff</strong><p>She keeps the upside, accepts the known hedge cost, and sees the payout is conditional.</p></div></article>
               <ArrowRight aria-hidden="true" />

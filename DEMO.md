@@ -22,7 +22,7 @@ Target length: 2 minutes 30 seconds. The public app and repository are ready. Re
 
 ### 0:18–0:38 — Define the hedge
 
-**Screen:** Select ETH, enter `$2,000` exposure, `4 hours`, and `$20` maximum spend.
+**Screen:** Select ETH, enter `$2,000` exposure, `4 hours`, and `$10` maximum spend.
 
 **Voiceover:**
 

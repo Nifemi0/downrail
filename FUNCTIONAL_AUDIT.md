@@ -1,6 +1,6 @@
 # Downrail functional audit
 
-Audit date: 2026-09-01
+Audit date: 2026-09-03
 
 Audited targets: `https://downrail.vercel.app` and the local `hedgeflow` worktree
 

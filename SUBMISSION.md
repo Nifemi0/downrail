@@ -88,7 +88,7 @@ Downrail creates a new source of recurring DreamDEX demand: holders and treasuri
 
 The same planning layer could later serve wallets, treasury dashboards, and developer APIs without changing DreamDEX's core contracts.
 
-## Verified on September 1, 2026
+## Verified on September 3, 2026
 
 - Public application and health route are ready on Shannon chain `50312`.
 - Public GitHub repository is accessible, uses the `main` branch, and is MIT licensed.

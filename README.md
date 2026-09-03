@@ -36,7 +36,7 @@ Open http://localhost:3000. The diagnostic and planner perform no writes and req
 - `npm run lint` — run ESLint.
 - `npm run build` — create a production build.
 
-## Verified status — September 1, 2026
+## Verified status — September 3, 2026
 
 - Production health reports ready on Shannon chain `50312`.
 - The live diagnostic discovers BTC and ETH markets with populated depth across currently available 5m, 15m, 1h, 4h, and 24h windows.

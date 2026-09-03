@@ -1,6 +1,6 @@
 # Event Contracts Hackathon review
 
-Review date: 2026-09-01  
+Review date: 2026-09-03  
 Source of truth: https://dorahacks.io/hackathon/event-contracts/detail
 
 This file centralizes the event brief, Downrail readiness, and competitive strategy. If the organizer changes the DoraHacks page, update this file first and then propagate only material changes to submission-facing documents.
@@ -13,7 +13,7 @@ This file centralizes the event brief, Downrail readiness, and competitive strat
 - Registration opened: August 18, 2026.
 - Submission period: August 25 through September 8, 2026.
 - Deadline displayed during this review: September 8, 2026 at 19:00. Confirm the timezone in the participant's DoraHacks account.
-- Field during this review: 13 BUIDLs and 287 hackers.
+- Field during this review: 22 BUIDLs and 331 hackers.
 
 ## Required submission materials
 

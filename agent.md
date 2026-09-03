@@ -6,7 +6,7 @@ This guide keeps contributors and coding agents aligned with Downrail's product 
 
 ## Current status
 
-- Status date: September 1, 2026.
+- Status date: September 3, 2026.
 - Core product, order lifecycle, settlement discovery, reviewed claims, and manual rollover recommendations are implemented.
 - Vercel production and the public MIT repository are ready.
 - All 60 tests pass; typecheck, lint, recent builds, live health, and read-only DreamDEX diagnostics pass.

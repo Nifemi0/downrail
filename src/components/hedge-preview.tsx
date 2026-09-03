@@ -227,7 +227,7 @@ export function HedgePreview() {
   const [asset, setAsset] = useState<"BTC" | "ETH">("ETH");
   const [mode, setMode] = useState<PlannerMode>("demo");
   const [exposure, setExposure] = useState("2000");
-  const [budget, setBudget] = useState("20");
+  const [budget, setBudget] = useState("10");
   const [dropPercent, setDropPercent] = useState(5);
   const [horizonSeconds, setHorizonSeconds] = useState(60 * 60);
   const [snapshot, setSnapshot] = useState<LiveHedgePlanSnapshot | null>(null);

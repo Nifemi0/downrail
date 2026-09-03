@@ -9,7 +9,7 @@
 - Assets: BTC and ETH
 - Deployment: https://downrail.vercel.app
 - Repository: https://github.com/Nifemi0/downrail
-- Status date: September 1, 2026
+- Status date: September 3, 2026
 
 ## Product
 

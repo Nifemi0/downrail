@@ -1,6 +1,6 @@
 # Downrail top-submission plan
 
-Plan date: 2026-09-01
+Plan date: 2026-09-03
 
 Deadline displayed by DoraHacks: 2026-09-08 19:00; verify the account timezone before final submission.
 
@@ -105,7 +105,7 @@ Status: in progress; real order, claim, and rollover receipts are now available 
 
 ### Reduce judge friction
 
-- Provide a one-click demo preset for the $2,000 ETH / four-hour / $20 scenario.
+- Provide a one-click demo preset for the $2,000 ETH / four-hour / $10 scenario.
 - Keep a read-only path usable without a wallet.
 - Explain how to obtain test gas and collateral in the docs.
 - Provide a recorded-evidence fallback if the live market rolls during judging.
