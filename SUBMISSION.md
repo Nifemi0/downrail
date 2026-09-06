@@ -1,6 +1,6 @@
 # Downrail — DoraHacks submission record
 
-> Status as of September 6, 2026: submitted to Open Track and under review at https://dorahacks.io/buidl/48288. Separate hacker registration confirmed. The submitted demo is the original public 2:48 YouTube cut.
+> Submitted September 6, 2026 to Open Track at https://dorahacks.io/buidl/48288; the initial confirmation said under review. A later same-day Chrome check confirmed the public entry, Open Track listing and registered account, but the inspected submission panel displayed no explicit approval decision. Organizer approval is not independently confirmed. The submitted demo remains the original public 2:48 YouTube cut.
 
 ## Project name
 

@@ -1,24 +1,45 @@
 # Downrail
 
-## Deployment and submission status — September 6, 2026
+## Keep the upside. Guard the downside.
 
-- Live app: https://downrail.vercel.app (Somnia Shannon testnet, chain `50312`).
-- Public source: https://github.com/Nifemi0/downrail (MIT).
-- Submitted demo: https://youtu.be/yLCXjO3UtFs — original public 2:48 cut, not the newer local motion draft.
-- DoraHacks BUIDL: https://dorahacks.io/buidl/48288 — submitted to Open Track; **under review**, not organizer-approved.
-- Separate hacker registration: completed and confirmed by DoraHacks on September 6.
-- App market inventory, public repository, demo playback/duration and submission confirmations checked September 6. The engineering baseline remains September 3: 60 tests, typecheck and lint passing; this documentation update does not claim a fresh transaction or test run.
+Keep your BTC or ETH. Choose a spending limit. See exactly what a conditional downside payout would—and would not—cover.
 
-Downrail turns DreamDEX BTC and ETH Event Contracts into transparent, short-duration downside protection plans. It is a hedging interface—not a prediction-market creator, insurer, or guaranteed-protection product.
+Downrail turns DreamDEX Event Contracts into an exposure-first hedging workflow: plan a current DOWN position, review its cost and residual risk, sign with your wallet, then track settlement, claim and decide whether to roll into another window.
 
-The current build reads live DreamDEX inventory on Somnia Shannon, constructs one depth-aware current DOWN leg plus explicit future rollover checkpoints, connects injected wallets, and builds canonical decoded order and claim reviews. It includes a strict tiny-pilot sender, receipt verification, reload recovery, historical settlement discovery, reviewed claims, and lifecycle-triggered rollover recommendations. No private key is accepted or stored.
+[Try the app](https://downrail.vercel.app/app) · [Watch the 2:48 demo](https://youtu.be/yLCXjO3UtFs) · [Read the docs](https://downrail.vercel.app/docs) · [DoraHacks entry](https://dorahacks.io/buidl/48288)
 
-The public Vercel environment enables a Shannon-only tiny pilot capped at one IOC leg and 10.00 collateral units. Real testnet evidence now covers a filled order, reload recovery, finalization, a successful claim, a lifecycle-triggered reserve handoff, and a filled rollover leg; the linked receipts and authoritative states are recorded in `EVIDENCE.md`.
+## The moment Downrail is built for
 
-Production deployment: https://downrail.vercel.app
+You hold ETH and want to stay exposed to its upside, but you are concerned about a near-term drop. Selling removes that exposure. Buying a DOWN contract adds a conditional payout without selling your ETH—but choosing the window, checking liquidity and understanding the remaining loss should not require piecing together several trading screens.
 
-The repository pins Vercel's framework preset in `vercel.json`, so a fresh
-project deploys as Next.js instead of depending on a dashboard-only setting.
+Downrail starts with what you already hold. It shows the available current hedge leg, purchase cost, settlement condition and scenario-specific residual loss before you sign.
+
+**Illustration, not a live quote:** a $1,000 ETH position falls to $900. If a hedge costs $10 and pays $20 because its exact DOWN condition wins, its $10 net gain reduces the combined loss from $100 to $90, before fees. It does not restore the portfolio to $1,000.
+
+If the DOWN condition loses, the purchase cost can be lost—even if your portfolio fell over a different interval. If ETH rises, you still hold the ETH, but the hedge cost reduces your combined return. Payouts come from Event Contract collateral under the settlement rules, not money created by Downrail.
+
+## Inspect the proof
+
+| What you can verify | Evidence |
+| --- | --- |
+| Live planning and wallet-controlled execution | [Deployed Shannon app](https://downrail.vercel.app/app) |
+| Filled order and reload recovery | [Recorded order evidence](./EVIDENCE.md#filled-protection-order) |
+| Finalized position, 1.652 TESDC claim and empty post-claim inbox | [Lifecycle receipts and observations](./EVIDENCE.md) |
+| Reserved budget carried into a filled fresh-market rollover | [Rollover evidence](./EVIDENCE.md) |
+| 60 tests, typecheck and lint passed in the September 3 baseline | [Engineering audit](./FUNCTIONAL_AUDIT.md) |
+| Specific integration findings and SDK improvement requests | [SDK feedback](./FEEDBACK.md) |
+
+These are recorded testnet results, not proof of customer demand or mainnet readiness. The user-need hypothesis still needs validation with real users.
+
+## What the prototype does—and does not do
+
+The current build discovers live BTC/ETH markets, sizes one depth-aware current DOWN leg with integer arithmetic, builds decoded unsigned reviews, verifies receipts, recovers activity after reload, discovers claims and prepares manual rollover checkpoints. No private key is accepted or stored.
+
+- Shannon testnet only, chain `50312`; the public pilot allows one IOC leg and at most 10.00 collateral units.
+- Protection is partial and conditional—not insurance, guaranteed returns or one-for-one loss compensation.
+- An unfilled order provides no hedge. Thin liquidity, expiry and the selected settlement condition matter.
+- Future rollover checkpoints are not already-purchased coverage. Each new leg needs a fresh review and wallet confirmation.
+- Planning requires no wallet. Execution needs test tokens and wallet confirmations.
 
 ## Requirements
 
@@ -44,14 +65,6 @@ Open http://localhost:3000. The diagnostic and planner perform no writes and req
 - `npm run typecheck` — run TypeScript without emitting files.
 - `npm run lint` — run ESLint.
 - `npm run build` — create a production build.
-
-## Verified status — September 3, 2026
-
-- Production health reports ready on Shannon chain `50312`.
-- The live diagnostic discovers BTC and ETH markets with populated depth across currently available 5m, 15m, 1h, 4h, and 24h windows.
-- The public repository is MIT licensed and available at https://github.com/Nifemi0/downrail.
-- All 60 tests pass; typecheck and lint pass.
-- Order execution, recovery, settlement discovery, the reviewed claim, and a current-horizon manual rollover are live-proven.
 
 ## Structure
 
@@ -113,3 +126,13 @@ Verified Shannon lifecycle: [order approval](https://shannon-explorer.somnia.net
 Do not use a mainnet wallet, seed phrase, or private key with this project.
 
 The live testnet lifecycle is documented in [`EVIDENCE.md`](./EVIDENCE.md), including successful order and claim receipts, exact indexed fills, reload recovery, the finalized winning position, the authoritative post-claim empty state, and the reserve-backed manual rollover into a new market.
+
+## Deployment and submission record
+
+- [Live app](https://downrail.vercel.app) on Vercel; [MIT-licensed source](https://github.com/Nifemi0/downrail).
+- [Original public 2:48 demo](https://youtu.be/yLCXjO3UtFs) remains the submitted video.
+- [BUIDL 48288](https://dorahacks.io/buidl/48288) was submitted September 6, 2026; the initial confirmation said **under review**.
+- A later September 6 Chrome check confirmed the public BUIDL, its Open Track listing, Manage Submission access and the account's registered state. The inspected submission panel did not display an explicit approval decision; organizer approval is **not independently confirmed**.
+- The engineering baseline remains September 3: 60 tests, typecheck and lint passing. This documentation update did not rerun tests or transactions.
+
+The repository pins Vercel's Next.js framework preset in `vercel.json`. See [the submission record](./SUBMISSION.md) and [checklist](./SUBMISSION_CHECKLIST.md) for details.
