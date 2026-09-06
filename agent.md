@@ -6,22 +6,23 @@ This guide keeps contributors and coding agents aligned with Downrail's product 
 
 ## Current status
 
-- Status date: September 3, 2026.
+- Status date: September 6, 2026.
 - Core product, order lifecycle, settlement discovery, reviewed claims, and manual rollover recommendations are implemented.
 - Vercel production and the public MIT repository are ready.
-- All 60 tests pass; typecheck, lint, recent builds, live health, and read-only DreamDEX diagnostics pass.
+- Engineering baseline (September 3): 60 tests, typecheck and lint pass. Do not imply these were rerun during the September 6 documentation update.
 - `NEXT_PUBLIC_EXECUTION_ENABLED=true` is set for Vercel production; the Shannon-only sender remains capped at one IOC leg and 10.00 collateral units.
-- Real order, fill, reload recovery, finalized claimability, successful claim receipts, authoritative post-claim state, and a reserve-backed fresh-market rollover are verified in `EVIDENCE.md`; the required demo video remains incomplete.
+- Real order, fill, reload recovery, finalized claimability, successful claim receipts, authoritative post-claim state, and a reserve-backed fresh-market rollover are verified in `EVIDENCE.md`; the original 2:48 demo is public at https://youtu.be/yLCXjO3UtFs.
+- BUIDL https://dorahacks.io/buidl/48288 is submitted and under review; separate hacker registration is confirmed.
 
 ## Active goal
 
-Produce a judge-verifiable lifecycle, add concise evidence to the product and submission, record the two-to-three-minute video, and submit to DoraHacks. Do not broaden the product until those gates pass.
+Keep the submitted build and evidence available through organizer review. Submission and hacker registration are complete; do not create duplicate entries or replace the published demo without user authorization.
 
 ## Immediate priorities
 
-1. Add a concise judge-facing evidence surface using the verified explorer links.
-2. Rehearse the complete order-through-claim-and-rollover story.
-3. Record the demo and finish the DoraHacks form.
+1. Keep public deployment, repository, demo and evidence links consistent.
+2. Respond to organizer feedback when received; under review is not acceptance.
+3. Reverify affected behavior before publishing any implementation changes.
 
 ## Source-of-truth order
 

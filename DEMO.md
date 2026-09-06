@@ -1,6 +1,8 @@
 # Downrail demo runbook
 
-Target length: 2 minutes 30 seconds. The public app and repository are ready. Record the final cut only after real order and claim evidence is captured.
+Target length: 2–3 minutes. The public app, repository, and final 2:48 narrated cut are ready. Public video: https://youtu.be/yLCXjO3UtFs
+
+Submitted September 6, 2026: https://dorahacks.io/buidl/48288 (under review). This runbook is retained for future recordings; its unchecked rehearsal items are not pending submission requirements. The local 2:59 motion draft was not selected or uploaded.
 
 ## Recording rules
 
@@ -82,14 +84,14 @@ Target length: 2 minutes 30 seconds. The public app and repository are ready. Re
 - [ ] At least one known-good transaction receipt is bookmarked.
 - [ ] Fill or legitimate IOC result is visible.
 - [ ] Finalization, claim, and rollover segment is backed by real evidence.
-- [ ] Final video is between two and three minutes.
+- [x] Final video is between two and three minutes (`2:48`).
 - [ ] Captions and link text are readable at 1080p.
 
-## Links to add before recording
+## Evidence links for the final cut
 
-- Order explorer evidence: `TBD`
-- Claim explorer evidence: `TBD`
-- Public video URL: `TBD`
+- Order explorer evidence: https://shannon-explorer.somnia.network/tx/0xff6d45404a3e257eab9a4e2b87cad2086f0c6bc3a43e3d2de1b1c84107ea1c85
+- Claim explorer evidence: https://shannon-explorer.somnia.network/tx/0x73b1d1f8ed2707d8869b92fb1a4b9e9546cc6295c89a856783e85de5b3df4a82
+- Public video URL: https://youtu.be/yLCXjO3UtFs
 
 ## Contingency cut
 

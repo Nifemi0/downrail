@@ -9,7 +9,10 @@
 - Assets: BTC and ETH
 - Deployment: https://downrail.vercel.app
 - Repository: https://github.com/Nifemi0/downrail
-- Status date: September 3, 2026
+- Status date: September 6, 2026
+- BUIDL: https://dorahacks.io/buidl/48288 — submitted, under review.
+- Hacker registration: confirmed.
+- Public 2:48 demo: https://youtu.be/yLCXjO3UtFs
 
 ## Product
 
@@ -99,14 +102,13 @@ DreamDEX / Shannon
 - Shannon-only production pilot deliberately enabled behind the one-leg, 10.00-unit execution boundary.
 - Real Shannon order and claim receipts, exact filled-order reconciliation, reload recovery, a finalized winning position, authoritative post-claim state, and a reserve-backed rollover into a fresh ETH market.
 
-## Submission work still required
+## Submission status
 
-- Public two-to-three-minute demo video.
-- Completed DoraHacks submission.
+Deployment, public demo, BUIDL submission and separate hacker registration are complete. Organizer review is pending. See `SUBMISSION_CHECKLIST.md`.
 
-## Scope lock before submission
+## Post-submission scope
 
-Do not add AI trading decisions, automatic rollover, more assets, mainnet execution, social features, or unrelated design experiments before the evidence and video are complete.
+Do not add AI trading decisions, automatic rollover, more assets, mainnet execution, social features, or unrelated design experiments during judging without a separately approved scope change.
 
 ## Submission documents
 

@@ -1,6 +1,8 @@
 # Downrail top-submission plan
 
-Plan date: 2026-09-03
+Plan date: 2026-09-03; submission-status update: 2026-09-06
+
+BUIDL https://dorahacks.io/buidl/48288 is submitted and under review; hacker registration is confirmed. Original public demo: https://youtu.be/yLCXjO3UtFs (2:48). Historical phases below retain optional enhancement ideas; they are not all mandatory submission gates.
 
 Deadline displayed by DoraHacks: 2026-09-08 19:00; verify the account timezone before final submission.
 
@@ -121,7 +123,7 @@ Status: pending.
 
 ## Phase 6 — record the demo
 
-Status: ready; claim and current-horizon rollover proof are complete. The final demo should use the recorded explorer-backed lifecycle if live inventory moves during judging.
+Status: complete for submission. The original 2:48 narrated demo is public and linked in DoraHacks. Recording/caption suggestions below remain reusable guidance; the submitted export is 1280×720.
 
 - Follow `DEMO.md` and target 2 minutes 30 seconds.
 - Record at 1080p with readable wallet and explorer details.
@@ -132,7 +134,7 @@ Status: ready; claim and current-horizon rollover proof are complete. The final 
 
 ## Phase 7 — submission preflight
 
-Status: pending.
+Status: submission complete September 6; separate hacker registration confirmed. Engineering checks below retain their historical baseline and must be rerun for future code releases.
 
 - Verify the app in a fresh signed-out browser.
 - Verify the GitHub repository is public and contains no secrets.
@@ -166,5 +168,6 @@ Until the submission is complete, do not spend time on:
 - [x] Real claim and post-claim evidence captured.
 - [x] Rollover demonstrated from real lifecycle state, preserved reserve, fresh market review, and filled follow-on order.
 - [ ] Judge-facing evidence surface complete.
-- [ ] Two-to-three-minute video published.
-- [ ] DoraHacks submission completed.
+- [x] Two-to-three-minute video published: https://youtu.be/yLCXjO3UtFs.
+- [x] DoraHacks submission completed: https://dorahacks.io/buidl/48288 (under review).
+- [x] Separate hacker registration confirmed.

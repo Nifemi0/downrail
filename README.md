@@ -1,5 +1,14 @@
 # Downrail
 
+## Deployment and submission status — September 6, 2026
+
+- Live app: https://downrail.vercel.app (Somnia Shannon testnet, chain `50312`).
+- Public source: https://github.com/Nifemi0/downrail (MIT).
+- Submitted demo: https://youtu.be/yLCXjO3UtFs — original public 2:48 cut, not the newer local motion draft.
+- DoraHacks BUIDL: https://dorahacks.io/buidl/48288 — submitted to Open Track; **under review**, not organizer-approved.
+- Separate hacker registration: completed and confirmed by DoraHacks on September 6.
+- App market inventory, public repository, demo playback/duration and submission confirmations checked September 6. The engineering baseline remains September 3: 60 tests, typecheck and lint passing; this documentation update does not claim a fresh transaction or test run.
+
 Downrail turns DreamDEX BTC and ETH Event Contracts into transparent, short-duration downside protection plans. It is a hedging interface—not a prediction-market creator, insurer, or guaranteed-protection product.
 
 The current build reads live DreamDEX inventory on Somnia Shannon, constructs one depth-aware current DOWN leg plus explicit future rollover checkpoints, connects injected wallets, and builds canonical decoded order and claim reviews. It includes a strict tiny-pilot sender, receipt verification, reload recovery, historical settlement discovery, reviewed claims, and lifecycle-triggered rollover recommendations. No private key is accepted or stored.
@@ -43,7 +52,6 @@ Open http://localhost:3000. The diagnostic and planner perform no writes and req
 - The public repository is MIT licensed and available at https://github.com/Nifemi0/downrail.
 - All 60 tests pass; typecheck and lint pass.
 - Order execution, recovery, settlement discovery, the reviewed claim, and a current-horizon manual rollover are live-proven.
-- The required two-to-three-minute hackathon demo video is not yet published.
 
 ## Structure
 

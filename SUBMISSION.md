@@ -1,6 +1,6 @@
-# Downrail — DoraHacks submission draft
+# Downrail — DoraHacks submission record
 
-> Status: code-ready with real order-through-claim-and-rollover evidence. Do not submit until the demo-video link is added.
+> Status as of September 6, 2026: submitted to Open Track and under review at https://dorahacks.io/buidl/48288. Separate hacker registration confirmed. The submitted demo is the original public 2:48 YouTube cut.
 
 ## Project name
 
@@ -101,18 +101,18 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - SDK and documentation feedback is complete.
 - The public evidence bundle records successful Shannon order and claim receipts, exact fill reconciliation, reload recovery, finalized claimability, authoritative post-claim state, and a reserve-backed rollover into a newly discovered market.
 
-## Still required before submission
+## Submission receipt
 
-- Add the verified lifecycle links to the final demo.
-- Record and publish a two-to-three-minute demo video.
-- Review the final DoraHacks form and submit before the displayed September 8, 2026 deadline.
+DoraHacks displayed “BUIDL Submitted!” for Downrail on September 6, 2026 and marked the entry under review. The separate hacker-registration flow subsequently displayed successful registration. The original demo link was verified playing at 2:48. Organizer approval and judging results remain pending.
 
 ## Links
+
+- Submitted BUIDL: https://dorahacks.io/buidl/48288
 
 - Live application: https://downrail.vercel.app
 - GitHub repository: https://github.com/Nifemi0/downrail
 - Hackathon brief: https://dorahacks.io/hackathon/event-contracts/detail
-- Demo video: `TBD — 2–3 minute public video`
+- Demo video: https://youtu.be/yLCXjO3UtFs
 - Approval receipt: [Shannon explorer](https://shannon-explorer.somnia.network/tx/0xeff56d4f403f3937b28e56251977075066748afc1e8cf684d05c34f420376e09)
 - Filled order receipt: [Shannon explorer](https://shannon-explorer.somnia.network/tx/0xff6d45404a3e257eab9a4e2b87cad2086f0c6bc3a43e3d2de1b1c84107ea1c85)
 - Reconciliation evidence: [`EVIDENCE.md`](./EVIDENCE.md)
@@ -131,7 +131,7 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 | Technical Implementation | 25% | Live SDK/on-chain reads, deterministic depth-aware planning, exact approvals, decoded calls, successful order and claim receipts, exact fill reconciliation, recovery, settlement scanning, and a filled reserve-backed rollover leg. | Keep the receipts visible in the final demo. |
 | User Experience and Design | 20% | Plain-language exposure, horizon, spending cap, conditional payout, residual risk, and portfolio lifecycle across focused routes. | Validate the complete wallet flow with a fresh test user. |
 | Business and Ecosystem Impact | 20% | Creates recurring holder and treasury demand for DreamDEX windows and a reusable protection-planning layer. | Add one quantified example showing repeat Event Contract usage. |
-| Presentation and Demo | 15% | Focused 2:30 before/after portfolio-loss story and evidence plan. | Record, caption, publish, and link the final video. |
+| Presentation and Demo | 15% | Public 2:48 narrated demo with recorded lifecycle evidence. | Submitted video is linked; captions or a new cut remain optional improvements. |
 
 ## Submission readiness gate
 
@@ -147,5 +147,6 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - [x] Real testnet order, receipt, exact fill, and reload-recovery evidence.
 - [x] Real finalized-position, claim, and post-claim evidence.
 - [x] Current-horizon rollover recommendation and filled fresh leg captured.
-- [ ] Two-to-three-minute demo video.
-- [ ] DoraHacks form reviewed and submitted.
+- [x] Two-to-three-minute demo video is public: https://youtu.be/yLCXjO3UtFs
+- [x] DoraHacks form reviewed and submitted: https://dorahacks.io/buidl/48288 (under review).
+- [x] Separate hacker registration completed.

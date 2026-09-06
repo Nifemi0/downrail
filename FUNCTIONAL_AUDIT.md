@@ -1,6 +1,6 @@
 # Downrail functional audit
 
-Audit date: 2026-09-03
+Engineering audit date: 2026-09-03; submission-status update: 2026-09-06
 
 Audited targets: `https://downrail.vercel.app` and the local `hedgeflow` worktree
 
@@ -8,9 +8,9 @@ Scope: product correctness, DreamDEX integration, transaction safety, lifecycle 
 
 ## Executive verdict
 
-Downrail is a strong, differentiated testnet product with a working live-data path and a proven order-through-claim-and-rollover lifecycle. The bounded Shannon pilots produced successful order and claim receipts, exact full fills, reload recovery, a finalized winning position, an authoritative post-claim empty state, and a reserve-backed rollover into a fresh market. The remaining submission gap is the demo video.
+Downrail is a strong, differentiated testnet product with a working live-data path and a proven order-through-claim-and-rollover lifecycle. The bounded Shannon pilots produced successful order and claim receipts, exact full fills, reload recovery, a finalized winning position, an authoritative post-claim empty state, and a reserve-backed rollover into a fresh market. The public 2:48 demo and BUIDL submission are complete.
 
-The application is technically competitive and its write paths are exercised with a dedicated Shannon wallet. Submission readiness now depends on presenting the verified receipts clearly in the required public demo and final form.
+The application is technically competitive and its write paths are exercised with a dedicated Shannon wallet. BUIDL 48288 is under organizer review; separate hacker registration is confirmed. This status update does not represent a new full engineering audit.
 
 ## Verified baseline
 
@@ -27,7 +27,7 @@ The application is technically competitive and its write paths are exercised wit
 - All 60 tests pass; typecheck and lint pass.
 - The repository includes a submission draft, 2:30 demo runbook, SDK feedback report, and this current rules/readiness review.
 
-## Current blockers
+## Release and submission gates
 
 ### Release gate passed: bounded public signing enabled
 
@@ -37,9 +37,9 @@ The application is technically competitive and its write paths are exercised wit
 
 `EVIDENCE.md` proves reviewed order execution, successful order and claim receipts, exact indexed fills, reload recovery, finalized claimability, post-claim authoritative state, a deduplicated near-expiry recommendation, exact reserve loading, and a filled follow-on order on a fresh ETH market. The bounded IOC also rejected one stale quote before the refreshed retry filled, demonstrating the stop-on-revert boundary.
 
-### Submission blocker: no demo video
+### Submission gate passed: BUIDL submitted and hacker registered
 
-The official event requires a two-to-three-minute demo video. `DEMO.md` is ready, but no public video URL exists.
+The official event requires a two-to-three-minute demo video. The final 2:48 narrated export is public at https://youtu.be/yLCXjO3UtFs; the reviewed form was submitted September 6 at https://dorahacks.io/buidl/48288. DoraHacks confirmed both BUIDL submission (under review) and separate hacker registration.
 
 ## Judging review
 
@@ -49,7 +49,7 @@ The official event requires a two-to-three-minute demo video. `DEMO.md` is ready
 | Innovation and Originality | 20% | Exposure-first portfolio protection is distinct from AI signals and simple betting interfaces. | Sluice overlaps on safe budget sizing; Runs and Let It Ride overlap on rollover. |
 | User Experience and Design | 20% | Focused landing, app, and docs routes with plain-language planning, recovery, and a verified claim-to-empty-state flow. | Run one fresh-user demo rehearsal before recording. |
 | Business and Ecosystem Impact | 20% | Credible recurring-demand story for holders, treasuries, wallets, and future APIs. | The submission needs one quantified recurring-volume example. |
-| Presentation and Demo | 15% | Strong hook and timed script. | No published video or real lifecycle footage yet. |
+| Presentation and Demo | 15% | Public 2:48 narrated demo and recorded lifecycle evidence. | Original published video remains linked; a newer local motion draft is not submitted. |
 
 ## Competitive positioning
 
@@ -78,10 +78,10 @@ The strongest one-sentence position is:
 | Rollover recommendation | Complete | Near-expiry trigger, reserve handoff, fresh review, and filled follow-on leg verified |
 | Public deployment | Complete | Verified |
 | Public repository and license | Complete | Verified |
-| Demo video | Planned | Missing |
+| Demo video | Public | https://youtu.be/yLCXjO3UtFs |
 
 ## Release recommendation
 
-Do not add AI agents, automatic rollover, more assets, social features, or a redesign before submission. The highest-scoring path is to prove the existing lifecycle, expose concise judge-facing evidence, quantify ecosystem impact, and record the demo.
+Keep the submitted build stable through review. The deployment, public source, demo, BUIDL submission and hacker registration are complete. Further feature work, mainnet rollout or replacement video requires a separately agreed scope.
 
 See `FIXING_PLAN.md` for the ordered execution plan and `HACKATHON_REVIEW.md` for the official event cross-check.
