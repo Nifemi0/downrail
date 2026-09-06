@@ -45,32 +45,32 @@ export default function Home() {
 
         <section className="landing-story" aria-labelledby="story-title">
           <div className="section-intro">
-            <div><p className="eyebrow">A concrete example</p><h2 id="story-title">Meet Maya. She keeps her ETH—and buys time.</h2></div>
-            <p>Downrail does not create money. It turns a known spend into a clearly sized, conditional buffer for an asset she already owns.</p>
+            <div><p className="eyebrow">A concrete example</p><h2 id="story-title">Maya keeps her ETH. Here is what $10 can—and cannot—protect.</h2></div>
+            <p>Illustration, not a live quote. She buys a hedge for $10 that pays $20 only if its exact DOWN condition wins.</p>
           </div>
           <div className="story-frame">
             <article className="story-persona">
-              <div className="story-persona-top"><span className="story-avatar">M</span><span className="story-label">Maya&apos;s 24-hour plan</span></div>
-              <h3>&ldquo;I want to keep my ETH, but I don&apos;t want one bad day to erase my gains.&rdquo;</h3>
+              <div className="story-persona-top"><span className="story-avatar">M</span><span className="story-label">Maya&apos;s example plan</span></div>
+              <h3>&ldquo;I want to keep my ETH. How much of a drop could a small hedge offset?&rdquo;</h3>
               <dl className="story-facts">
                 <div><dt>ETH exposure</dt><dd>$1,000</dd></div>
-                <div><dt>Maximum spend</dt><dd>$10</dd></div>
-                <div><dt>Protection window</dt><dd>24 hours</dd></div>
+                <div><dt>Hedge purchase cost</dt><dd>$10</dd></div>
+                <div><dt>Payout if DOWN wins</dt><dd>$20</dd></div>
               </dl>
             </article>
             <div className="story-journey" aria-label="Maya's protection journey">
-              <article className="story-step"><span className="story-icon"><ShieldCheck aria-hidden="true" /></span><div><strong>She sets the boundary</strong><p>Downrail checks live DOWN liquidity and shows exactly what the $10 limit can buy.</p></div></article>
+              <article className="story-step"><span className="story-icon"><ShieldCheck aria-hidden="true" /></span><div><strong>She chooses her limit</strong><p>Downrail checks the live order book. Actual cost and payout depend on the contracts that fill.</p></div></article>
               <ArrowRight aria-hidden="true" />
-              <article className="story-step"><span className="story-icon"><ArrowDownRight aria-hidden="true" /></span><div><strong>She reviews the tradeoff</strong><p>She keeps the upside, accepts the known hedge cost, and sees the payout is conditional.</p></div></article>
+              <article className="story-step"><span className="story-icon"><ArrowDownRight aria-hidden="true" /></span><div><strong>She checks the condition</strong><p>The selected contract&apos;s result and expiry decide the payout—not her overall portfolio loss.</p></div></article>
               <ArrowRight aria-hidden="true" />
               <article className="story-step"><span className="story-icon"><ShieldCheck aria-hidden="true" /></span><div><strong>She decides with context</strong><p>Her wallet confirms only the exact bounded calls she has reviewed.</p></div></article>
             </div>
             <div className="story-outcomes">
-              <article className="story-outcome upside"><div><TrendingUp aria-hidden="true" /><span>ETH closes up</span></div><strong>She keeps the upside.</strong><p>The hedge may expire worthless, but her ETH gains value. Her known cost is the amount she chose to spend.</p></article>
-              <article className="story-outcome downside"><div><TrendingDown aria-hidden="true" /><span>ETH closes down</span></div><strong>The hedge pays conditionally.</strong><p>Winning contracts pay from the fully collateralized Event Contract market, cushioning part of the ETH decline.</p></article>
+              <article className="story-outcome upside"><div><TrendingUp aria-hidden="true" /><span>DOWN condition wins</span></div><strong>$100 ETH loss → $90 combined loss</strong><p>Her ETH falls from $1,000 to $900. The $20 payout minus the $10 purchase cost offsets $10 of that loss.</p><p>$900 ETH + $20 payout − $10 cost = $910, relative to her starting $1,000.</p></article>
+              <article className="story-outcome downside"><div><TrendingDown aria-hidden="true" /><span>DOWN condition loses</span></div><strong>$100 ETH loss → $110 combined loss</strong><p>If her ETH is worth $900 but the selected condition loses, there is no payout. She also loses the $10 hedge cost.</p><p>$900 ETH + $0 payout − $10 cost = $890. A different measurement window can produce this mismatch.</p></article>
             </div>
           </div>
-          <p className="story-footnote">Example only. The payout depends on the selected market outcome and the number of contracts the live order book can fill. Downrail is not insurance or guaranteed coverage.</p>
+          <p className="story-footnote">Where does the payout come from? Event Contract collateral, distributed under the market&apos;s settlement rules—not money created by Downrail. If ETH rises, Maya still owns it, but the hedge cost reduces her combined return. All figures exclude fees and use illustrative dollar-equivalent values; the live prototype uses Shannon test tokens. This is partial, conditional hedging—not insurance or guaranteed coverage.</p>
         </section>
 
         <section className="landing-principles" aria-labelledby="principles-title">
