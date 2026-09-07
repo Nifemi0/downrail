@@ -6,10 +6,10 @@ This guide keeps contributors and coding agents aligned with Downrail's product 
 
 ## Current status
 
-- Status date: September 6, 2026.
+- Status date: September 7, 2026.
 - Core product, order lifecycle, settlement discovery, reviewed claims, and manual rollover recommendations are implemented.
 - Vercel production and the public MIT repository are ready.
-- Engineering baseline (September 3): 60 tests, typecheck and lint pass. Do not imply these were rerun during the September 6 documentation update.
+- Engineering verification (September 7): 70 tests, typecheck, source lint (`npx eslint src`) and production build pass. See `BUGFIX_REVIEW.md` for the four fixes and verification limits; dependency health is intermittent, not all-green.
 - `NEXT_PUBLIC_EXECUTION_ENABLED=true` is set for Vercel production; the Shannon-only sender remains capped at one IOC leg and 10.00 collateral units.
 - Real order, fill, reload recovery, finalized claimability, successful claim receipts, authoritative post-claim state, and a reserve-backed fresh-market rollover are verified in `EVIDENCE.md`; the original 2:48 demo is public at https://youtu.be/yLCXjO3UtFs.
 - BUIDL https://dorahacks.io/buidl/48288 is submitted and under review; separate hacker registration is confirmed.

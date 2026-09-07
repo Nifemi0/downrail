@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ArrowRight, ArrowUpRight, FlaskConical, Network } from "lucide-react";
 import { encodeFunctionData } from "viem";
 
@@ -28,6 +28,8 @@ import {
 } from "@/features/execution/journal";
 import type { LiveHedgePlanSnapshot } from "@/lib/dreamdex/hedge-plan-snapshot";
 import { buildManualRolloverRecommendation } from "@/features/rollover/build-recommendation";
+import { executionReviewWasUsed, startReviewedExecution } from "@/features/execution/journal";
+import { useLiveClock } from "@/lib/use-live-clock";
 
 const HORIZONS = [
   { label: "15m", seconds: 15 * 60 },
@@ -220,6 +222,8 @@ function formatJournalStatus(status: ExecutionJournalRecord["status"]) {
 }
 
 export function HedgePreview() {
+  const nowUnixSeconds = useLiveClock();
+  const executionInFlight = useRef(false);
   const { account, chainId, provider } = useWalletSession();
   const exposureId = useId();
   const budgetId = useId();
@@ -256,8 +260,10 @@ export function HedgePreview() {
       EXECUTION_JOURNAL_UPDATED_EVENT,
       refreshExecutionJournal,
     );
+    window.addEventListener("storage", refreshExecutionJournal);
     return () => {
       window.cancelAnimationFrame(frame);
+      window.removeEventListener("storage", refreshExecutionJournal);
       window.removeEventListener(
         EXECUTION_JOURNAL_UPDATED_EVENT,
         refreshExecutionJournal,
@@ -290,7 +296,7 @@ export function HedgePreview() {
       try {
         const response = await fetch(`/api/hedge-plan?${query}`, {
           cache: "no-store",
-          signal: controller.signal,
+          signal: AbortSignal.any([controller.signal, AbortSignal.timeout(20_000)]),
         });
         const body = (await response.json()) as LiveHedgePlanSnapshot | { error?: string };
         if (!response.ok || !("plan" in body)) {
@@ -396,7 +402,19 @@ export function HedgePreview() {
   }
 
   async function submitReviewedPilot() {
-    if (!EXECUTION_ENABLED || !activePreflight || !provider || !account) return;
+    if (!EXECUTION_ENABLED || !activePreflight || !provider || !account || !reviewAcknowledged || executionInFlight.current) return;
+    executionInFlight.current = true;
+    try {
+      // Web Locks serialize the read/reserve step across tabs. Fail closed without them.
+      if (!navigator.locks) throw new Error("This browser cannot safely lock an execution. Use a current browser.");
+      await navigator.locks.request(`downrail:${executionJournalId(activePreflight)}`, () => {
+        setJournalRecords(startReviewedExecution(window.localStorage, activePreflight));
+      });
+    } catch (reservationError) {
+      executionInFlight.current = false;
+      setExecution({ fingerprint: activePreflight.fingerprint, error: true, message: reservationError instanceof Error ? reservationError.message : "Could not reserve this review." });
+      return;
+    }
     const journalId = executionJournalId(activePreflight);
     setExecutionPending(true);
     setExecution({
@@ -532,6 +550,7 @@ export function HedgePreview() {
         },
       ));
     } finally {
+      executionInFlight.current = false;
       setExecutionPending(false);
     }
   }
@@ -578,19 +597,19 @@ export function HedgePreview() {
     : false;
   const reviewAcknowledged =
     acknowledgedFingerprint === activePreflight?.fingerprint;
+  const reviewUsed = activePreflight ? executionReviewWasUsed(journalRecords.find((record) => record.id === executionJournalId(activePreflight))) : false;
+  const reviewExpired = activePreflight ? Date.parse(activePreflight.legs[0].validUntil) <= nowUnixSeconds * 1_000 + 10_000 : false;
   const visibleJournalRecords = account
     ? journalRecords
         .filter((record) => record.account.toLowerCase() === account.toLowerCase())
         .slice(0, 5)
     : [];
   const rolloverRecommendations = visibleJournalRecords.flatMap((record) => {
-    if (!record.rolloverContext) return [];
+    if (!record.rolloverContext || !nowUnixSeconds) return [];
     const recommendation = buildManualRolloverRecommendation({
       marketId: record.marketId,
       status: record.status,
-      nowUnixSeconds: Math.floor(
-        Date.parse(snapshot?.generatedAt ?? record.updatedAt) / 1_000,
-      ),
+      nowUnixSeconds,
       marketExpiryUnixSeconds: record.rolloverContext.marketExpiryUnixSeconds,
       requestedHorizonEndsAt: record.rolloverContext.requestedHorizonEndsAt,
       futureBudgetReserveRaw: record.rolloverContext.futureBudgetReserveRaw,
@@ -692,7 +711,7 @@ export function HedgePreview() {
           {loadState === "loading" ? (
             <div className="plan-message"><span className="loading-mark" /><p>Checking eligible windows, chain state, and executable depth…</p></div>
           ) : loadState === "error" ? (
-            <div className="plan-message error"><strong>Plan unavailable</strong><p>{error}</p></div>
+            <div className="plan-message error"><strong>Plan unavailable</strong><p>{error}</p><button className="text-action" type="button" onClick={() => setRefreshNonce((value) => value + 1)}>Retry live plan</button></div>
           ) : plan && snapshot ? (
             <>
               <div className="plan-headline">
@@ -838,7 +857,7 @@ export function HedgePreview() {
                     </label>
                     <button
                       className="execute-pilot"
-                      disabled={!EXECUTION_ENABLED || !pilotCostIsSafe || !reviewAcknowledged || executionPending || !provider}
+                      disabled={!EXECUTION_ENABLED || !pilotCostIsSafe || !reviewAcknowledged || executionPending || !provider || reviewUsed || reviewExpired}
                       onClick={() => void submitReviewedPilot()}
                       type="button"
                     >
@@ -846,7 +865,7 @@ export function HedgePreview() {
                         ? "Shannon pilot unavailable"
                         : executionPending
                           ? "Wallet flow active…"
-                          : "Submit reviewed pilot"}
+                          : reviewUsed ? "Review already used — build a fresh review" : reviewExpired ? "Review expired — build a fresh review" : "Submit reviewed pilot"}
                     </button>
                     <p className="pilot-warning">
                       {EXECUTION_ENABLED

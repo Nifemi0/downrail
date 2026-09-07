@@ -2,6 +2,7 @@ import { isAddress, isHash, type Hex } from "viem";
 import { z } from "zod";
 
 import type { ClaimReview } from "./claim-review";
+import { settlementInboxSchema } from "./schema";
 
 export const CLAIM_JOURNAL_KEY = "downrail.claim-journal.v1";
 
@@ -9,6 +10,7 @@ const claimJournalSchema = z.array(z.object({
   id: z.string().min(1),
   account: z.string().refine(isAddress),
   marketId: z.string().refine(isHash),
+  outcomeIndex: z.union([z.literal(0), z.literal(1)]).optional(),
   fingerprint: z.string().refine(isHash),
   reviewedAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
@@ -50,6 +52,7 @@ export function saveClaimReview(storage: StorageLike, review: ClaimReview) {
     id,
     account: review.account,
     marketId: review.marketId,
+    outcomeIndex: review.outcomeIndex,
     fingerprint: review.fingerprint,
     reviewedAt: review.generatedAt,
     updatedAt: now,
@@ -69,8 +72,29 @@ export function updateClaimJournal(
   const records = readClaimJournal(storage);
   const current = records.find((record) => record.id === id);
   if (!current) throw new RangeError("claim journal record does not exist");
+  const status = update.status === "FAILED" && (current.status === "CLAIM_CONFIRMED" || current.status === "CLAIMED")
+    ? current.status : update.status;
   return writeClaimJournal(storage, [
-    { ...current, ...update, updatedAt: new Date().toISOString() },
+    { ...current, ...update, status, updatedAt: new Date().toISOString() },
     ...records.filter((record) => record.id !== id),
   ]);
+}
+
+/** Read-only recovery after a successful receipt; never resends redemption. */
+export async function verifyConfirmedClaim(
+  storage: StorageLike,
+  id: string,
+  loadInbox: (account: string) => Promise<unknown>,
+) {
+  const record = readClaimJournal(storage).find((item) => item.id === id);
+  if (!record || record.status !== "CLAIM_CONFIRMED") throw new Error("A confirmed claim receipt is required before rechecking.");
+  const inbox = settlementInboxSchema.parse(await loadInbox(record.account));
+  if (inbox.account.toLowerCase() !== record.account.toLowerCase()) throw new Error("Claim balance response belongs to a different account.");
+  const outstanding = inbox.positions.some((position) =>
+    position.marketId.toLowerCase() === record.marketId.toLowerCase()
+    && (record.outcomeIndex === undefined || position.outcomeIndex === record.outcomeIndex)
+    && BigInt(position.balanceRaw) > 0n,
+  );
+  if (outstanding) throw new Error("Receipt confirmed; a live outcome balance remains. Do not resend this review.");
+  return { inbox, records: updateClaimJournal(storage, id, { status: "CLAIMED", lastError: undefined }) };
 }

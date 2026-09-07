@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useWalletSession } from "@/components/wallet-session";
 import {
@@ -22,6 +22,7 @@ import {
   readClaimJournal,
   saveClaimReview,
   updateClaimJournal,
+  verifyConfirmedClaim,
   type ClaimJournalRecord,
 } from "@/features/settlement/claim-journal";
 import { runReviewedClaim } from "@/features/settlement/run-reviewed-claim";
@@ -44,6 +45,7 @@ function statusLabel(status: SettlementPosition["status"]) {
 }
 
 export function SettlementInbox({ compact = false }: { compact?: boolean }) {
+  const claimInFlight = useRef(false);
   const { account, chainId, provider } = useWalletSession();
   const [inbox, setInbox] = useState<SettlementInboxData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -55,6 +57,7 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
   const [claimAcknowledged, setClaimAcknowledged] = useState(false);
   const [claimPending, setClaimPending] = useState(false);
   const [claimMessage, setClaimMessage] = useState<string | null>(null);
+  const [recheckingClaimId, setRecheckingClaimId] = useState<string | null>(null);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -99,7 +102,7 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
   }, [account, chainId]);
 
   useEffect(() => {
-    if (!account || !inbox) return;
+    if (!account || !inbox || inbox.account.toLowerCase() !== account.toLowerCase()) return;
     const outstandingMarkets = new Set(
       inbox.positions.map((position) => position.marketId.toLowerCase()),
     );
@@ -159,8 +162,11 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
   }
 
   async function submitClaim() {
-    if (!provider || !account || !review || !claimAcknowledged || !EXECUTION_ENABLED) return;
+    if (!provider || !account || !review || !claimAcknowledged || !EXECUTION_ENABLED || claimInFlight.current) return;
     const id = claimJournalId(review);
+    const existing = readClaimJournal(window.localStorage).find((record) => record.id === id);
+    if (existing?.status === "CLAIM_CONFIRMED" || existing?.status === "CLAIMED") return;
+    claimInFlight.current = true;
     setClaimPending(true);
     setClaimMessage("Checking the live claim balance before wallet confirmation…");
     try {
@@ -180,31 +186,38 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
           hash: completed.at(-1)?.hash,
         },
       ));
-      const response = await fetch(`/api/settlement-inbox?account=${account}`, { cache: "no-store" });
-      const body: unknown = await response.json();
-      if (!response.ok) throw new Error("post-claim balance verification failed");
-      const refreshed = settlementInboxSchema.parse(body);
-      setInbox(refreshed);
-      const stillClaimable = refreshed.positions.some((position) =>
-        position.marketId.toLowerCase() === review.marketId.toLowerCase()
-        && position.outcomeIndex === review.outcomeIndex
-        && (position.status === "CLAIMABLE" || position.status === "VOIDED_CLAIMABLE"),
-      );
-      if (stillClaimable) throw new Error("claim receipt confirmed, but the live claim balance remains");
-      setClaimJournal(updateClaimJournal(window.localStorage, id, { status: "CLAIMED" }));
+      const verified = await verifyConfirmedClaim(window.localStorage, id, loadClaimInbox);
+      setInbox(verified.inbox);
+      setClaimJournal(verified.records);
       setClaimMessage("Claim receipt confirmed and the live claim balance is no longer outstanding.");
     } catch (claimError) {
       const message = claimError instanceof Error ? claimError.message : "Claim did not complete";
-      setClaimJournal(updateClaimJournal(
+      const records = updateClaimJournal(
         window.localStorage,
         id,
         { status: "FAILED", lastError: message },
-      ));
-      setClaimMessage(message);
+      );
+      setClaimJournal(records);
+      setClaimMessage(records.find((record) => record.id === id)?.status === "CLAIM_CONFIRMED"
+        ? `Claim receipt confirmed. Balance verification is pending: ${message}. Use Recheck claim balance; do not resend.` : message);
     } finally {
+      claimInFlight.current = false;
       setClaimPending(false);
     }
   }
+
+  async function recheckClaim(record: ClaimJournalRecord) {
+    setRecheckingClaimId(record.id);
+    try {
+      const result = await verifyConfirmedClaim(window.localStorage, record.id, loadClaimInbox);
+      setClaimJournal(result.records);
+      setInbox(result.inbox);
+      setClaimMessage("Claim receipt confirmed and live balance verified.");
+    } catch (requestError) {
+      setClaimMessage(`Receipt remains confirmed. ${requestError instanceof Error ? requestError.message : "Balance check unavailable."}`);
+    } finally { setRecheckingClaimId(null); }
+  }
+  const reviewComplete = review && claimJournal.some((record) => record.id === claimJournalId(review) && (record.status === "CLAIM_CONFIRMED" || record.status === "CLAIMED"));
 
   return (
     <section className={`settlement-section${compact ? " settlement-compact" : ""}`} aria-labelledby="settlement-title">
@@ -267,7 +280,7 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
         </div>
       ) : null}
 
-      {review && (
+      {review && account?.toLowerCase() === review.account.toLowerCase() && chainId === "0xc488" && (
         <div className="claim-review">
           <div className="preflight-heading">
             <div><span>Unsigned claim review</span><strong>{review.calls.length} decoded call{review.calls.length === 1 ? "" : "s"}</strong></div>
@@ -293,22 +306,30 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
               <span>I reviewed the exact market, outcome, amount, and redemption calls.</span>
             </label>
             <button
-              disabled={!EXECUTION_ENABLED || !claimAcknowledged || claimPending || !provider}
+              disabled={!EXECUTION_ENABLED || !claimAcknowledged || claimPending || !provider || Boolean(reviewComplete)}
               onClick={() => void submitClaim()}
               type="button"
             >
-              {!EXECUTION_ENABLED ? "Shannon claim unavailable" : claimPending ? "Claim flow active…" : "Submit reviewed claim"}
+              {!EXECUTION_ENABLED ? "Shannon claim unavailable" : claimPending ? "Claim flow active…" : reviewComplete ? "Claim receipt confirmed" : "Submit reviewed claim"}
             </button>
             <p>{claimMessage ?? `Review expires ${new Date(review.validUntil).toLocaleTimeString()}. No claim was sent.`}</p>
           </div>
         </div>
       )}
-      {claimJournal.filter((record) => !account || record.account.toLowerCase() === account.toLowerCase()).slice(0, 3).map((record) => (
+      {claimJournal.filter((record) => account && record.account.toLowerCase() === account.toLowerCase()).slice(0, 3).map((record) => (
         <p className="claim-journal-note" key={record.id}>
           Claim activity: {record.status.toLowerCase().replaceAll("_", " ")} · {shortId(record.marketId)}
           {record.hash ? ` · ${shortId(record.hash)}` : ""}
+          {record.status === "CLAIM_CONFIRMED" && <button className="text-action" type="button" disabled={recheckingClaimId !== null || claimPending || chainId !== "0xc488"} onClick={() => void recheckClaim(record)}>{recheckingClaimId === record.id ? "Checking balance…" : "Recheck claim balance"}</button>}
         </p>
       ))}
+      {!review && claimMessage && <p role="status">{claimMessage}</p>}
     </section>
   );
+}
+
+async function loadClaimInbox(account: string): Promise<unknown> {
+  const response = await fetch(`/api/settlement-inbox?account=${account}`, { cache: "no-store", signal: AbortSignal.timeout(20_000) });
+  if (!response.ok) throw new Error("Post-claim balance verification is unavailable");
+  return response.json();
 }

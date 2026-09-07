@@ -42,6 +42,7 @@ export const executionJournalRecordSchema = z.object({
   fingerprint: z.string().refine(isHash),
   reviewedAt: z.string().refine((value) => Number.isFinite(Date.parse(value))),
   updatedAt: z.string().refine((value) => Number.isFinite(Date.parse(value))),
+  executionStartedAt: z.string().datetime().optional(),
   status: executionStatusSchema,
   calls: z.array(journalCallSchema).max(2),
   rolloverContext: z.object({
@@ -60,6 +61,21 @@ export type ExecutionStatus = z.infer<typeof executionStatusSchema>;
 export type ExecutionJournalRecord = z.infer<typeof executionJournalRecordSchema>;
 
 type StorageLike = Pick<Storage, "getItem" | "setItem">;
+
+export function executionReviewWasUsed(record: ExecutionJournalRecord | undefined) {
+  return Boolean(record && (record.executionStartedAt || record.calls.some((call) => call.hash)));
+}
+
+/** Reserve before opening the wallet; ambiguous or cancelled attempts need a fresh review. */
+export function startReviewedExecution(storage: StorageLike, review: OrderReview) {
+  const records = readExecutionJournal(storage);
+  const id = executionJournalId(review);
+  const record = records.find((item) => item.id === id);
+  if (!record) throw new Error("Save a fresh review before submitting.");
+  if (executionReviewWasUsed(record)) throw new Error("This review was already used. Recheck its transaction or build a fresh review.");
+  const started = { ...record, executionStartedAt: new Date().toISOString() };
+  return writeExecutionJournal(storage, [started, ...records.filter((item) => item.id !== id)]);
+}
 
 export function executionJournalId(review: OrderReview) {
   return [
@@ -137,6 +153,10 @@ export function updateExecutionJournal(
   const records = readExecutionJournal(storage);
   const current = records.find((record) => record.id === id);
   if (!current) throw new RangeError("execution journal record does not exist");
+  const previousHash = current.calls.find((call) => call.kind === update.callKind)?.hash;
+  if (previousHash && update.hash && previousHash.toLowerCase() !== update.hash.toLowerCase()) {
+    throw new Error("Cannot overwrite a submitted transaction. Build a fresh review.");
+  }
   const calls = current.calls.map((call) =>
     update.callKind === call.kind
       ? {

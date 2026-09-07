@@ -8,6 +8,8 @@ import {
   readExecutionJournal,
   saveReviewedExecution,
   updateExecutionJournal,
+  startReviewedExecution,
+  executionReviewWasUsed,
 } from "./journal";
 
 class MemoryStorage {
@@ -73,6 +75,39 @@ function review(): OrderReview {
 }
 
 describe("execution journal", () => {
+  it("consumes a review before signatures and blocks reuse after reload", () => {
+    const storage = new MemoryStorage();
+    const input = review();
+    saveReviewedExecution(storage, input);
+    startReviewedExecution(storage, input);
+    expect(executionReviewWasUsed(readExecutionJournal(storage)[0])).toBe(true);
+    expect(() => startReviewedExecution(storage, input)).toThrow("already used");
+    updateExecutionJournal(storage, executionJournalId(input), { status: "FAILED" });
+    expect(() => startReviewedExecution(storage, input)).toThrow("already used");
+  });
+
+  it("blocks legacy submitted reviews and preserves the original transaction hash", () => {
+    const storage = new MemoryStorage();
+    const input = review();
+    saveReviewedExecution(storage, input);
+    const id = executionJournalId(input);
+    const hash = `0x${"c".repeat(64)}`;
+    updateExecutionJournal(storage, id, { status: "FILLED", callKind: "ORDER", hash });
+    expect(() => startReviewedExecution(storage, input)).toThrow("already used");
+    expect(() => updateExecutionJournal(storage, id, { status: "ORDER_SUBMITTED", callKind: "ORDER", hash: `0x${"d".repeat(64)}` })).toThrow("overwrite");
+    expect(readExecutionJournal(storage)[0].calls[1].hash).toBe(hash);
+  });
+
+  it("allows a separately reviewed attempt without replacing earlier history", () => {
+    const storage = new MemoryStorage();
+    const first = review();
+    const fresh = { ...review(), fingerprint: `0x${"e".repeat(64)}` } as OrderReview;
+    saveReviewedExecution(storage, first);
+    startReviewedExecution(storage, first);
+    saveReviewedExecution(storage, fresh);
+    expect(() => startReviewedExecution(storage, fresh)).not.toThrow();
+    expect(readExecutionJournal(storage)).toHaveLength(2);
+  });
   it("persists reviewed and submitted state across reads", () => {
     const storage = new MemoryStorage();
     const input = review();

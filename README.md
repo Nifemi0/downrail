@@ -26,7 +26,7 @@ If the DOWN condition loses, the purchase cost can be lost—even if your portfo
 | Filled order and reload recovery | [Recorded order evidence](./EVIDENCE.md#filled-protection-order) |
 | Finalized position, 1.652 TESDC claim and empty post-claim inbox | [Lifecycle receipts and observations](./EVIDENCE.md) |
 | Reserved budget carried into a filled fresh-market rollover | [Rollover evidence](./EVIDENCE.md) |
-| 60 tests, typecheck and lint passed in the September 3 baseline | [Engineering audit](./FUNCTIONAL_AUDIT.md) |
+| 70 tests, typecheck, source lint and production build passed September 7 | [Bug-fix verification](./BUGFIX_REVIEW.md) |
 | Specific integration findings and SDK improvement requests | [SDK feedback](./FEEDBACK.md) |
 
 These are recorded testnet results, not proof of customer demand or mainnet readiness. The user-need hypothesis still needs validation with real users.

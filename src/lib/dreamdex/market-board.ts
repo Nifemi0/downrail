@@ -2,6 +2,7 @@ import type { BinaryMarket } from "@somnia-chain/markets-sdk";
 
 import { DREAMDEX_VENUE_ID, SHANNON_CHAIN_ID } from "./config";
 import { createReadOnlyExchange } from "./exchange";
+import { withTimeout } from "@/lib/http/api";
 
 export type HedgeAsset = "BTC" | "ETH";
 
@@ -88,7 +89,7 @@ export async function getMarketBoardSnapshot(
   const generatedAt = new Date().toISOString();
 
   try {
-    const [venues, assets, markets] = await Promise.all([
+    const [venues, assets, markets] = await withTimeout(Promise.all([
       exchange.client.listBinaryVenueIds(),
       exchange.client.listBinaryAssets(),
       exchange.client.listLiveBinaryMarkets({
@@ -97,11 +98,11 @@ export async function getMarketBoardSnapshot(
         orderBy: "closingSoon",
         limit,
       }),
-    ]);
+    ]), 8_000, "market discovery");
 
     const marketIds = markets.map((market) => market.marketId);
     const tops = marketIds.length
-      ? await exchange.client.getBookTops(marketIds)
+      ? await withTimeout(exchange.client.getBookTops(marketIds), 3_000, "market quotes")
       : {};
 
     return {
@@ -116,7 +117,7 @@ export async function getMarketBoardSnapshot(
         .filter((market): market is MarketBoardRow => market !== null),
       error: null,
     };
-  } catch (error) {
+  } catch {
     return {
       ok: false,
       generatedAt,
@@ -125,9 +126,9 @@ export async function getMarketBoardSnapshot(
       assets: [],
       venues: [],
       markets: [],
-      error: error instanceof Error ? error.message : "Unknown DreamDEX error",
+      error: "DreamDEX inventory is temporarily unavailable. Please retry.",
     };
   } finally {
-    await exchange.close();
+    await withTimeout(exchange.close(), 1_000, "market connection cleanup").catch(() => undefined);
   }
 }
