@@ -28,12 +28,18 @@ function market(
   };
 }
 
-function plan(candidates: HedgeMarketCandidate[], budgetRaw = 20n * USDC) {
+function plan(
+  candidates: HedgeMarketCandidate[],
+  budgetRaw = 20n * USDC,
+  rolloverReserveBps = 0n,
+) {
   return buildMultiWindowHedgePlan({
     asset: "ETH",
     exposureRaw: 2_000n * USDC,
     budgetRaw,
     downsideMoveBps: 500n,
+    targetCoverageBps: 2_500n,
+    rolloverReserveBps,
     requestedHorizonSeconds: 4 * 60 * 60,
     minExecutionHeadroomSeconds: 5 * 60,
     nowUnixSeconds: NOW,
@@ -68,7 +74,7 @@ describe("buildMultiWindowHedgePlan", () => {
     expect(result.currentMaximumCostRaw).toBe(20n * USDC);
   });
 
-  it("reserves budget and creates explicit future rollover checkpoints", () => {
+  it("does not silently reserve budget for a future rollover", () => {
     const result = plan([
       market({
         marketId: "current",
@@ -76,18 +82,41 @@ describe("buildMultiWindowHedgePlan", () => {
       }),
     ]);
 
-    expect(result.currentMaximumCostRaw).toBe(10n * USDC);
-    expect(result.futureBudgetReserveRaw).toBe(10n * USDC);
-    expect(result.rolloverCheckpoints).toEqual([
-      {
-        sequence: 1,
-        startsAt: NOW + 2 * 60 * 60,
-        targetEndsAt: NOW + 4 * 60 * 60,
-        intervalSeconds: 2 * 60 * 60,
-        estimatedBudgetRaw: 10n * USDC,
-        status: "FUTURE_MARKET_REQUIRED",
-      },
+    expect(result.currentMaximumCostRaw).toBe(20n * USDC);
+    expect(result.futureBudgetReserveRaw).toBe(0n);
+    expect(result.rolloverCheckpoints).toEqual([]);
+    expect(result.warnings.join(" ")).toContain("No collateral is reserved");
+  });
+
+  it("reserves only the percentage explicitly selected by the user", () => {
+    const result = plan([
+      market({
+        marketId: "current",
+        expiryUnixSeconds: NOW + 2 * 60 * 60,
+      }),
+    ], 20n * USDC, 2_500n);
+
+    expect(result.currentMaximumCostRaw).toBe(15n * USDC);
+    expect(result.futureBudgetReserveRaw).toBe(5n * USDC);
+    expect(result.rolloverCheckpoints[0]?.estimatedBudgetRaw).toBe(5n * USDC);
+  });
+
+  it("evaluates another candidate when the closest one cannot reach minimum size", () => {
+    const result = plan([
+      market({
+        marketId: "too-expensive",
+        expiryUnixSeconds: NOW + 4 * 60 * 60,
+        minQuantityRaw: 100n * USDC,
+        downAsks: [{ priceRaw: 900_000n, quantityRaw: 100n * USDC }],
+      }),
+      market({
+        marketId: "fallback",
+        expiryUnixSeconds: NOW + 4 * 60 * 60 + 60,
+      }),
     ]);
+
+    expect(result.legs[0]?.marketId).toBe("fallback");
+    expect(result.selection.evaluatedMarketCount).toBe(1);
   });
 
   it("budgets deeper fills at the worst executable limit price", () => {
@@ -158,7 +187,8 @@ describe("buildMultiWindowHedgePlan", () => {
         combinedScenarioChangeRaw: -120n * USDC,
       },
     ]);
-    expect(result).not.toHaveProperty("coverageBps");
+    expect(result.quality.verdict).toBe("PARTIAL_OFFSET");
+    expect(result.quality.coverageBps).toBe(500);
     expect(result.warnings.join(" ")).toContain("conditional");
   });
 });

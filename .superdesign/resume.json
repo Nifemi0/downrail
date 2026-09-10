@@ -66,6 +66,52 @@
       },
       "updatedAt": "2026-09-01T23:53:02.6030267Z"
     },
+    "/rebuild": {
+      "targetKind": "new-ui",
+      "projectId": "7ae0186e-74d9-4112-8740-7f4db71954ca",
+      "activeDraftId": "bf2f272a-7850-4881-976e-aad4a40e3352",
+      "designSystemPath": ".superdesign/design-system.md",
+      "referenceIds": [
+        "7d7db525-abae-40c0-aec8-47ae0fa01e6b",
+        "public-brand-downrail-logo.svg"
+      ],
+      "brandAssets": {
+        "logo": {
+          "assetKey": "public-brand-downrail-logo.svg",
+          "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/7ae0186e-74d9-4112-8740-7f4db71954ca/brand-assets/public-brand-downrail-logo.svg/downrail-logo.svg",
+          "sourcePath": "public/brand/downrail-logo.svg"
+        }
+      },
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        "src/app/globals.css:1:120",
+        "src/app/globals.css:343:591",
+        "src/app/layout.tsx",
+        "src/app/page.tsx",
+        "src/components/site-header.tsx",
+        "src/components/site-footer.tsx",
+        "src/components/wallet-control.tsx",
+        "src/components/wallet-session.tsx"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "857e82edfc5c6b8a2530c5ec9418293cf98853743bd1e7e8f9c614fc0d4c71b6",
+        "src/app/globals.css": "1b9b0dffb1f11d63665ba5cc5e5b283e35225268ad162efcf3a7d96babb1a561",
+        "src/app/layout.tsx": "b53bfa0af4034108439551d097ff188ebb824f2d2e7329c667cedf567c163437",
+        "src/app/page.tsx": "be278f8002cb00999e87da74dbb67fb8bc866e152a603126c80412b6cbffc5dd",
+        "src/components/site-header.tsx": "f1c1364a6a815e195b66d0061648bdd6e6371b9b8cacdca5c8fa1521f3c2c8d1",
+        "src/components/site-footer.tsx": "da69149243a7b8c1d6a90d3b0f6fd1bdc4361e681766cef0c139f9a4e9af9e3e",
+        "src/components/wallet-control.tsx": "769ca199f26a67af897c3247ca705838fb0d025e5ed47544c59ab4847986bcb4",
+        "src/components/wallet-session.tsx": "8f226910b887c0bee2f45793c5d3ec024fe33daa0c380ee17ec82e73830ba9cf"
+      },
+      "drafts": {
+        "bf2f272a-7850-4881-976e-aad4a40e3352": {
+          "title": "Downrail — Refracted Risk Rebuild",
+          "visualDirection": "Spline-inspired mint canvas with functional reeded-risk refraction, acid-lime actions, full product story and proof rail",
+          "currentVersion": 4
+        }
+      },
+      "updatedAt": "2026-09-08T07:26:00.000Z"
+    },
     "/app": {
       "targetKind": "new-ui",
       "projectId": "db007e0d-d92f-403e-8868-87033d44ae6b",

@@ -24,11 +24,17 @@ import {
 import { DREAMDEX_HTTP_RPC_URL, SHANNON_CHAIN_ID } from "@/lib/dreamdex/config";
 import { createUnsignedExchange } from "@/lib/dreamdex/exchange";
 import { apiError, readJsonObject } from "@/lib/http/api";
+import { rateLimitResponse } from "@/lib/http/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const limited = rateLimitResponse(request, "claim-review", {
+    limit: 12,
+    windowMs: 60_000,
+  });
+  if (limited) return limited;
   let exchange: ReturnType<typeof createUnsignedExchange> | undefined;
   try {
     const body = await readJsonObject(request);

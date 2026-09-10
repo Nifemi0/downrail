@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+const scriptSource = process.env.NODE_ENV === "development"
+  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+  : "script-src 'self' 'unsafe-inline'";
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   turbopack: {
@@ -20,7 +24,7 @@ const nextConfig: NextConfig = {
             "img-src 'self' data: blob:",
             "font-src 'self'",
             "style-src 'self' 'unsafe-inline'",
-            "script-src 'self' 'unsafe-inline'",
+            scriptSource,
             "connect-src 'self' https: wss:",
           ].join("; "),
         },

@@ -19,7 +19,7 @@ Official pages: [BUIDL page](https://dorahacks.io/hackathon/event-contracts/buid
 - [x] Shannon tiny-pilot boundary: one IOC leg and no more than 10.00 collateral units.
 - [x] Real order approval and fill receipts, exact fill reconciliation, reload recovery, finalized position, claim, post-claim empty state, and filled rollover evidence in [`EVIDENCE.md`](./EVIDENCE.md).
 - [x] Public links tested on September 4: app, health endpoint, GitHub, DoraHacks pages, and all recorded Shannon explorer receipts returned HTTP 200.
-- [x] Historical engineering baseline: 60 tests, typecheck, lint, and production build passed. These were not rerun for this documentation-only update.
+- [x] Current local engineering baseline: 101 tests, typecheck, lint and production build passed September 10. The simplified, hardened local candidate is not deployed yet.
 - [x] SDK and documentation feedback included in [`FEEDBACK.md`](./FEEDBACK.md).
 - [ ] Capture or select 3–5 final screenshots for the form or project page. This is a presentation-strengthening item, not one of the three minimum materials listed above.
 
@@ -30,7 +30,7 @@ Official pages: [BUIDL page](https://dorahacks.io/hackathon/event-contracts/buid
 - [x] Paste the final title, tagline, problem, solution, technology, and testing instructions into the DoraHacks form.
 - [x] Verify the repository URL, live demo URL, video URL, team details, and any required track/category fields in the form.
 - [x] Confirm the account is registered for the hackathon and that the form is open for editing/submission.
-- [x] Submit the form before the displayed deadline: September 8, 2026 at 19:00. Confirm the timezone shown in the DoraHacks account.
+- [x] Submitted September 6. DoraHacks now displays an extension to September 11, 2026 at 19:00; its page copy does not identify the timezone, so retain the earlier submission and verify the account display before any final update.
 - [x] Save the final DoraHacks project URL and submission confirmation after sending.
 
 ## Current verdict

@@ -26,6 +26,11 @@ export type ExecutedClaimCall = {
   receipt: ReceiptRecord;
 };
 
+export type OperatorRevocation = {
+  hash: Hex;
+  receipt: ReceiptRecord;
+};
+
 function rpcQuantity(name: string, value: unknown) {
   if (typeof value !== "string" || !/^0x[0-9a-f]+$/i.test(value)) {
     throw new RangeError(`wallet RPC returned an invalid ${name}`);
@@ -121,4 +126,72 @@ export async function runReviewedClaim(
     completed.push({ call, hash: transactionHash, receipt });
   }
   return completed;
+}
+
+export async function revokeReviewedClaimOperator(
+  provider: TransactionProvider,
+  input: ClaimReview,
+  account: string,
+): Promise<OperatorRevocation | null> {
+  const review = claimReviewSchema.parse(input);
+  if (!isAddress(account) || getAddress(account) !== getAddress(review.account)) {
+    throw new RangeError("claim review account no longer matches the wallet");
+  }
+  if (review.chainId !== 50_312) throw new RangeError("claim review is not for Shannon");
+  await assertCurrentWalletContext(provider, account);
+
+  const operatorResult = await provider.request({
+    method: "eth_call",
+    params: [{
+      from: getAddress(account),
+      to: getAddress(review.outcomeToken),
+      data: encodeFunctionData({
+        abi: erc6909Abi,
+        functionName: "isOperator",
+        args: [getAddress(account), getAddress(review.module)],
+      }),
+    }, "latest"],
+  });
+  if (typeof operatorResult !== "string" || !/^0x[0-9a-f]*$/i.test(operatorResult)) {
+    throw new RangeError("wallet RPC returned an invalid operator status");
+  }
+  const isOperator = decodeFunctionResult({
+    abi: erc6909Abi,
+    functionName: "isOperator",
+    data: operatorResult as Hex,
+  });
+  if (!isOperator) return null;
+
+  const transaction = {
+    from: getAddress(account),
+    to: getAddress(review.outcomeToken),
+    data: encodeFunctionData({
+      abi: erc6909Abi,
+      functionName: "setOperator",
+      args: [getAddress(review.module), false],
+    }),
+    value: "0x0",
+  };
+  await provider.request({ method: "eth_call", params: [transaction, "latest"] });
+  const [estimateResult, nativeResult, gasPriceResult] = await Promise.all([
+    provider.request({ method: "eth_estimateGas", params: [transaction] }),
+    provider.request({ method: "eth_getBalance", params: [getAddress(account), "latest"] }),
+    provider.request({ method: "eth_gasPrice" }),
+  ]);
+  const estimate = rpcQuantity("gas estimate", estimateResult);
+  const nativeBalance = rpcQuantity("native balance", nativeResult);
+  const gasPrice = rpcQuantity("gas price", gasPriceResult);
+  if (nativeBalance < estimate * gasPrice) {
+    throw new RangeError("wallet has insufficient native token for operator-revocation gas");
+  }
+  const hash = await provider.request({ method: "eth_sendTransaction", params: [transaction] });
+  if (typeof hash !== "string" || !isHash(hash)) {
+    throw new Error("wallet did not return a valid operator-revocation hash");
+  }
+  const transactionHash = hash as Hex;
+  const receipt = await waitForSuccessfulReceipt(provider, transactionHash, {
+    expectedFrom: account,
+    expectedTo: review.outcomeToken,
+  });
+  return { hash: transactionHash, receipt };
 }

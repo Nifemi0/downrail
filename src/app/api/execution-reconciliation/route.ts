@@ -2,6 +2,7 @@ import { getAddress, isAddress, isHash } from "viem";
 
 import { createReadOnlyExchange } from "@/lib/dreamdex/exchange";
 import { apiError } from "@/lib/http/api";
+import { rateLimitResponse } from "@/lib/http/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,6 +18,11 @@ function parseSince(value: string | null) {
 }
 
 export async function GET(request: Request) {
+  const limited = rateLimitResponse(request, "execution-reconciliation", {
+    limit: 30,
+    windowMs: 60_000,
+  });
+  if (limited) return limited;
   const exchange = createReadOnlyExchange();
   try {
     const params = new URL(request.url).searchParams;

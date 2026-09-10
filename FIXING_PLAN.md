@@ -35,7 +35,7 @@ Status: complete on September 1.
 
 - Centralize the official rules, rubric, resources, competitors, and readiness status in `HACKATHON_REVIEW.md`.
 - Update the README, project specification, agent guide, submission draft, demo runbook, SDK feedback, audit, and this plan.
-- Use one verified test baseline: 60 passing tests plus clean typecheck and lint.
+- Use one verified test baseline: 101 passing tests plus clean typecheck, lint, and production build.
 - Mark the public repository, MIT license, and Vercel deployment complete.
 - Distinguish implemented lifecycle code from real transaction evidence.
 - State truthfully that the bounded Shannon order, exact fill, reload recovery, and finalized claimability are live-proven.
@@ -161,7 +161,7 @@ Until the submission is complete, do not spend time on:
 - [x] Wallet review, guarded sender, receipts, and reconciliation implemented.
 - [x] Settlement, reviewed claims, and rollover implemented.
 - [x] Public app, repository, license, and SDK feedback.
-- [x] 60 tests, typecheck, and lint passing.
+- [x] 101 tests, typecheck, lint and production build passing locally as of September 10.
 - [x] Documentation synchronized with the current build.
 - [x] Production Shannon pilot enabled with the one-leg, 10.00-unit boundary.
 - [x] Real order, exact fill, reload recovery, and finalized claimability captured.

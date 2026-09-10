@@ -3,6 +3,8 @@ export type HedgePlanRequest = {
   exposureRaw: bigint;
   budgetRaw: bigint;
   downsideMoveBps: bigint;
+  targetCoverageBps: bigint;
+  rolloverReserveBps: bigint;
   requestedHorizonSeconds: number;
   maxMarkets: number;
 };
@@ -54,6 +56,14 @@ export function parseHedgePlanRequest(
     "downsideMoveBps",
     searchParams.get("downsideMoveBps"),
   );
+  const targetCoverageBps = parseInteger(
+    "targetCoverageBps",
+    searchParams.get("targetCoverageBps") ?? "2500",
+  );
+  const rolloverReserveBps = parseInteger(
+    "rolloverReserveBps",
+    searchParams.get("rolloverReserveBps") ?? "0",
+  );
   const requestedHorizonSeconds = parseInteger(
     "horizonSeconds",
     searchParams.get("horizonSeconds"),
@@ -74,6 +84,12 @@ export function parseHedgePlanRequest(
   if (downsideMoveBps < 1 || downsideMoveBps > 5_000) {
     throw new RangeError("downsideMoveBps must be between 1 and 5000");
   }
+  if (targetCoverageBps < 2_500 || targetCoverageBps > 10_000) {
+    throw new RangeError("targetCoverageBps must be between 2500 and 10000");
+  }
+  if (rolloverReserveBps < 0 || rolloverReserveBps > 9_000) {
+    throw new RangeError("rolloverReserveBps must be between 0 and 9000");
+  }
   if (
     requestedHorizonSeconds < 15 * 60 ||
     requestedHorizonSeconds > 24 * 60 * 60
@@ -89,6 +105,8 @@ export function parseHedgePlanRequest(
     exposureRaw,
     budgetRaw,
     downsideMoveBps: BigInt(downsideMoveBps),
+    targetCoverageBps: BigInt(targetCoverageBps),
+    rolloverReserveBps: BigInt(rolloverReserveBps),
     requestedHorizonSeconds,
     maxMarkets,
   };

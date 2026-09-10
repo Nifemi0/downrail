@@ -6,23 +6,23 @@ This guide keeps contributors and coding agents aligned with Downrail's product 
 
 ## Current status
 
-- Status date: September 7, 2026.
-- Core product, order lifecycle, settlement discovery, reviewed claims, and manual rollover recommendations are implemented.
+- Status date: September 9, 2026.
+- Core product, factual contract-fit summary, order lifecycle, settlement discovery, reviewed claims, and explicit manual rollover reserve are implemented locally.
 - Vercel production and the public MIT repository are ready.
-- Engineering verification (September 7): 70 tests, typecheck, source lint (`npx eslint src`) and production build pass. See `BUGFIX_REVIEW.md` for the four fixes and verification limits; dependency health is intermittent, not all-green.
+- Engineering verification (September 10): 101 tests, typecheck, lint and production build pass. The separate generated `demo-video` project is excluded from the app lint boundary and keeps its own lint configuration.
 - `NEXT_PUBLIC_EXECUTION_ENABLED=true` is set for Vercel production; the Shannon-only sender remains capped at one IOC leg and 10.00 collateral units.
 - Real order, fill, reload recovery, finalized claimability, successful claim receipts, authoritative post-claim state, and a reserve-backed fresh-market rollover are verified in `EVIDENCE.md`; the original 2:48 demo is public at https://youtu.be/yLCXjO3UtFs.
 - BUIDL https://dorahacks.io/buidl/48288 is submitted and under review; separate hacker registration is confirmed.
 
 ## Active goal
 
-Keep the submitted build and evidence available through organizer review. Submission and hacker registration are complete; do not create duplicate entries or replace the published demo without user authorization.
+Keep the submitted build and evidence available while the contract-fit rebuild is evaluated locally. Do not deploy, push, create duplicate entries, or replace the published demo without explicit user authorization.
 
 ## Immediate priorities
 
 1. Keep public deployment, repository, demo and evidence links consistent.
 2. Respond to organizer feedback when received; under review is not acceptance.
-3. Reverify affected behavior before publishing any implementation changes.
+3. Reverify route comparison, cash-flow labels, wallet review, responsive layout, and documentation before publishing any implementation changes.
 
 ## Source-of-truth order
 
@@ -39,6 +39,7 @@ Keep the submitted build and evidence available through organizer review. Submis
 - Keep all financial values as integer or `bigint` protocol units until display formatting.
 - Recheck chain, account, on-chain Trading state, balance, gas, expiry, and decoded calldata before every send.
 - Keep the tiny pilot to one IOC leg and no more than 10.00 collateral units.
+- Never unlock an order review without a live, chain-verified executable leg. Scenario comparisons are factual arithmetic, not trade recommendations.
 - Never send an unlimited token approval.
 - Stop a dependent transaction sequence after a rejection, timeout, revert, account change, or chain change.
 - Do not call a write path verified until its receipt and authoritative post-transaction state agree.

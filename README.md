@@ -1,10 +1,10 @@
 # Downrail
 
-## Keep the upside. Guard the downside.
+## Know what the contract actually covers.
 
-Keep your BTC or ETH. Choose a spending limit. See exactly what a conditional downside payout would—and would not—cover.
+Keep your BTC or ETH. Model a loss that matters. Downrail compares live DreamDEX NO positions and exposes the exact trigger, purchase cost, conditional return, and remaining scenario loss before your wallet opens.
 
-Downrail turns DreamDEX Event Contracts into an exposure-first hedging workflow: plan a current DOWN position, review its cost and residual risk, sign with your wallet, then track settlement, claim and decide whether to roll into another window.
+Downrail is a conditional-offset planning and execution layer for DreamDEX Event Contracts. It sizes executable positions against live depth, reports both binary outcomes without predicting them, and carries reviewed positions through settlement, claim, and optional manual rollover.
 
 [Try the app](https://downrail.vercel.app/app) · [Watch the 2:48 demo](https://youtu.be/yLCXjO3UtFs) · [Read the docs](https://downrail.vercel.app/docs) · [DoraHacks entry](https://dorahacks.io/buidl/48288)
 
@@ -12,9 +12,9 @@ Downrail turns DreamDEX Event Contracts into an exposure-first hedging workflow:
 
 You hold ETH and want to stay exposed to its upside, but you are concerned about a near-term drop. Selling removes that exposure. Buying a DOWN contract adds a conditional payout without selling your ETH—but choosing the window, checking liquidity and understanding the remaining loss should not require piecing together several trading screens.
 
-Downrail starts with what you already hold. It shows the available current hedge leg, purchase cost, settlement condition and scenario-specific residual loss before you sign.
+Downrail starts with what you already hold. It shows the executable contract leg, purchase cost, exact settlement condition, scenario-specific residual loss, and factual cash flows before you sign.
 
-**Illustration, not a live quote:** a $1,000 ETH position falls to $900. If a hedge costs $10 and pays $20 because its exact DOWN condition wins, its $10 net gain reduces the combined loss from $100 to $90, before fees. It does not restore the portfolio to $1,000.
+**Illustration, not a live quote:** a $1,000 ETH position falls to $900. If a NO position costs $20 and returns $80 because its exact condition wins, the $60 net gain offsets 60% of the modeled loss. The combined loss becomes $40 before fees; it does not restore the portfolio to $1,000.
 
 If the DOWN condition loses, the purchase cost can be lost—even if your portfolio fell over a different interval. If ETH rises, you still hold the ETH, but the hedge cost reduces your combined return. Payouts come from Event Contract collateral under the settlement rules, not money created by Downrail.
 
@@ -26,16 +26,20 @@ If the DOWN condition loses, the purchase cost can be lost—even if your portfo
 | Filled order and reload recovery | [Recorded order evidence](./EVIDENCE.md#filled-protection-order) |
 | Finalized position, 1.652 TESDC claim and empty post-claim inbox | [Lifecycle receipts and observations](./EVIDENCE.md) |
 | Reserved budget carried into a filled fresh-market rollover | [Rollover evidence](./EVIDENCE.md) |
-| 70 tests, typecheck, source lint and production build passed September 7 | [Bug-fix verification](./BUGFIX_REVIEW.md) |
+| 101 tests, typecheck, source lint and production build passed September 10 | Local verification; the simplified decision and hardening rebuild is not deployed yet |
 | Specific integration findings and SDK improvement requests | [SDK feedback](./FEEDBACK.md) |
 
 These are recorded testnet results, not proof of customer demand or mainnet readiness. The user-need hypothesis still needs validation with real users.
 
 ## What the prototype does—and does not do
 
-The current build discovers live BTC/ETH markets, sizes one depth-aware current DOWN leg with integer arithmetic, builds decoded unsigned reviews, verifies receipts, recovers activity after reload, discovers claims and prepares manual rollover checkpoints. No private key is accepted or stored.
+The current local build asks for the asset, value held and horizon, then discovers live BTC/ETH markets, compares executable candidates, sizes one depth-aware NO leg with integer arithmetic, translates the exact trigger, and displays both outcomes. Advanced spending and scenario assumptions stay collapsed until requested. Wallet review opens only when the route reaches the user's loss-offset target and its possible net gain is at least the premium at risk. It also verifies receipts, recovers activity after reload, discovers claims, and prepares manual rollover checkpoints. No private key is accepted or stored.
 
 - Shannon testnet only, chain `50312`; the public pilot allows one IOC leg and at most 10.00 collateral units.
+- Immediately before wallet submission, the server rechecks the exact market, venue, pool, collateral, decimals, expiry and active status against DreamDEX indexer plus Shannon chain state.
+- Public chain-read and review endpoints use bounded per-instance request throttling. This is demo-grade abuse resistance, not a substitute for a shared production rate-limit store.
+- Device-local locks plus a short-lived server-instance execution ticket stop normal duplicate submissions. This is not a protocol-level or globally durable nonce; every order still requires an explicit wallet confirmation and spends only that wallet's collateral.
+- Remaining ERC-20 allowance and claim-operator permission are checked after use; the interface offers explicit wallet-controlled revocation when cleanup is needed.
 - Protection is partial and conditional—not insurance, guaranteed returns or one-for-one loss compensation.
 - An unfilled order provides no hedge. Thin liquidity, expiry and the selected settlement condition matter.
 - Future rollover checkpoints are not already-purchased coverage. Each new leg needs a fresh review and wallet confirmation.
@@ -100,6 +104,8 @@ Verified Shannon lifecycle: [order approval](https://shannon-explorer.somnia.net
 ## Execution safety boundary
 
 - Planning and unsigned review never open the wallet or send a transaction.
+- The decision gate reports conditional arithmetic rather than predicting the market. Weak, below-target, oversized or unavailable routes remain visible for learning but cannot produce an unsigned wallet review.
+- The app shows the exact market question and warns that it does not settle against the user's portfolio entry price.
 - The first live pilot is limited to one IOC protection leg and at most 10.00 collateral units.
 - Every quote, market state, pool grid, and expiry is refreshed before the review is encoded.
 - DOWN prices are converted to the SDK's complementary YES-price representation deterministically.
@@ -116,12 +122,13 @@ Verified Shannon lifecycle: [order approval](https://shannon-explorer.somnia.net
 
 1. Connect a funded Shannon testnet wallet.
 2. Set **Maximum spend** to `10.00` or less.
-3. Build the unsigned one-leg review.
-4. Inspect the fingerprint, approval target, exact allowance, order target, calldata, and expiry.
-5. Check the authorization acknowledgement only if the calls are acceptable.
-6. Confirm the deployment exposes the deliberately enabled Shannon-only pilot; the repository default remains false.
-7. Submit and confirm each testnet call in the wallet only after a separate explicit live-test approval.
-8. Downrail verifies receipts, persists hashes, and reconciles the resulting fill or proven IOC cancellation; the activity can be rechecked after reload.
+3. Compare the exact premium, gross winning return, net result, and both binary outcomes.
+4. Build the unsigned one-leg review.
+5. Inspect the fingerprint, approval target, exact allowance, order target, calldata, and expiry.
+6. Check the authorization acknowledgement only if the calls are acceptable.
+7. Confirm the deployment exposes the deliberately enabled Shannon-only pilot; the repository default remains false.
+8. Submit and confirm each testnet call in the wallet only after a separate explicit live-test approval.
+9. Downrail verifies receipts, persists hashes, and reconciles the resulting fill or proven IOC cancellation; the activity can be rechecked after reload.
 
 Do not use a mainnet wallet, seed phrase, or private key with this project.
 
@@ -133,6 +140,6 @@ The live testnet lifecycle is documented in [`EVIDENCE.md`](./EVIDENCE.md), incl
 - [Original public 2:48 demo](https://youtu.be/yLCXjO3UtFs) remains the submitted video.
 - [BUIDL 48288](https://dorahacks.io/buidl/48288) was submitted September 6, 2026; the initial confirmation said **under review**.
 - A later September 6 Chrome check confirmed the public BUIDL, its Open Track listing, Manage Submission access and the account's registered state. The inspected submission panel did not display an explicit approval decision; organizer approval is **not independently confirmed**.
-- The engineering baseline remains September 3: 60 tests, typecheck and lint passing. This documentation update did not rerun tests or transactions.
+- Local rebuild baseline on September 10: 101 tests, typecheck, source lint and production build pass. These changes have not been pushed or deployed.
 
 The repository pins Vercel's Next.js framework preset in `vercel.json`. See [the submission record](./SUBMISSION.md) and [checklist](./SUBMISSION_CHECKLIST.md) for details.

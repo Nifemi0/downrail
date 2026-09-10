@@ -1,3 +1,8 @@
+import {
+  evaluateProtectionQuality,
+  type ProtectionQuality,
+} from "./evaluate-protection-quality";
+
 export type DownAskLevel = { priceRaw: bigint; quantityRaw: bigint };
 
 export type HedgeMarketCandidate = {
@@ -20,6 +25,8 @@ export type MultiWindowHedgeInput = {
   exposureRaw: bigint;
   budgetRaw: bigint;
   downsideMoveBps: bigint;
+  targetCoverageBps: bigint;
+  rolloverReserveBps: bigint;
   requestedHorizonSeconds: number;
   minExecutionHeadroomSeconds: number;
   nowUnixSeconds: number;
@@ -83,6 +90,13 @@ export type MultiWindowHedgePlan = {
   conditionalGrossPayoutRaw: bigint;
   conditionalNetPayoutRaw: bigint;
   modeledPortfolioLossRaw: bigint;
+  selection: {
+    evaluatedMarketCount: number;
+    objective: "LOWEST_COMBINED_TIME_GAP_THEN_LARGEST_PAYOUT";
+    horizonGapSeconds: number | null;
+    intervalGapSeconds: number | null;
+  };
+  quality: ProtectionQuality;
   outcomes: ConditionalOutcome[];
   legs: MultiWindowHedgeLeg[];
   rolloverCheckpoints: RolloverCheckpoint[];
@@ -92,6 +106,7 @@ export type MultiWindowHedgePlan = {
 
 type EligibleCandidate = HedgeMarketCandidate & {
   asks: DownAskLevel[];
+  horizonDistanceSeconds: number;
   intervalDistanceSeconds: number;
 };
 
@@ -158,6 +173,10 @@ function inspectCandidate(
   return {
     ...candidate,
     asks,
+    horizonDistanceSeconds: Math.abs(
+      candidate.expiryUnixSeconds -
+        (input.nowUnixSeconds + input.requestedHorizonSeconds),
+    ),
     intervalDistanceSeconds: Math.abs(
       candidate.intervalSeconds - input.requestedHorizonSeconds,
     ),
@@ -276,6 +295,19 @@ function emptyPlan(
     conditionalGrossPayoutRaw: 0n,
     conditionalNetPayoutRaw: 0n,
     modeledPortfolioLossRaw,
+    selection: {
+      evaluatedMarketCount: 0,
+      objective: "LOWEST_COMBINED_TIME_GAP_THEN_LARGEST_PAYOUT",
+      horizonGapSeconds: null,
+      intervalGapSeconds: null,
+    },
+    quality: evaluateProtectionQuality({
+      currentMaximumCostRaw: 0n,
+      conditionalNetPayoutRaw: 0n,
+      modeledPortfolioLossRaw,
+      targetCoverageBps: input.targetCoverageBps,
+      hasExecutableLeg: false,
+    }),
     outcomes: [
       {
         outcome: "DOWN_WINS",
@@ -312,6 +344,12 @@ export function buildMultiWindowHedgePlan(
   if (input.downsideMoveBps <= 0n || input.downsideMoveBps > 10_000n) {
     throw new RangeError("downsideMoveBps must be between 1 and 10000");
   }
+  if (input.targetCoverageBps < 2_500n || input.targetCoverageBps > 10_000n) {
+    throw new RangeError("targetCoverageBps must be between 2500 and 10000");
+  }
+  if (input.rolloverReserveBps < 0n || input.rolloverReserveBps > 9_000n) {
+    throw new RangeError("rolloverReserveBps must be between 0 and 9000");
+  }
 
   const requestedHorizonEndsAt = input.nowUnixSeconds + input.requestedHorizonSeconds;
   const modeledPortfolioLossRaw =
@@ -325,8 +363,10 @@ export function buildMultiWindowHedgePlan(
   }
 
   eligible.sort((left, right) => {
-    if (left.intervalDistanceSeconds !== right.intervalDistanceSeconds) {
-      return left.intervalDistanceSeconds - right.intervalDistanceSeconds;
+    const leftTemporalGap = left.horizonDistanceSeconds + left.intervalDistanceSeconds;
+    const rightTemporalGap = right.horizonDistanceSeconds + right.intervalDistanceSeconds;
+    if (leftTemporalGap !== rightTemporalGap) {
+      return leftTemporalGap - rightTemporalGap;
     }
     if (left.expiryUnixSeconds !== right.expiryUnixSeconds) {
       return left.expiryUnixSeconds - right.expiryUnixSeconds;
@@ -337,8 +377,7 @@ export function buildMultiWindowHedgePlan(
     return left.marketId.localeCompare(right.marketId);
   });
 
-  const selected = eligible[0];
-  if (!selected) {
+  if (eligible.length === 0) {
     return emptyPlan(
       input,
       requestedHorizonEndsAt,
@@ -348,44 +387,67 @@ export function buildMultiWindowHedgePlan(
     );
   }
 
-  const provisionalCheckpoints = buildRolloverCheckpoints(
-    selected.expiryUnixSeconds,
-    selected.intervalSeconds,
-    requestedHorizonEndsAt,
-    0n,
-  );
-  const totalWindows = 1 + provisionalCheckpoints.length;
-  const baseWindowBudget = input.budgetRaw / BigInt(totalWindows);
-  const currentWindowBudget =
-    baseWindowBudget + (input.budgetRaw % BigInt(totalWindows));
-  const futureBudgetReserveRaw = input.budgetRaw - currentWindowBudget;
-  const rolloverCheckpoints = buildRolloverCheckpoints(
-    selected.expiryUnixSeconds,
-    selected.intervalSeconds,
-    requestedHorizonEndsAt,
-    futureBudgetReserveRaw,
-  );
-  const currentLeg = planCandidate(selected, currentWindowBudget);
-  if (!currentLeg) {
+  const evaluated = eligible.slice(0, input.maxMarkets).flatMap((candidate) => {
+    const needsRollover = candidate.expiryUnixSeconds < requestedHorizonEndsAt;
+    const futureBudgetReserveRaw = needsRollover
+      ? (input.budgetRaw * input.rolloverReserveBps) / 10_000n
+      : 0n;
+    const currentWindowBudget = input.budgetRaw - futureBudgetReserveRaw;
+    const leg = planCandidate(candidate, currentWindowBudget);
+    return leg ? [{ candidate, leg, currentWindowBudget, futureBudgetReserveRaw }] : [];
+  });
+
+  evaluated.sort((left, right) => {
+    const leftTemporalGap = left.candidate.horizonDistanceSeconds + left.candidate.intervalDistanceSeconds;
+    const rightTemporalGap = right.candidate.horizonDistanceSeconds + right.candidate.intervalDistanceSeconds;
+    if (leftTemporalGap !== rightTemporalGap) {
+      return leftTemporalGap - rightTemporalGap;
+    }
+    if (left.leg.conditionalGrossPayoutRaw !== right.leg.conditionalGrossPayoutRaw) {
+      return left.leg.conditionalGrossPayoutRaw > right.leg.conditionalGrossPayoutRaw ? -1 : 1;
+    }
+    return left.candidate.marketId.localeCompare(right.candidate.marketId);
+  });
+
+  const selected = evaluated[0];
+  if (!selected) {
     return emptyPlan(
       input,
       requestedHorizonEndsAt,
       modeledPortfolioLossRaw,
       excludedMarkets,
-      "The current-window allocation cannot reach executable minimum depth.",
+      "The eligible markets cannot reach an executable minimum with the current allocation.",
     );
   }
+
+  const { candidate: selectedCandidate, currentWindowBudget, futureBudgetReserveRaw } = selected;
+  const needsFutureRollover = selectedCandidate.expiryUnixSeconds < requestedHorizonEndsAt;
+  const rolloverCheckpoints = futureBudgetReserveRaw > 0n
+    ? buildRolloverCheckpoints(
+        selectedCandidate.expiryUnixSeconds,
+        selectedCandidate.intervalSeconds,
+        requestedHorizonEndsAt,
+        futureBudgetReserveRaw,
+      )
+    : [];
+  const currentLeg = selected.leg;
 
   const warnings = [
     "The payout is conditional on the selected market resolving DOWN; the loss slider does not change that contract condition.",
   ];
-  if (rolloverCheckpoints.length > 0) {
+  if (needsFutureRollover) {
     warnings.unshift(
-      `${rolloverCheckpoints.length} future rollover ${rolloverCheckpoints.length === 1 ? "window requires" : "windows require"} fresh markets and a new review.`,
+      futureBudgetReserveRaw > 0n
+        ? `${rolloverCheckpoints.length} future rollover ${rolloverCheckpoints.length === 1 ? "window has" : "windows have"} an explicit reserve; each still requires a fresh market and review.`
+        : `The requested horizon continues beyond this market. No collateral is reserved for a future rollover.`,
     );
   }
-  if (currentLeg.maximumCostRaw < currentWindowBudget) {
-    warnings.unshift("Some current-window budget remains unused because of depth.");
+  const budgetRemainingRaw = currentWindowBudget - currentLeg.maximumCostRaw;
+  if (
+    budgetRemainingRaw > 1_000n &&
+    budgetRemainingRaw * 100n >= currentWindowBudget
+  ) {
+    warnings.unshift("A meaningful part of the current allocation could not be placed at the available depth and order grid.");
   }
 
   const conditionalNetPayoutRaw = currentLeg.conditionalNetPayoutRaw;
@@ -396,10 +458,23 @@ export function buildMultiWindowHedgePlan(
     currentEstimatedBookCostRaw: currentLeg.estimatedBookCostRaw,
     currentMaximumCostRaw: currentLeg.maximumCostRaw,
     futureBudgetReserveRaw,
-    budgetRemainingRaw: currentWindowBudget - currentLeg.maximumCostRaw,
+    budgetRemainingRaw,
     conditionalGrossPayoutRaw: currentLeg.conditionalGrossPayoutRaw,
     conditionalNetPayoutRaw,
     modeledPortfolioLossRaw,
+    selection: {
+      evaluatedMarketCount: evaluated.length,
+      objective: "LOWEST_COMBINED_TIME_GAP_THEN_LARGEST_PAYOUT",
+      horizonGapSeconds: selectedCandidate.horizonDistanceSeconds,
+      intervalGapSeconds: selectedCandidate.intervalDistanceSeconds,
+    },
+    quality: evaluateProtectionQuality({
+      currentMaximumCostRaw: currentLeg.maximumCostRaw,
+      conditionalNetPayoutRaw,
+      modeledPortfolioLossRaw,
+      targetCoverageBps: input.targetCoverageBps,
+      hasExecutableLeg: true,
+    }),
     outcomes: [
       {
         outcome: "DOWN_WINS",

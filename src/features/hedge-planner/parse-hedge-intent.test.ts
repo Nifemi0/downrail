@@ -16,7 +16,54 @@ describe("parseHedgePlanRequest", () => {
 
     expect(request.exposureRaw).toBe(2_000_123_456n);
     expect(request.budgetRaw).toBe(20_250_000n);
+    expect(request.targetCoverageBps).toBe(2_500n);
+    expect(request.rolloverReserveBps).toBe(0n);
     expect(request.maxMarkets).toBe(3);
+  });
+
+  it("parses an explicit rollover reserve", () => {
+    const request = parseHedgePlanRequest(
+      new URLSearchParams({
+        asset: "ETH",
+        exposureUsd: "1000",
+        budgetUsd: "25",
+        downsideMoveBps: "500",
+        rolloverReserveBps: "3000",
+        horizonSeconds: "3600",
+      }),
+    );
+
+    expect(request.rolloverReserveBps).toBe(3_000n);
+  });
+
+  it("accepts a user comparison target within the supported range", () => {
+    const request = parseHedgePlanRequest(
+      new URLSearchParams({
+        asset: "ETH",
+        exposureUsd: "1000",
+        budgetUsd: "25",
+        downsideMoveBps: "2000",
+        targetCoverageBps: "5000",
+        horizonSeconds: "3600",
+      }),
+    );
+
+    expect(request.targetCoverageBps).toBe(5_000n);
+  });
+
+  it("rejects comparison targets below the supported range", () => {
+    expect(() =>
+      parseHedgePlanRequest(
+        new URLSearchParams({
+          asset: "BTC",
+          exposureUsd: "1000",
+          budgetUsd: "20",
+          downsideMoveBps: "2000",
+          targetCoverageBps: "1000",
+          horizonSeconds: "3600",
+        }),
+      ),
+    ).toThrow("targetCoverageBps must be between 2500 and 10000");
   });
 
   it("rejects excess decimal precision instead of rounding money", () => {

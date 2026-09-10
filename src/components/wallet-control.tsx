@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { RotateCcw, WalletCards } from "lucide-react";
 
 import {
   useWalletSession,
@@ -63,9 +64,10 @@ export function WalletControl() {
     const announced = new Set<string>();
     const onAnnouncement = (event: Event) => {
       const detail = (event as CustomEvent<ProviderDetail>).detail;
-      if (!detail?.info?.uuid || announced.has(detail.info.uuid)) return;
-      announced.add(detail.info.uuid);
-      setProviders((current) => [...current, detail]);
+      const providerKey = detail?.info?.name?.trim().toLowerCase();
+      if (!detail?.info?.uuid || !providerKey || announced.has(providerKey)) return;
+      announced.add(providerKey);
+      setProviders((current) => current.some((provider) => provider.info.name.trim().toLowerCase() === providerKey) ? current : [...current, detail]);
       if (announced.size === 1) setProvider(detail.provider);
       setSelected((current) => current ?? detail);
     };
@@ -185,6 +187,7 @@ export function WalletControl() {
           <button className="wallet-switch" disabled={pending} onClick={switchToShannon} type="button">{pending ? "Switching…" : "Switch to Shannon"}</button>
         )}
         <button
+          aria-label="Reset local wallet session"
           className="wallet-reset"
           onClick={() => {
             setAccount(null);
@@ -193,8 +196,9 @@ export function WalletControl() {
             setSelected(null);
             setMessage("Local wallet session reset.");
           }}
+          title="Reset local wallet session"
           type="button"
-        >Reset</button>
+        ><RotateCcw aria-hidden="true" /></button>
         {message && <span className="wallet-message" role="status">{message}</span>}
       </div>
     );
@@ -221,7 +225,10 @@ export function WalletControl() {
         <div className="wallet-menu" id={menuId} role="menu">
           <span>Choose wallet</span>
           {providers.map((detail) => (
-            <button ref={detail === providers[0] ? firstMenuItemRef : undefined} key={detail.info.uuid} onClick={() => void connect(detail)} role="menuitem" type="button">{detail.info.name}</button>
+            <button className="wallet-option" ref={detail === providers[0] ? firstMenuItemRef : undefined} key={detail.info.uuid} onClick={() => void connect(detail)} role="menuitem" type="button">
+              <span className="wallet-option-mark"><WalletCards aria-hidden="true" /></span>
+              <span><strong>{detail.info.name}</strong><small>{detail.info.rdns ?? "Browser wallet"}</small></span>
+            </button>
           ))}
         </div>
       )}

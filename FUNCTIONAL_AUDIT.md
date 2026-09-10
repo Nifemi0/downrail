@@ -24,7 +24,7 @@ The application is technically competitive and its write paths are exercised wit
 - Execution recovery persists public transaction pointers and reconciles fills, positions, resting orders, and legitimate IOC cancellation by stable market ID and transaction hash.
 - Settlement discovery scans historical positions independently of the current live-market list and checks ERC-6909 balances plus finalized payout vectors.
 - Reviewed claim calls, claim journaling, post-claim refresh, and lifecycle-triggered manual rollover recommendations are implemented.
-- All 60 tests pass; typecheck and lint pass.
+- All 101 tests pass locally; typecheck, lint and production build pass as of September 10.
 - The repository includes a submission draft, 2:30 demo runbook, SDK feedback report, and this current rules/readiness review.
 
 ## Release and submission gates
@@ -45,9 +45,9 @@ The official event requires a two-to-three-minute demo video. The final 2:48 nar
 
 | Criterion | Weight | Current strength | Risk before submission |
 | --- | ---: | --- | --- |
-| Technical Implementation | 25% | Strong implementation breadth, safety boundaries, live reads, 60 tests, and real order-through-claim-and-rollover evidence. | Keep the explorer-backed lifecycle concise in the demo. |
+| Technical Implementation | 25% | Strong implementation breadth, safety boundaries, live reads, 101 tests, and real order-through-claim-and-rollover evidence. | Keep the explorer-backed lifecycle concise in the demo. |
 | Innovation and Originality | 20% | Exposure-first portfolio protection is distinct from AI signals and simple betting interfaces. | Sluice overlaps on safe budget sizing; Runs and Let It Ride overlap on rollover. |
-| User Experience and Design | 20% | Focused landing, app, and docs routes with plain-language planning, recovery, and a verified claim-to-empty-state flow. | Run one fresh-user demo rehearsal before recording. |
+| User Experience and Design | 20% | Three-question planner, advanced controls on demand, translated trigger, refusal gate, recovery, and verified claim-to-empty-state flow. | Run one fresh-user demo rehearsal before recording. |
 | Business and Ecosystem Impact | 20% | Credible recurring-demand story for holders, treasuries, wallets, and future APIs. | The submission needs one quantified recurring-volume example. |
 | Presentation and Demo | 15% | Public 2:48 narrated demo and recorded lifecycle evidence. | Original published video remains linked; a newer local motion draft is not submitted. |
 

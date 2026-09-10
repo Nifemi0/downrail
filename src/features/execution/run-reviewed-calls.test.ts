@@ -1,4 +1,5 @@
 import {
+  decodeFunctionData,
   encodeFunctionData,
   encodeFunctionResult,
   parseAbi,
@@ -14,6 +15,7 @@ import {
 } from "./review-schema";
 import {
   assertTinyPilot,
+  revokeReviewedAllowance,
   runReviewedPilot,
   type TransactionProvider,
 } from "./run-reviewed-calls";
@@ -318,5 +320,41 @@ describe("runReviewedPilot", () => {
     expect(result.map((item) => item.call.kind)).toEqual(["ORDER"]);
     expect(request.mock.calls.filter(([call]) => call.method === "eth_sendTransaction"))
       .toHaveLength(1);
+  });
+
+  it("revokes a remaining reviewed allowance with an explicit zero approval", async () => {
+    const request = vi.fn(async ({ method, params }: { method: string; params?: unknown[] | Record<string, unknown> }) => {
+      if (method === "eth_accounts") return [ACCOUNT];
+      if (method === "eth_chainId") return "0xc488";
+      if (method === "eth_call") {
+        const call = Array.isArray(params) ? params[0] : null;
+        const data = call && typeof call === "object" && "data" in call ? String(call.data) : "";
+        if (data.startsWith("0xdd62ed3e")) {
+          return encodeFunctionResult({
+            abi: ALLOWANCE_ABI,
+            functionName: "allowance",
+            result: MAXIMUM_COST,
+          });
+        }
+        return "0x";
+      }
+      if (method === "eth_estimateGas") return "0x5208";
+      if (method === "eth_getBalance") return "0xde0b6b3a7640000";
+      if (method === "eth_gasPrice") return "0x1";
+      if (method === "eth_sendTransaction") return HASH_A;
+      if (method === "eth_getTransactionReceipt") {
+        return { status: "0x1", transactionHash: HASH_A, from: ACCOUNT, to: TOKEN };
+      }
+      throw new Error(`unexpected ${method}`);
+    });
+
+    const cleanup = await revokeReviewedAllowance({ request }, buildReview(), ACCOUNT);
+    const sent = request.mock.calls.find(([call]) => call.method === "eth_sendTransaction")?.[0];
+    const transaction = Array.isArray(sent?.params) ? sent.params[0] as { data: `0x${string}` } : null;
+    const decoded = decodeFunctionData({ abi: APPROVAL_ABI, data: transaction?.data ?? "0x" });
+
+    expect(cleanup?.hash).toBe(HASH_A);
+    expect(decoded.functionName).toBe("approve");
+    expect(decoded.args).toEqual([POOL, 0n]);
   });
 });

@@ -16,6 +16,12 @@ const ORDER_BOOK_DEPTH = 8;
 const MAX_CHAIN_CANDIDATES = 8;
 const ONCHAIN_TRADING_STATUS = 1;
 
+export function didEveryOnchainReadFail(
+  results: ReadonlyArray<{ readFailure?: boolean }>,
+) {
+  return results.length > 0 && results.every((result) => result.readFailure === true);
+}
+
 export type SerializedFill = {
   priceRaw: string;
   quantityRaw: string;
@@ -142,8 +148,9 @@ export async function getLiveHedgePlanSnapshot(
       )
       .slice(0, MAX_CHAIN_CANDIDATES);
 
-    const inspected = await Promise.all(
-      indexedCandidates.map(async (market) => {
+    async function inspectCandidate(
+      market: (typeof indexedCandidates)[number],
+    ) {
         try {
           const onchain = await exchange.client.getMarketOnchain(
             market.marketId,
@@ -210,18 +217,33 @@ export async function getLiveHedgePlanSnapshot(
           };
           return { candidate };
         } catch (error) {
+          const errorMessage = error instanceof Error
+            ? error.message
+            : "unknown chain read failure";
+          console.warn(JSON.stringify({
+            level: "warn",
+            operation: "hedge-plan-candidate-verification",
+            marketId: market.marketId,
+            errorName: error instanceof Error ? error.name : "UnknownError",
+            errorMessage,
+          }));
           return {
+            readFailure: true,
             rejected: {
               marketId: market.marketId,
-              reason:
-                error instanceof Error
-                  ? error.message
-                  : "unknown chain read failure",
+              reason: errorMessage,
             },
           };
         }
-      }),
-    );
+    }
+
+    // Shannon's testnet WebSocket transport is sensitive to bursts. Inspecting
+    // candidates one at a time keeps discovery reliable while preserving the
+    // on-chain authority boundary before a route can be built.
+    const inspected = [];
+    for (const market of indexedCandidates) {
+      inspected.push(await inspectCandidate(market));
+    }
 
     const candidates = inspected.flatMap((result) =>
       result.candidate ? [result.candidate] : [],
@@ -229,6 +251,12 @@ export async function getLiveHedgePlanSnapshot(
     const rejectedOnchainMarkets = inspected.flatMap((result) =>
       result.rejected ? [result.rejected] : [],
     );
+    const everyOnchainReadFailed = didEveryOnchainReadFail(inspected);
+    if (everyOnchainReadFailed) {
+      throw new Error(
+        "Indexed markets are visible, but Shannon chain verification is temporarily unavailable.",
+      );
+    }
     const plan = buildMultiWindowHedgePlan({
       ...request,
       nowUnixSeconds,

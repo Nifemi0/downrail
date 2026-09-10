@@ -25,7 +25,10 @@ import {
   verifyConfirmedClaim,
   type ClaimJournalRecord,
 } from "@/features/settlement/claim-journal";
-import { runReviewedClaim } from "@/features/settlement/run-reviewed-claim";
+import {
+  revokeReviewedClaimOperator,
+  runReviewedClaim,
+} from "@/features/settlement/run-reviewed-claim";
 
 const EXECUTION_ENABLED = process.env.NEXT_PUBLIC_EXECUTION_ENABLED === "true";
 
@@ -58,6 +61,12 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
   const [claimPending, setClaimPending] = useState(false);
   const [claimMessage, setClaimMessage] = useState<string | null>(null);
   const [recheckingClaimId, setRecheckingClaimId] = useState<string | null>(null);
+  const [operatorCleanup, setOperatorCleanup] = useState<{
+    pending: boolean;
+    complete: boolean;
+    message: string;
+    hash?: string;
+  } | null>(null);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -129,6 +138,7 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
     setError(null);
     setClaimAcknowledged(false);
     setClaimMessage(null);
+    setOperatorCleanup(null);
     try {
       const response = await fetch("/api/claim-review", {
         method: "POST",
@@ -190,6 +200,11 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
       setInbox(verified.inbox);
       setClaimJournal(verified.records);
       setClaimMessage("Claim receipt confirmed and the live claim balance is no longer outstanding.");
+      setOperatorCleanup({
+        pending: false,
+        complete: false,
+        message: "Remove the settlement module's outcome-token permission with one final wallet confirmation.",
+      });
     } catch (claimError) {
       const message = claimError instanceof Error ? claimError.message : "Claim did not complete";
       const records = updateClaimJournal(
@@ -200,9 +215,42 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
       setClaimJournal(records);
       setClaimMessage(records.find((record) => record.id === id)?.status === "CLAIM_CONFIRMED"
         ? `Claim receipt confirmed. Balance verification is pending: ${message}. Use Recheck claim balance; do not resend.` : message);
+      setOperatorCleanup({
+        pending: false,
+        complete: false,
+        message: "Check and remove any settlement-module permission left by this interrupted claim flow.",
+      });
     } finally {
       claimInFlight.current = false;
       setClaimPending(false);
+    }
+  }
+
+  async function cleanUpClaimOperator() {
+    if (!provider || !account || !review || operatorCleanup?.pending) return;
+    setOperatorCleanup({
+      pending: true,
+      complete: false,
+      message: "Waiting for the wallet to remove the settlement permission…",
+    });
+    try {
+      const cleanup = await revokeReviewedClaimOperator(provider, review, account);
+      setOperatorCleanup({
+        pending: false,
+        complete: true,
+        message: cleanup
+          ? "Settlement-module permission removed and receipt confirmed."
+          : "The settlement-module permission was already removed.",
+        ...(cleanup ? { hash: cleanup.hash } : {}),
+      });
+    } catch (cleanupError) {
+      setOperatorCleanup({
+        pending: false,
+        complete: false,
+        message: cleanupError instanceof Error
+          ? cleanupError.message
+          : "Settlement permission cleanup did not complete.",
+      });
     }
   }
 
@@ -313,6 +361,25 @@ export function SettlementInbox({ compact = false }: { compact?: boolean }) {
               {!EXECUTION_ENABLED ? "Shannon claim unavailable" : claimPending ? "Claim flow active…" : reviewComplete ? "Claim receipt confirmed" : "Submit reviewed claim"}
             </button>
             <p>{claimMessage ?? `Review expires ${new Date(review.validUntil).toLocaleTimeString()}. No claim was sent.`}</p>
+            {operatorCleanup && (
+              <div className="claim-operator-cleanup" role="status">
+                <span>{operatorCleanup.message}</span>
+                {!operatorCleanup.complete && (
+                  <button
+                    disabled={operatorCleanup.pending || !provider || chainId !== "0xc488"}
+                    onClick={() => void cleanUpClaimOperator()}
+                    type="button"
+                  >
+                    {operatorCleanup.pending ? "Wallet confirmation pending…" : "Remove settlement permission"}
+                  </button>
+                )}
+                {operatorCleanup.hash && (
+                  <a href={`https://shannon-explorer.somnia.network/tx/${operatorCleanup.hash}`} rel="noreferrer" target="_blank">
+                    View revocation receipt
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

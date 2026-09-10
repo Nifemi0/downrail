@@ -43,10 +43,101 @@ export type ExecutedReviewedCall = {
   receipt: ReceiptRecord;
 };
 
+export type ApprovalCleanup = {
+  hash: string;
+  receipt: ReceiptRecord;
+};
+
 const ERC20_READ_ABI = parseAbi([
   "function balanceOf(address owner) view returns (uint256)",
   "function allowance(address owner, address spender) view returns (uint256)",
+  "function approve(address spender, uint256 amount) returns (bool)",
 ]);
+
+export async function readReviewedAllowance(
+  provider: TransactionProvider,
+  review: OrderReview,
+) {
+  const parsed = orderReviewSchema.parse(review);
+  const leg = parsed.legs[0];
+  const result = await provider.request({
+    method: "eth_call",
+    params: [{
+      from: getAddress(parsed.account),
+      to: getAddress(leg.collateralToken),
+      data: encodeFunctionData({
+        abi: ERC20_READ_ABI,
+        functionName: "allowance",
+        args: [getAddress(parsed.account), getAddress(leg.poolAddress)],
+      }),
+    }, "latest"],
+  });
+  if (typeof result !== "string" || !/^0x[0-9a-f]*$/i.test(result)) {
+    throw new RangeError("wallet RPC returned an invalid collateral allowance");
+  }
+  return decodeFunctionResult({
+    abi: ERC20_READ_ABI,
+    functionName: "allowance",
+    data: result as Hex,
+  });
+}
+
+export async function revokeReviewedAllowance(
+  provider: TransactionProvider,
+  input: OrderReview,
+  account: string,
+): Promise<ApprovalCleanup | null> {
+  const review = orderReviewSchema.parse(input);
+  if (!isAddress(account) || getAddress(review.account) !== getAddress(account)) {
+    throw new RangeError("review account no longer matches the connected wallet");
+  }
+  if (review.chainId !== SHANNON_CHAIN_ID) {
+    throw new RangeError("review is not for Shannon testnet");
+  }
+  validateReviewedOrder(review);
+  await assertCurrentWalletContext(provider, account);
+  const allowance = await readReviewedAllowance(provider, review);
+  if (allowance === 0n) return null;
+
+  const leg = review.legs[0];
+  const data = encodeFunctionData({
+    abi: ERC20_READ_ABI,
+    functionName: "approve",
+    args: [getAddress(leg.poolAddress), 0n],
+  });
+  const call = {
+    from: getAddress(account),
+    to: getAddress(leg.collateralToken),
+    data,
+    value: "0x0",
+  };
+  await provider.request({ method: "eth_call", params: [call, "latest"] });
+  const [estimatedGas, nativeResult, gasPriceResult] = await Promise.all([
+    estimateReviewedCall(provider, account, {
+      kind: "APPROVAL",
+      to: leg.collateralToken,
+      data,
+      value: "0",
+      description: "Revoke the remaining reviewed collateral allowance",
+    }),
+    provider.request({ method: "eth_getBalance", params: [getAddress(account), "latest"] }),
+    provider.request({ method: "eth_gasPrice" }),
+  ]);
+  const nativeBalance = parseRpcQuantity("native balance", nativeResult);
+  const gasPrice = parseRpcQuantity("gas price", gasPriceResult);
+  if (nativeBalance < estimatedGas * gasPrice) {
+    throw new RangeError("wallet has insufficient native token for revocation gas");
+  }
+  const result = await provider.request({ method: "eth_sendTransaction", params: [call] });
+  if (typeof result !== "string" || !isHash(result)) {
+    throw new Error("wallet did not return a valid revocation transaction hash");
+  }
+  const receipt = await waitForSuccessfulReceipt(provider, result, {
+    expectedFrom: account,
+    expectedTo: leg.collateralToken,
+  });
+  return { hash: result, receipt };
+}
 
 function parseRpcQuantity(name: string, value: unknown) {
   if (typeof value !== "string" || !/^0x[0-9a-f]+$/i.test(value)) {

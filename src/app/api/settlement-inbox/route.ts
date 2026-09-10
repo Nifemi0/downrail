@@ -20,6 +20,7 @@ import {
 import { DREAMDEX_HTTP_RPC_URL, SHANNON_CHAIN_ID } from "@/lib/dreamdex/config";
 import { createUnsignedExchange } from "@/lib/dreamdex/exchange";
 import { apiError, mapWithConcurrency, withTimeout } from "@/lib/http/api";
+import { rateLimitResponse } from "@/lib/http/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,6 +28,11 @@ export const dynamic = "force-dynamic";
 const PAYOUT_DENOMINATOR = 10_000_000n;
 
 export async function GET(request: Request) {
+  const limited = rateLimitResponse(request, "settlement-inbox", {
+    limit: 30,
+    windowMs: 60_000,
+  });
+  if (limited) return limited;
   const accountValue = new URL(request.url).searchParams.get("account");
   if (!accountValue || !isAddress(accountValue)) {
     return Response.json(

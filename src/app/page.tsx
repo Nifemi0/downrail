@@ -1,92 +1,128 @@
 import Link from "next/link";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, ShieldCheck, TrendingDown, TrendingUp } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  BadgeCheck,
+  Boxes,
+  Fingerprint,
+  ReceiptText,
+  RefreshCw,
+  ScanLine,
+  SlidersHorizontal,
+  TrendingDown,
+  Wallet,
+} from "lucide-react";
+
+import { ProtectionLens } from "@/components/protection-lens";
+
+const proofStops = [
+  { label: "Find", title: "Live depth", detail: "Read the DreamDEX order book.", icon: ScanLine },
+  { label: "Compare", title: "Exact cash flow", detail: "Show premium, gross return, and net result.", icon: SlidersHorizontal },
+  { label: "Check", title: "Entry-price gap", detail: "Expose where the contract and portfolio can diverge.", icon: BadgeCheck },
+  { label: "Review", title: "Exact calls", detail: "Inspect approval and order fingerprints.", icon: Fingerprint },
+  { label: "Prove", title: "Receipts", detail: "Reconcile what happened onchain.", icon: ReceiptText },
+  { label: "Continue", title: "Settle or roll", detail: "Claim a win or inspect the next window.", icon: RefreshCw },
+] as const;
 
 export default function Home() {
   return (
-    <main id="top">
-      <div className="page-shell landing-shell">
-        <header className="hero landing-hero">
-          <div className="hero-copy">
-            <p className="eyebrow">Portfolio protection</p>
-            <h1>Keep the upside.<span>Guard the downside.</span></h1>
-            <p className="hero-text">Downrail uses existing DreamDEX DOWN contracts to add a conditional payout alongside BTC or ETH you already own.</p>
-            <p className="category-note"><span>Not insurance.</span> You choose the exposure, horizon, and maximum spend; every payout still depends on the selected contract&apos;s exact result.</p>
-            <div className="hero-actions">
-              <Link className="primary-action" href="/app">Open Downrail <ArrowUpRight aria-hidden="true" /></Link>
-              <Link className="text-action" href="/docs">Learn how it works <ArrowUpRight aria-hidden="true" /></Link>
+    <main className="dr-page" id="top">
+      <section className="dr-hero" aria-labelledby="dr-hero-title">
+        <div className="dr-hero-visual" aria-hidden="true">
+          <div className="dr-risk-orb" />
+          <div className="dr-risk-cut"><span>Market risk</span></div>
+          <div className="dr-reeds" />
+          <div className="dr-result-tag"><span>Contract fit</span><strong>Read the gap</strong><small>know exactly when the separate NO position wins</small></div>
+        </div>
+
+        <div className="dr-wrap dr-hero-inner">
+          <div className="dr-hero-copy">
+            <p className="dr-label">Conditional downside planning</p>
+            <h1 id="dr-hero-title">Know what the contract<span>actually covers.</span></h1>
+            <p>Keep your BTC or ETH. Downrail shows what a separate DreamDEX NO position costs, when it wins, what it returns, and where it can fail to match your loss.</p>
+            <div className="dr-hero-actions">
+              <Link className="dr-capsule" href="/app"><b>Explore Downrail</b><span><ArrowUpRight aria-hidden="true" /></span></Link>
+              <a className="dr-text-link" href="#story">See the money move <ArrowRight aria-hidden="true" /></a>
             </div>
           </div>
+        </div>
 
-          <div className="hero-visual" aria-label="Illustration comparing a one hundred dollar portfolio loss with a separate conditional DOWN contract payout">
-            <span className="visual-caption">Illustrative mechanics · not guaranteed coverage</span>
-            <div className="loss-plane">
-              <span>Portfolio exposure</span><b>−$100</b>
-              <strong>UNHEDGED<br />LOSS</strong>
-            </div>
-            <div className="protection-plane">
-              <span>If the selected DOWN contract wins</span>
-              <strong>+$78.50</strong><b>Conditional net payout</b>
-            </div>
-            <div className="residual-marker"><span>Contract outcome decides</span><strong>Not guaranteed</strong></div>
-          </div>
-        </header>
+        <div className="dr-ticker" aria-label="Example protection plan">
+          <div className="dr-wrap"><span>Your asset stays yours</span><span>Exact market question shown</span><span>Gross and net separated</span><span>Both outcomes visible</span></div>
+        </div>
+      </section>
 
-        <section className="landing-process" aria-labelledby="process-title">
-          <div className="section-intro">
-            <div><p className="eyebrow">How it works</p><h2 id="process-title">From exposure to review in three steps.</h2></div>
-            <p>The landing page explains the product. The app handles every live market and wallet interaction.</p>
+      <section className="dr-explainer" id="how-it-works" aria-labelledby="explainer-title">
+        <div className="dr-wrap">
+          <header className="dr-section-head"><div><p className="dr-label">Downrail in plain English</p><h2 id="explainer-title">Keep the asset. Inspect the separate bet.</h2></div><p>Downrail is a planning and execution layer for live Event Contracts—not a vault, an insurer, or a promise that every loss gets paid back.</p></header>
+          <div className="dr-explainer-grid">
+            <article><span><Wallet aria-hidden="true" /></span><p>What stays yours</p><h3>Your BTC or ETH stays in your wallet.</h3><small>Downrail does not sell, move, or custody the position you already own.</small></article>
+            <article><span><ScanLine aria-hidden="true" /></span><p>What Downrail measures</p><h3>The exact binary cash flow.</h3><small>It separates the premium, total winning return, net result, liquidity, and expiry.</small></article>
+            <article><span><BadgeCheck aria-hidden="true" /></span><p>What Downrail checks</p><h3>Where the contract may not match.</h3><small>The market uses its own opening price and settlement rule—not the price where you bought your asset.</small></article>
           </div>
-          <div className="trust-strip landing-steps">
-            <article><span>01</span><div><h3>Define the risk</h3><p>Choose BTC or ETH, enter the exposure, downside scenario, budget, and horizon.</p></div></article>
-            <article><span>02</span><div><h3>Compare outcomes</h3><p>See maximum cost and the combined portfolio result if the DOWN contract resolves either way.</p></div></article>
-            <article><span>03</span><div><h3>Review exact calls</h3><p>Start with a wallet-free demo, then inspect every Shannon call before confirming testnet execution.</p></div></article>
-          </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="landing-story" aria-labelledby="story-title">
-          <div className="section-intro">
-            <div><p className="eyebrow">A concrete example</p><h2 id="story-title">Maya keeps her ETH. Here is what $10 can—and cannot—protect.</h2></div>
-            <p>Illustration, not a live quote. She buys a hedge for $10 that pays $20 only if its exact DOWN condition wins.</p>
-          </div>
-          <div className="story-frame">
-            <article className="story-persona">
-              <div className="story-persona-top"><span className="story-avatar">M</span><span className="story-label">Maya&apos;s example plan</span></div>
-              <h3>&ldquo;I want to keep my ETH. How much of a drop could a small hedge offset?&rdquo;</h3>
-              <dl className="story-facts">
-                <div><dt>ETH exposure</dt><dd>$1,000</dd></div>
-                <div><dt>Hedge purchase cost</dt><dd>$10</dd></div>
-                <div><dt>Payout if DOWN wins</dt><dd>$20</dd></div>
-              </dl>
-            </article>
-            <div className="story-journey" aria-label="Maya's protection journey">
-              <article className="story-step"><span className="story-icon"><ShieldCheck aria-hidden="true" /></span><div><strong>She chooses her limit</strong><p>Downrail checks the live order book. Actual cost and payout depend on the contracts that fill.</p></div></article>
-              <ArrowRight aria-hidden="true" />
-              <article className="story-step"><span className="story-icon"><ArrowDownRight aria-hidden="true" /></span><div><strong>She checks the condition</strong><p>The selected contract&apos;s result and expiry decide the payout—not her overall portfolio loss.</p></div></article>
-              <ArrowRight aria-hidden="true" />
-              <article className="story-step"><span className="story-icon"><ShieldCheck aria-hidden="true" /></span><div><strong>She decides with context</strong><p>Her wallet confirms only the exact bounded calls she has reviewed.</p></div></article>
-            </div>
-            <div className="story-outcomes">
-              <article className="story-outcome upside"><div><TrendingUp aria-hidden="true" /><span>DOWN condition wins</span></div><strong>$100 ETH loss → $90 combined loss</strong><p>Her ETH falls from $1,000 to $900. The $20 payout minus the $10 purchase cost offsets $10 of that loss.</p><p>$900 ETH + $20 payout − $10 cost = $910, relative to her starting $1,000.</p></article>
-              <article className="story-outcome downside"><div><TrendingDown aria-hidden="true" /><span>DOWN condition loses</span></div><strong>$100 ETH loss → $110 combined loss</strong><p>If her ETH is worth $900 but the selected condition loses, there is no payout. She also loses the $10 hedge cost.</p><p>$900 ETH + $0 payout − $10 cost = $890. A different measurement window can produce this mismatch.</p></article>
-            </div>
-          </div>
-          <p className="story-footnote">Where does the payout come from? Event Contract collateral, distributed under the market&apos;s settlement rules—not money created by Downrail. If ETH rises, Maya still owns it, but the hedge cost reduces her combined return. All figures exclude fees and use illustrative dollar-equivalent values; the live prototype uses Shannon test tokens. This is partial, conditional hedging—not insurance or guaranteed coverage.</p>
-        </section>
+      <section className="dr-product" id="product" aria-labelledby="product-title">
+        <div className="dr-wrap">
+          <header className="dr-section-head">
+            <div><p className="dr-label">The contract moment</p><h2 id="product-title">Pull ETH down. Switch between both outcomes.</h2></div>
+            <p>This fixed example shows the portfolio loss and the separate binary contract together. The contract payout does not grow when the ETH loss grows.</p>
+          </header>
+          <ProtectionLens />
+        </div>
+      </section>
 
-        <section className="landing-principles" aria-labelledby="principles-title">
-          <div><p className="eyebrow">Built for clarity</p><h2 id="principles-title">A protection workflow—not a prediction terminal.</h2></div>
-          <div className="principle-list">
-            <article><strong>Budget bounded</strong><p>The proposed maximum cost cannot exceed the spend you enter.</p></article>
-            <article><strong>Depth aware</strong><p>Plans consume live resting liquidity instead of assuming an infinite top quote.</p></article>
-            <article><strong>Wallet controlled</strong><p>Downrail builds and decodes calls, but your wallet confirms every transaction.</p></article>
+      <section className="dr-story" id="story" aria-labelledby="story-title">
+        <div className="dr-wrap dr-story-layout">
+          <header className="dr-story-intro"><p className="dr-label">One night. Two positions.</p><h2 id="story-title">Maya sees the contract without confusing it with her ETH.</h2><p>She keeps $1,000 of ETH and separately spends $5 on a NO position that returns $10 only if the exact market question settles NO.</p></header>
+          <div className="dr-story-track">
+            <article><span className="dr-story-icon"><Wallet aria-hidden="true" /></span><div><p>Before the drop</p><h3>Her ETH stays in her wallet</h3></div><strong>$1,000</strong></article>
+            <article className="risk"><span className="dr-story-icon"><TrendingDown aria-hidden="true" /></span><div><p>ETH falls 10%</p><h3>The position loses value</h3></div><strong>−$100</strong></article>
+            <article className="protected"><span className="dr-story-icon"><Boxes aria-hidden="true" /></span><div><p>The market answers NO</p><h3>The separate contract returns $10</h3></div><strong>+$5 net</strong></article>
+            <article><span className="dr-story-icon"><BadgeCheck aria-hidden="true" /></span><div><p>After the $5 premium</p><h3>The winning contract offsets part of the loss</h3></div><strong>−$95 net</strong></article>
+            <p className="dr-story-note">Illustrative test-collateral example, not a live quote. If the market answers YES, the contract returns nothing and Maya&apos;s combined modeled loss is $105. Her ETH remains in her wallet in both cases.</p>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="landing-cta" aria-labelledby="landing-cta-title">
-          <div><p className="eyebrow">Ready to explore?</p><h2 id="landing-cta-title">Build a live protection plan.</h2><p>Try the complete flow without a wallet, or connect to Somnia Shannon when you are ready.</p></div>
-          <Link className="primary-action" href="/app">Open the app <ArrowUpRight aria-hidden="true" /></Link>
-        </section>
-      </div>
+      <section className="dr-funding" id="payouts" aria-labelledby="payouts-title">
+        <div className="dr-wrap">
+          <p className="dr-label">No magic money</p>
+          <h2 id="payouts-title">The payout has a source before the market moves.</h2>
+          <div className="dr-funding-flow">
+            <article><ArrowUpRight aria-hidden="true" /><span>Market participants</span><strong>UP-side collateral is committed</strong></article>
+            <ArrowRight className="dr-flow-arrow" aria-hidden="true" />
+            <article className="pool"><Boxes aria-hidden="true" /><span>DreamDEX Event Contract</span><strong>Prefunded collateral pool</strong></article>
+            <ArrowRight className="dr-flow-arrow" aria-hidden="true" />
+            <article><BadgeCheck aria-hidden="true" /><span>After settlement</span><strong>The winning outcome receives value</strong></article>
+          </div>
+          <div className="dr-funding-note"><strong>Downrail helps shape and review the route. It does not mint the difference.</strong><p>Actual cost and payout depend on the contracts that fill, market rules, settlement, fees, and available liquidity.</p></div>
+        </div>
+      </section>
+
+      <section className="dr-proof" id="proof" aria-labelledby="proof-title">
+        <div className="dr-wrap">
+          <p className="dr-label">From risk to receipt</p>
+          <h2 id="proof-title">A conditional position you can inspect end to end.</h2>
+          <div className="dr-proof-rail">
+            {proofStops.map(({ label, title, detail, icon: Icon }, index) => (
+              <article className={index < 4 ? "active" : ""} key={title}>
+                <span className="dr-proof-icon"><Icon aria-hidden="true" /></span>
+                <small>{label}</small><h3>{title}</h3><p>{detail}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="dr-final" aria-labelledby="final-title">
+        <div className="dr-wrap"><div className="dr-final-inner">
+          <div><p className="dr-label">Check the route</p><h2 id="final-title">Read the contract before you sign it.</h2></div>
+          <p>Start without a wallet. Compare both outcomes, inspect the entry-price gap, then review the exact testnet calls.</p>
+          <Link className="dr-capsule" href="/app"><b>Launch testnet app</b><span><ArrowUpRight aria-hidden="true" /></span></Link>
+        </div></div>
+      </section>
     </main>
   );
 }

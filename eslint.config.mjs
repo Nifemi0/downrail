@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "dist/**",
     ".vinext/**",
     ".wrangler/**",
+    // The Remotion demo is a separate generated project with its own lint config.
+    "demo-video/**",
     "next-env.d.ts",
   ]),
 ]);

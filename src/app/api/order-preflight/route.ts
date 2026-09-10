@@ -12,9 +12,11 @@ import {
   reviewCommitmentSchema,
 } from "@/features/execution/review-schema";
 import { parseHedgePlanRequest } from "@/features/hedge-planner/parse-hedge-intent";
+import { evaluateRouteDecision } from "@/features/hedge-planner/route-decision";
 import { createUnsignedExchange } from "@/lib/dreamdex/exchange";
 import { getLiveHedgePlanSnapshot } from "@/lib/dreamdex/hedge-plan-snapshot";
 import { apiError, readJsonObject } from "@/lib/http/api";
+import { rateLimitResponse } from "@/lib/http/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,6 +27,8 @@ type PreflightBody = {
   exposureUsd?: unknown;
   budgetUsd?: unknown;
   downsideMoveBps?: unknown;
+  targetCoverageBps?: unknown;
+  rolloverReserveBps?: unknown;
   horizonSeconds?: unknown;
   maxMarkets?: unknown;
 };
@@ -47,6 +51,11 @@ function serializeCall(call: UnsignedCall) {
 }
 
 export async function POST(request: Request) {
+  const limited = rateLimitResponse(request, "order-preflight", {
+    limit: 12,
+    windowMs: 60_000,
+  });
+  if (limited) return limited;
   let exchange: ReturnType<typeof createUnsignedExchange> | undefined;
 
   try {
@@ -63,12 +72,33 @@ export async function POST(request: Request) {
         exposureUsd: stringField(body, "exposureUsd"),
         budgetUsd: stringField(body, "budgetUsd"),
         downsideMoveBps: stringField(body, "downsideMoveBps"),
+        targetCoverageBps:
+          typeof body.targetCoverageBps === "string"
+            ? body.targetCoverageBps
+            : "2500",
+        rolloverReserveBps:
+          typeof body.rolloverReserveBps === "string"
+            ? body.rolloverReserveBps
+            : "0",
         horizonSeconds: stringField(body, "horizonSeconds"),
         maxMarkets:
           typeof body.maxMarkets === "string" ? body.maxMarkets : "3",
       }),
     );
     const snapshot = await getLiveHedgePlanSnapshot(intent);
+    if (snapshot.plan.legs.length === 0) {
+      throw new RangeError("No executable DOWN route is available for review.");
+    }
+    const routeDecision = evaluateRouteDecision({
+      hasExecutableLeg: true,
+      verdict: snapshot.plan.quality.verdict,
+      efficiencyBps: snapshot.plan.quality.efficiencyBps,
+    });
+    if (routeDecision.status !== "REVIEW") {
+      throw new RangeError(
+        "This route does not meet the minimum loss-offset and value checks required for wallet review.",
+      );
+    }
     const nowUnixSeconds = Math.floor(Date.now() / 1_000);
 
     exchange = createUnsignedExchange(account);

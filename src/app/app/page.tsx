@@ -14,24 +14,24 @@ export const metadata: Metadata = {
 export default function AppPage() {
 
   return (
-    <main className="app-page-shell">
+    <main className="app-page-shell dr-workspace">
       <header className="app-intro">
-        <div><p className="eyebrow">Downrail app</p><h1>Build protection.</h1></div>
-        <p>Choose a live DreamDEX window, define your exposure, and review every outcome before your wallet opens.</p>
+        <div><p className="eyebrow">Live contract planner</p><h1>Keep the asset. Check the downside.</h1></div>
+        <p>Your BTC or ETH never enters Downrail. We check live DreamDEX contracts and show whether a separate, fixed-payout position meaningfully reduces the loss scenario you choose.</p>
       </header>
 
       <div className="app-layout">
         <div className="app-main">
-          <MarketInventory />
-
           <div id="planner"><HedgePreview /></div>
+
+          <MarketInventory />
         </div>
 
         <aside className="portfolio-sidebar" aria-label="Portfolio and settlement">
           <div className="portfolio-sidebar-heading">
             <p className="eyebrow">Portfolio</p>
-            <h2>Your protection.</h2>
-            <p>Connected-account positions, settlement state, and claims stay beside the planner.</p>
+            <h2>Your positions.</h2>
+            <p>Connected-account outcomes, settlement state, and claims stay beside the decision workspace.</p>
           </div>
           <SettlementInbox compact />
           <p className="portfolio-sidebar-note">Test collateral and exact order review remain inside the planner so funding and execution stay attached to the plan they affect.</p>

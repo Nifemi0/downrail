@@ -1,6 +1,6 @@
 # Event Contracts Hackathon review
 
-Status update: 2026-09-06; original competitive review: 2026-09-03
+Status update: 2026-09-10; original competitive review: 2026-09-03
 Source of truth: https://dorahacks.io/hackathon/event-contracts/detail
 
 This file centralizes the event brief, Downrail readiness, and competitive strategy. If the organizer changes the DoraHacks page, update this file first and then propagate only material changes to submission-facing documents.
@@ -12,8 +12,8 @@ This file centralizes the event brief, Downrail readiness, and competitive strat
 - Prize pool: $5,000 USDso.
 - Registration opened: August 18, 2026.
 - Submission period: August 25 through September 8, 2026.
-- Deadline displayed during this review: September 8, 2026 at 19:00. Confirm the timezone in the participant's DoraHacks account.
-- Field during this review: 22 BUIDLs and 331 hackers.
+- Deadline displayed in the latest gallery check: September 11, 2026 at 19:00 after an extension. Confirm the timezone in the participant's DoraHacks account.
+- Field during the latest gallery check: 74 BUIDLs and 403 hackers.
 
 ## Required submission materials
 
@@ -59,6 +59,7 @@ The previously shared X post at `https://x.com/itsNikku876/status/20557012715130
 | SDK feedback | Complete | `FEEDBACK.md` |
 | Demo plan | Complete | `DEMO.md` |
 | Demo video | Complete | Public 2:48 YouTube demo: https://youtu.be/yLCXjO3UtFs |
+| Simplified decision UX | Local only | Three-question default, translated trigger, deterministic refusal gate and automatic expiry invalidation; not yet deployed or reflected in the video. |
 | Shannon tiny pilot | Enabled | One IOC leg, at most 10.00 collateral units, Shannon only. |
 | Real order evidence | Complete | Successful approval/order receipts and exact indexed fill in `EVIDENCE.md`. |
 | Real claim evidence | Complete | Successful approval/redemption receipts and authoritative post-claim empty state in `EVIDENCE.md`. |
@@ -121,7 +122,7 @@ Required evidence bundle:
 - [x] Final video published: https://youtu.be/yLCXjO3UtFs
 - [x] Every current submission link tested on September 4, 2026.
 - [x] DoraHacks form reviewed against the project evidence and submission copy.
-- [x] Submission sent September 6, before the displayed September 8 deadline.
+- [x] Submission sent September 6, before both the original and extended displayed deadlines.
 - [x] Separate hacker registration confirmed.
 
 Organizer approval and judging results are pending. The original published 2:48 demo remains the submitted video.

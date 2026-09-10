@@ -2,23 +2,25 @@
 
 > Submitted September 6, 2026 to Open Track at https://dorahacks.io/buidl/48288; the initial confirmation said under review. A later same-day Chrome check confirmed the public entry, Open Track listing and registered account, but the inspected submission panel displayed no explicit approval decision. Organizer approval is not independently confirmed. The submitted demo remains the original public 2:48 YouTube cut.
 
+> Local candidate update, September 10: Downrail now uses a three-question default planner, translates the exact below-opening-price trigger, refuses weak routes before wallet review, automatically invalidates expiring plans, reports factual conditional cash flows, revalidates reviewed market bindings, throttles public RPC-heavy routes, and offers explicit permission cleanup. This revision is not yet pushed, deployed, or reflected in the submitted video.
+
 ## Project name
 
 Downrail
 
 ## Tagline
 
-Keep the upside. Guard the downside.
+Know what the contract actually covers.
 
 ## One-line description
 
-Downrail turns live DreamDEX BTC and ETH Event Contracts into transparent, budget-capped downside-protection plans for assets users already hold.
+Downrail compares live DreamDEX BTC and ETH NO routes with a holder's loss scenario, then exposes the exact trigger, premium, winning return, mismatch risk, and wallet calls.
 
 ## Short description
 
 Crypto holders often want short-term protection without selling the asset they still believe in. DreamDEX Event Contracts provide fixed-payout UP and DOWN positions, but using short windows as a hedge still requires market selection, sizing, order-book checks, execution, settlement monitoring, and rollover.
 
-Downrail packages that workflow into one understandable product. A user chooses BTC or ETH, enters the value of the exposure, selects a protection horizon, and sets a strict spending limit. Downrail reads live Shannon markets, verifies their on-chain state, prices executable DOWN liquidity, and generates a deterministic hedge plan. Before signing, the user sees the current leg, maximum cost, conditional payout, expiry, residual risk, future rollover checkpoints, and exact transaction calls.
+Downrail packages that workflow into one understandable product. A user chooses BTC or ETH, enters the value held and selects a horizon; spending and scenario assumptions remain under Advanced. Downrail verifies live Shannon markets, translates the selected NO position into its actual below-opening-price trigger, compares exact cash flows and refuses wallet review when the route misses deterministic value checks. Qualifying plans can generate exact unsigned wallet calls.
 
 Downrail is a hedging interface—not insurance, a prediction-market creator, an AI trading oracle, or a promise of complete protection.
 
@@ -97,7 +99,7 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 - Depth-aware, budget-safe planning with tick, lot, expiry, minimum-size, and liquidity guards is implemented.
 - Responsive three-page product interface, wallet/network controls, scenario review, portfolio settlement inbox, and exact decoded call review are deployed.
 - Bounded order execution, receipt checks, persistent recovery, transaction-keyed reconciliation, finalized-position discovery, reviewed claims, and manual rollover recommendation are implemented.
-- All 60 tests pass; typecheck and lint pass.
+- All 101 tests pass locally; typecheck, lint and production build pass.
 - SDK and documentation feedback is complete.
 - The public evidence bundle records successful Shannon order and claim receipts, exact fill reconciliation, reload recovery, finalized claimability, authoritative post-claim state, and a reserve-backed rollover into a newly discovered market.
 
@@ -129,7 +131,7 @@ DoraHacks displayed “BUIDL Submitted!” for Downrail on September 6, 2026 and
 | --- | ---: | --- | --- |
 | Innovation and Originality | 20% | Reframes Event Contracts as exposure-first, scenario-specific portfolio protection rather than another prediction or risk-sized wager. | Make the unhedged-versus-protected outcome the central demo visual. |
 | Technical Implementation | 25% | Live SDK/on-chain reads, deterministic depth-aware planning, exact approvals, decoded calls, successful order and claim receipts, exact fill reconciliation, recovery, settlement scanning, and a filled reserve-backed rollover leg. | Keep the receipts visible in the final demo. |
-| User Experience and Design | 20% | Plain-language exposure, horizon, spending cap, conditional payout, residual risk, and portfolio lifecycle across focused routes. | Validate the complete wallet flow with a fresh test user. |
+| User Experience and Design | 20% | Three-question default flow, advanced controls on demand, translated trigger, direct cash flows, refusal gate, and portfolio lifecycle. | Validate the complete wallet flow with a fresh test user. |
 | Business and Ecosystem Impact | 20% | Creates recurring holder and treasury demand for DreamDEX windows and a reusable protection-planning layer. | Add one quantified example showing repeat Event Contract usage. |
 | Presentation and Demo | 15% | Public 2:48 narrated demo with recorded lifecycle evidence. | Submitted video is linked; captions or a new cut remain optional improvements. |
 
@@ -142,7 +144,7 @@ DoraHacks displayed “BUIDL Submitted!” for Downrail on September 6, 2026 and
 - [x] Public MIT-licensed GitHub repository.
 - [x] Judge-accessible Vercel deployment.
 - [x] SDK and documentation feedback report.
-- [x] 60 tests, typecheck, and lint passing.
+- [x] 101 tests, typecheck, lint and production build passing locally.
 - [x] Production Shannon pilot enabled with the one-leg, 10.00-unit boundary.
 - [x] Real testnet order, receipt, exact fill, and reload-recovery evidence.
 - [x] Real finalized-position, claim, and post-claim evidence.
