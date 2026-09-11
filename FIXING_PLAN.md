@@ -2,7 +2,7 @@
 
 Plan date: 2026-09-03; submission-status update: 2026-09-06
 
-BUIDL https://dorahacks.io/buidl/48288 is submitted and under review; hacker registration is confirmed. Original public demo: https://youtu.be/yLCXjO3UtFs (2:48). Historical phases below retain optional enhancement ideas; they are not all mandatory submission gates.
+BUIDL https://dorahacks.io/buidl/48288 is submitted and under review; hacker registration is confirmed. The current public motion demo is attached: https://youtu.be/BZYFhOABTEs (about 2:53). Historical phases below retain optional enhancement ideas; they are not all mandatory submission gates.
 
 Deadline displayed by DoraHacks: 2026-09-08 19:00; verify the account timezone before final submission.
 
@@ -123,7 +123,7 @@ Status: pending.
 
 ## Phase 6 — record the demo
 
-Status: complete for submission. The original 2:48 narrated demo is public and linked in DoraHacks. Recording/caption suggestions below remain reusable guidance; the submitted export is 1280×720.
+Status: complete for submission. The newer public motion demo with voiceover and burned-in captions is public and linked in DoraHacks. Recording/caption suggestions below remain reusable guidance; both exports are 1280×720.
 
 - Follow `DEMO.md` and target 2 minutes 30 seconds.
 - Record at 1080p with readable wallet and explorer details.
@@ -168,6 +168,7 @@ Until the submission is complete, do not spend time on:
 - [x] Real claim and post-claim evidence captured.
 - [x] Rollover demonstrated from real lifecycle state, preserved reserve, fresh market review, and filled follow-on order.
 - [ ] Judge-facing evidence surface complete.
-- [x] Two-to-three-minute video published: https://youtu.be/yLCXjO3UtFs.
+- [x] Two-to-three-minute video published: https://youtu.be/BZYFhOABTEs.
+- [x] Update the existing DoraHacks video field to the newer public cut.
 - [x] DoraHacks submission completed: https://dorahacks.io/buidl/48288 (under review).
 - [x] Separate hacker registration confirmed.

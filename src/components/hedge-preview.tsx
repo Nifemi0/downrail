@@ -347,6 +347,7 @@ export function HedgePreview() {
   const [executionPending, setExecutionPending] = useState(false);
   const [approvalCleanup, setApprovalCleanup] = useState<ApprovalCleanupState | null>(null);
   const [walletReadiness, setWalletReadiness] = useState<WalletReadiness | null>(null);
+  const walletReadinessForUi = mode === "testnet" && provider && account && chainId === "0xc488" ? walletReadiness : null;
   const [journalRecords, setJournalRecords] = useState<ExecutionJournalRecord[]>([]);
   const [recheckingJournalId, setRecheckingJournalId] = useState<string | null>(null);
   const [refreshNonce, setRefreshNonce] = useState(0);
@@ -445,7 +446,6 @@ export function HedgePreview() {
 
   useEffect(() => {
     if (mode !== "testnet" || !provider || !account || chainId !== "0xc488") {
-      setWalletReadiness(null);
       return;
     }
 
@@ -960,7 +960,7 @@ export function HedgePreview() {
             </div>
           </details>
 
-          <div className="execution-lock"><span className="execution-lock-icon" aria-hidden="true">{mode === "demo" ? <FlaskConical /> : <Network />}</span><span><strong>{mode === "demo" ? "Demo mode · no wallet needed" : "Testnet execution"}</strong><span>{mode === "demo" ? `Live comparison with a $${budget} maximum test spend.` : walletReadiness ? `${walletReadiness.stt} STT gas · ${walletReadiness.tesdc} TESDC available` : "Wallet, STT gas, and TESDC collateral are required."}</span></span></div>
+          <div className="execution-lock"><span className="execution-lock-icon" aria-hidden="true">{mode === "demo" ? <FlaskConical /> : <Network />}</span><span><strong>{mode === "demo" ? "Demo mode · no wallet needed" : "Testnet execution"}</strong><span>{mode === "demo" ? `Live comparison with a $${budget} maximum test spend.` : walletReadinessForUi ? `${walletReadinessForUi.stt} STT gas · ${walletReadinessForUi.tesdc} TESDC available` : "Wallet, STT gas, and TESDC collateral are required."}</span></span></div>
         </form>
 
         <div className="plan-output" aria-busy={activeLoadState === "loading"} aria-live="polite">

@@ -8,7 +8,7 @@ Scope: product correctness, DreamDEX integration, transaction safety, lifecycle 
 
 ## Executive verdict
 
-Downrail is a strong, differentiated testnet product with a working live-data path and a proven order-through-claim-and-rollover lifecycle. The bounded Shannon pilots produced successful order and claim receipts, exact full fills, reload recovery, a finalized winning position, an authoritative post-claim empty state, and a reserve-backed rollover into a fresh market. The public 2:48 demo and BUIDL submission are complete.
+Downrail is a strong, differentiated testnet product with a working live-data path and a proven order-through-claim-and-rollover lifecycle. The bounded Shannon pilots produced successful order and claim receipts, exact full fills, reload recovery, a finalized winning position, an authoritative post-claim empty state, and a reserve-backed rollover into a fresh market. The BUIDL submission is complete, and the newer public motion demo is attached to the existing entry for review.
 
 The application is technically competitive and its write paths are exercised with a dedicated Shannon wallet. BUIDL 48288 is under organizer review; separate hacker registration is confirmed. This status update does not represent a new full engineering audit.
 
@@ -39,7 +39,7 @@ The application is technically competitive and its write paths are exercised wit
 
 ### Submission gate passed: BUIDL submitted and hacker registered
 
-The official event requires a two-to-three-minute demo video. The final 2:48 narrated export is public at https://youtu.be/yLCXjO3UtFs; the reviewed form was submitted September 6 at https://dorahacks.io/buidl/48288. DoraHacks confirmed both BUIDL submission (under review) and separate hacker registration.
+The official event requires a two-to-three-minute demo video. The newer public motion demo is public at https://youtu.be/BZYFhOABTEs and is now linked from the reviewed form at https://dorahacks.io/buidl/48288. DoraHacks confirmed both BUIDL submission (under review) and separate hacker registration.
 
 ## Judging review
 
@@ -49,7 +49,7 @@ The official event requires a two-to-three-minute demo video. The final 2:48 nar
 | Innovation and Originality | 20% | Exposure-first portfolio protection is distinct from AI signals and simple betting interfaces. | Sluice overlaps on safe budget sizing; Runs and Let It Ride overlap on rollover. |
 | User Experience and Design | 20% | Three-question planner, advanced controls on demand, translated trigger, refusal gate, recovery, and verified claim-to-empty-state flow. | Run one fresh-user demo rehearsal before recording. |
 | Business and Ecosystem Impact | 20% | Credible recurring-demand story for holders, treasuries, wallets, and future APIs. | The submission needs one quantified recurring-volume example. |
-| Presentation and Demo | 15% | Public 2:48 narrated demo and recorded lifecycle evidence. | Original published video remains linked; a newer local motion draft is not submitted. |
+| Presentation and Demo | 15% | Public motion demo with voiceover and burned-in captions linked from the BUIDL entry. | Keep the public entry and video link consistent through judging. |
 
 ## Competitive positioning
 
@@ -78,10 +78,10 @@ The strongest one-sentence position is:
 | Rollover recommendation | Complete | Near-expiry trigger, reserve handoff, fresh review, and filled follow-on leg verified |
 | Public deployment | Complete | Verified |
 | Public repository and license | Complete | Verified |
-| Demo video | Public | https://youtu.be/yLCXjO3UtFs |
+| Demo video | Public | https://youtu.be/BZYFhOABTEs |
 
 ## Release recommendation
 
-Keep the submitted build stable through review. The deployment, public source, demo, BUIDL submission and hacker registration are complete. Further feature work, mainnet rollout or replacement video requires a separately agreed scope.
+Keep the submitted build stable through review. The deployment, public source, public demo, BUIDL submission and hacker registration are complete. Further feature work or mainnet rollout requires a separately agreed scope.
 
 See `FIXING_PLAN.md` for the ordered execution plan and `HACKATHON_REVIEW.md` for the official event cross-check.

@@ -15,11 +15,11 @@ Accessed September 10, 2026. Official source: https://dorahacks.io/hackathon/eve
 
 | Official requirement | Downrail evidence | State |
 |---|---|---|
-| Working prototype on testnet | Shannon reads, bounded order flow, settlement and claim lifecycle | Done; public deployment is an older candidate |
+| Working prototype on testnet | Shannon reads, bounded order flow, settlement and claim lifecycle | Done; current planner hardening release is public |
 | GitHub repository | Public MIT-licensed repository linked from the BUIDL | Done |
-| 2–3 minute demo video | Public 2:48 YouTube demo | Done |
+| 2–3 minute demo video | Public newer motion demo, about 2:53, with voiceover and burned-in captions | Done; linked from BUIDL |
 | Meaningful DreamDEX integration | SDK/indexer reads, on-chain binding checks, unsigned calls, receipts | Done |
-| Clear and intuitive UX | Simplified local planner and plain-English refusal gate | Local candidate; not deployed |
+| Clear and intuitive UX | Simplified planner and plain-English refusal gate | Current release; deployed |
 | Potential adoption and trading impact | Consumer downside-check workflow | Demonstrated thesis; no external users claimed |
 | SDK/documentation feedback | `FEEDBACK.md` | Done; optional requirement |
 
@@ -31,7 +31,7 @@ Accessed September 10, 2026. Official source: https://dorahacks.io/hackathon/eve
 | Technical Implementation | 25% | Live DreamDEX reads, depth-aware integer sizing, bounded wallet calls, settlement, claims, rollover and receipts. |
 | User Experience & Design | 20% | Three-question default planner, translated trigger, direct cash flows and conservative route refusal. |
 | Business & Ecosystem Impact | 20% | A consumer entry point that can bring holders into Event Contracts without selling their asset. |
-| Presentation & Demo | 15% | 2:48 public demo plus explorer-linked evidence. The video currently shows the older interface. |
+| Presentation & Demo | 15% | Existing 2:48 public submission plus a newer public motion demo aligned to the current product story and visual direction. |
 
 ## Candidate directions considered
 

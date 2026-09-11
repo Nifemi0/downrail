@@ -6,7 +6,7 @@ Keep your BTC or ETH. Model a loss that matters. Downrail compares live DreamDEX
 
 Downrail is a conditional-offset planning and execution layer for DreamDEX Event Contracts. It sizes executable positions against live depth, reports both binary outcomes without predicting them, and carries reviewed positions through settlement, claim, and optional manual rollover.
 
-[Try the app](https://downrail.vercel.app/app) · [Watch the 2:48 demo](https://youtu.be/yLCXjO3UtFs) · [Read the docs](https://downrail.vercel.app/docs) · [DoraHacks entry](https://dorahacks.io/buidl/48288)
+[Try the app](https://downrail.vercel.app/app) · [Watch the new motion demo](https://youtu.be/BZYFhOABTEs) · [Read the docs](https://downrail.vercel.app/docs) · [DoraHacks entry](https://dorahacks.io/buidl/48288)
 
 ## The moment Downrail is built for
 
@@ -26,7 +26,7 @@ If the DOWN condition loses, the purchase cost can be lost—even if your portfo
 | Filled order and reload recovery | [Recorded order evidence](./EVIDENCE.md#filled-protection-order) |
 | Finalized position, 1.652 TESDC claim and empty post-claim inbox | [Lifecycle receipts and observations](./EVIDENCE.md) |
 | Reserved budget carried into a filled fresh-market rollover | [Rollover evidence](./EVIDENCE.md) |
-| 101 tests, typecheck, source lint and production build passed September 10 | Local verification; the simplified decision and hardening rebuild is not deployed yet |
+| 101 tests, typecheck, source lint and production build passed September 10 | Local verification against the shipped planner hardening release |
 | Specific integration findings and SDK improvement requests | [SDK feedback](./FEEDBACK.md) |
 
 These are recorded testnet results, not proof of customer demand or mainnet readiness. The user-need hypothesis still needs validation with real users.
@@ -137,7 +137,7 @@ The live testnet lifecycle is documented in [`EVIDENCE.md`](./EVIDENCE.md), incl
 ## Deployment and submission record
 
 - [Live app](https://downrail.vercel.app) on Vercel; [MIT-licensed source](https://github.com/Nifemi0/downrail).
-- [Original public 2:48 demo](https://youtu.be/yLCXjO3UtFs) remains the submitted video.
+- [New public motion demo](https://youtu.be/BZYFhOABTEs) is live on the Nifemi YouTube channel with voiceover and burned-in captions, and is now linked from the existing DoraHacks entry.
 - [BUIDL 48288](https://dorahacks.io/buidl/48288) was submitted September 6, 2026; the initial confirmation said **under review**.
 - A later September 6 Chrome check confirmed the public BUIDL, its Open Track listing, Manage Submission access and the account's registered state. The inspected submission panel did not display an explicit approval decision; organizer approval is **not independently confirmed**.
 - Local rebuild baseline on September 10: 101 tests, typecheck, source lint and production build pass. These changes have not been pushed or deployed.

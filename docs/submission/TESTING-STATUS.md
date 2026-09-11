@@ -1,6 +1,6 @@
 # Testing status
 
-Current local candidate, September 10, 2026.
+Current release review, September 10, 2026.
 
 | Check | State | Evidence |
 |---|---|---|
@@ -10,7 +10,7 @@ Current local candidate, September 10, 2026.
 | Production build | Yes | `npm run build` passed September 10 |
 | Shannon contracts used | Yes | Explorer receipts in `EVIDENCE.md` |
 | Mainnet contracts | No | Testnet-only submission |
-| Public deployment | Yes, older build | Current local UX is not deployed |
+| Public deployment | Yes | Current planner hardening release is live at https://downrail.vercel.app |
 | External playtesters | No verified count | Do not claim external adoption |
 | Relayer | No | Wallet-only signing |
 | User funds held by Downrail | No | Non-custodial design |

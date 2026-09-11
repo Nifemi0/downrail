@@ -58,8 +58,8 @@ The previously shared X post at `https://x.com/itsNikku876/status/20557012715130
 | Event Contract integration | Complete | SDK 0.28.1, live books, on-chain checks, orders, settlement primitives. |
 | SDK feedback | Complete | `FEEDBACK.md` |
 | Demo plan | Complete | `DEMO.md` |
-| Demo video | Complete | Public 2:48 YouTube demo: https://youtu.be/yLCXjO3UtFs |
-| Simplified decision UX | Local only | Three-question default, translated trigger, deterministic refusal gate and automatic expiry invalidation; not yet deployed or reflected in the video. |
+| Demo video | Complete | New public motion demo, about 2:53, linked from the BUIDL entry: https://youtu.be/BZYFhOABTEs |
+| Simplified decision UX | Deployed | Three-question default, translated trigger, deterministic refusal gate and automatic expiry invalidation are live; the new public motion demo explains the product story. |
 | Shannon tiny pilot | Enabled | One IOC leg, at most 10.00 collateral units, Shannon only. |
 | Real order evidence | Complete | Successful approval/order receipts and exact indexed fill in `EVIDENCE.md`. |
 | Real claim evidence | Complete | Successful approval/redemption receipts and authoritative post-claim empty state in `EVIDENCE.md`. |
@@ -119,10 +119,10 @@ Required evidence bundle:
 - [x] Real order lifecycle captured.
 - [x] Real claim lifecycle captured.
 - [x] Real current-horizon rollover lifecycle captured.
-- [x] Final video published: https://youtu.be/yLCXjO3UtFs
+- [x] Final video published: https://youtu.be/BZYFhOABTEs
 - [x] Every current submission link tested on September 4, 2026.
 - [x] DoraHacks form reviewed against the project evidence and submission copy.
 - [x] Submission sent September 6, before both the original and extended displayed deadlines.
 - [x] Separate hacker registration confirmed.
 
-Organizer approval and judging results are pending. The original published 2:48 demo remains the submitted video.
+Organizer approval and judging results are pending. The newer public motion demo is now the video linked from the existing BUIDL form.

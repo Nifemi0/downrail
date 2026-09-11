@@ -1,8 +1,8 @@
 # Downrail — DoraHacks submission record
 
-> Submitted September 6, 2026 to Open Track at https://dorahacks.io/buidl/48288; the initial confirmation said under review. A later same-day Chrome check confirmed the public entry, Open Track listing and registered account, but the inspected submission panel displayed no explicit approval decision. Organizer approval is not independently confirmed. The submitted demo remains the original public 2:48 YouTube cut.
+> Submitted September 6, 2026 to Open Track at https://dorahacks.io/buidl/48288; the initial confirmation said under review. A later same-day Chrome check confirmed the public entry, Open Track listing and registered account, but the inspected submission panel displayed no explicit approval decision. Organizer approval is not independently confirmed. On September 10, the existing BUIDL entry was updated with the newer public motion demo at https://youtu.be/BZYFhOABTEs and the release note for the upgraded site.
 
-> Local candidate update, September 10: Downrail now uses a three-question default planner, translates the exact below-opening-price trigger, refuses weak routes before wallet review, automatically invalidates expiring plans, reports factual conditional cash flows, revalidates reviewed market bindings, throttles public RPC-heavy routes, and offers explicit permission cleanup. This revision is not yet pushed, deployed, or reflected in the submitted video.
+> Release update, September 10: Downrail now uses a three-question default planner, translates the exact below-opening-price trigger, refuses weak routes before wallet review, automatically invalidates expiring plans, reports factual conditional cash flows, revalidates reviewed market bindings, throttles public RPC-heavy routes, and offers explicit permission cleanup. The current deployed app and newer public motion demo are live, and the updated BUIDL entry reflects both.
 
 ## Project name
 
@@ -105,7 +105,7 @@ The same planning layer could later serve wallets, treasury dashboards, and deve
 
 ## Submission receipt
 
-DoraHacks displayed “BUIDL Submitted!” for Downrail on September 6, 2026 and marked the entry under review. The separate hacker-registration flow subsequently displayed successful registration. The original demo link was verified playing at 2:48. Organizer approval and judging results remain pending.
+DoraHacks displayed “BUIDL Submitted!” for Downrail on September 6, 2026 and marked the entry under review. The separate hacker-registration flow subsequently displayed successful registration. The newer public motion demo with voiceover and burned-in captions was published on September 10 at https://youtu.be/BZYFhOABTEs and is now attached to the existing BUIDL entry. Organizer approval and judging results remain pending.
 
 ## Links
 
@@ -114,7 +114,7 @@ DoraHacks displayed “BUIDL Submitted!” for Downrail on September 6, 2026 and
 - Live application: https://downrail.vercel.app
 - GitHub repository: https://github.com/Nifemi0/downrail
 - Hackathon brief: https://dorahacks.io/hackathon/event-contracts/detail
-- Demo video: https://youtu.be/yLCXjO3UtFs
+- Demo video: https://youtu.be/BZYFhOABTEs
 - Approval receipt: [Shannon explorer](https://shannon-explorer.somnia.network/tx/0xeff56d4f403f3937b28e56251977075066748afc1e8cf684d05c34f420376e09)
 - Filled order receipt: [Shannon explorer](https://shannon-explorer.somnia.network/tx/0xff6d45404a3e257eab9a4e2b87cad2086f0c6bc3a43e3d2de1b1c84107ea1c85)
 - Reconciliation evidence: [`EVIDENCE.md`](./EVIDENCE.md)
@@ -133,7 +133,7 @@ DoraHacks displayed “BUIDL Submitted!” for Downrail on September 6, 2026 and
 | Technical Implementation | 25% | Live SDK/on-chain reads, deterministic depth-aware planning, exact approvals, decoded calls, successful order and claim receipts, exact fill reconciliation, recovery, settlement scanning, and a filled reserve-backed rollover leg. | Keep the receipts visible in the final demo. |
 | User Experience and Design | 20% | Three-question default flow, advanced controls on demand, translated trigger, direct cash flows, refusal gate, and portfolio lifecycle. | Validate the complete wallet flow with a fresh test user. |
 | Business and Ecosystem Impact | 20% | Creates recurring holder and treasury demand for DreamDEX windows and a reusable protection-planning layer. | Add one quantified example showing repeat Event Contract usage. |
-| Presentation and Demo | 15% | Public 2:48 narrated demo with recorded lifecycle evidence. | Submitted video is linked; captions or a new cut remain optional improvements. |
+| Presentation and Demo | 15% | New public motion demo with voiceover and burned-in captions is linked from the BUIDL entry. | Keep the public entry and video link consistent through judging. |
 
 ## Submission readiness gate
 
@@ -149,6 +149,7 @@ DoraHacks displayed “BUIDL Submitted!” for Downrail on September 6, 2026 and
 - [x] Real testnet order, receipt, exact fill, and reload-recovery evidence.
 - [x] Real finalized-position, claim, and post-claim evidence.
 - [x] Current-horizon rollover recommendation and filled fresh leg captured.
-- [x] Two-to-three-minute demo video is public: https://youtu.be/yLCXjO3UtFs
+- [x] Two-to-three-minute demo video is public: https://youtu.be/BZYFhOABTEs
+- [x] Replace the older video URL in the existing DoraHacks entry with the newer public motion demo.
 - [x] DoraHacks form reviewed and submitted: https://dorahacks.io/buidl/48288 (under review).
 - [x] Separate hacker registration completed.

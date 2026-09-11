@@ -9,10 +9,11 @@
 - Assets: BTC and ETH
 - Deployment: https://downrail.vercel.app
 - Repository: https://github.com/Nifemi0/downrail
-- Status date: September 9, 2026
+- Status date: September 10, 2026
 - BUIDL: https://dorahacks.io/buidl/48288 — submitted, under review.
 - Hacker registration: confirmed.
-- Public 2:48 demo: https://youtu.be/yLCXjO3UtFs
+- Public motion demo: https://youtu.be/BZYFhOABTEs
+- Current motion demo attached to BUIDL: https://youtu.be/BZYFhOABTEs
 
 ## Product
 
