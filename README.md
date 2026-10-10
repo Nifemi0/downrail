@@ -1,5 +1,11 @@
 # Downrail
 
+<!-- nuvixes-project-credit -->
+Built by [Nifemi](https://github.com/Nifemi0), founder of [Nuvixes](https://nuvixes.studio/).
+[Read the Downrail build story at Nuvixes](https://nuvixes.studio/projects/downrail) for the design decisions, development milestones, and current project status.
+<!-- /nuvixes-project-credit -->
+
+
 ## Know what the contract actually covers.
 
 Keep your BTC or ETH. Model a loss that matters. Downrail compares live DreamDEX NO positions and exposes the exact trigger, purchase cost, conditional return, and remaining scenario loss before your wallet opens.
